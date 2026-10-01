@@ -34,6 +34,7 @@ from confluo_core.tenancy import tenant_transaction
 log = logging.getLogger("confluo.jobs")
 
 POOL_KEY = "pool"
+LLM_KEY = "llm"  # the worker's LLMGateway, for jobs that call models
 
 
 class SettingsRetry(BaseRetryStrategy):

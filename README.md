@@ -114,6 +114,17 @@ token hash); people who already have an account see the invitation at their next
 Either way they accept it in the dashboard, which checks the invitation's email against
 their verified token.
 
+## LLM gateway
+
+All model calls go through `confluo_core.llm.LLMGateway` with a *tier*, never a vendor
+model: `fast` (intent, extraction), `dialogue` (customer replies) and `embedding`.
+`CONFLUO_LLM_FAST`, `CONFLUO_LLM_DIALOGUE` and `CONFLUO_LLM_EMBEDDING` map tiers to
+`provider:model` (defaults: Claude Haiku 4.5, Claude Opus 5 with Anthropic's server-side
+refusal fallback, Voyage voyage-3.5). Use `fake:<name>` to run offline at no cost. Every
+call is logged per tenant in `llm_usage` with an estimated cost (`GET /api/usage`) and
+added to the current AI trace. `make smoke-llm` makes one real call per provider once
+`ANTHROPIC_API_KEY` / `VOYAGE_API_KEY` are in `.env`.
+
 ## CI
 
 GitHub Actions ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs on every push to

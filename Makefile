@@ -3,7 +3,7 @@
 # Secret key of the running Supabase *local* stack, read at run time so it is never
 # committed. Used by the API for invitation emails and by the e2e tests.
 LOCAL_SECRET_KEY = $$(supabase status -o env 2>/dev/null | sed -n 's/^SECRET_KEY="\{0,1\}\([^"]*\)"\{0,1\}$$/\1/p')
-.PHONY: help setup db db-stop db-reset migrate dev up down lint format typecheck test e2e api-client erd seed check
+.PHONY: help setup db db-stop db-reset migrate dev up down lint format typecheck test e2e smoke-llm api-client erd seed check
 
 help: ## List targets
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*## "}; {printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2}'
@@ -65,6 +65,9 @@ e2e: ## Browser tests (auth, members/roles) against the running stack (`make dev
 
 seed: ## Create or reset the demo tenant (login demo@confluo.local / demo-confluo-2026)
 	SUPABASE_LOCAL_SECRET_KEY=$(LOCAL_SECRET_KEY) uv run python scripts/seed_demo.py
+
+smoke-llm: ## One real call to each LLM/embedding provider (needs keys in .env; costs < 1 cent)
+	uv run pytest tests/live -v -p no:cacheprovider --override-ini addopts=
 
 erd: ## Regenerate docs/ERD.md from the migrated local database
 	uv run python scripts/generate_erd.py

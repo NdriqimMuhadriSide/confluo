@@ -11,6 +11,7 @@ from psycopg import AsyncConnection
 from psycopg_pool import AsyncConnectionPool
 
 from confluo_core.auth import AuthUser, CurrentUser
+from confluo_core.llm import LLMGateway
 from confluo_core.permissions import PermissionRegistry
 from confluo_core.tenancy import NotAMember, require_membership, user_transaction
 
@@ -23,6 +24,14 @@ def get_pool(request: Request) -> AsyncConnectionPool:
 
 
 Pool = Annotated[AsyncConnectionPool, Depends(get_pool)]
+
+
+def get_llm(request: Request) -> LLMGateway:
+    llm: LLMGateway = request.app.state.llm
+    return llm
+
+
+LLM = Annotated[LLMGateway, Depends(get_llm)]
 
 
 def get_permissions(request: Request) -> PermissionRegistry:

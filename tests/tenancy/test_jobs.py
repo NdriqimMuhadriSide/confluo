@@ -1,5 +1,6 @@
 """Webhook ledger, job queue, retries, dead letters, manual retry, tenant context."""
 
+import asyncio
 import json
 import uuid
 from collections.abc import AsyncIterator, Iterator
@@ -83,7 +84,20 @@ async def worker(world: World, provider: TestProvider) -> AsyncIterator[Any]:
             db = pool
 
             async def run(self) -> None:
-                await run_jobs_once(app, context)
+                # Retries are scheduled with the host clock but picked up by the
+                # database clock (Docker), which can lag by a few ms; keep draining
+                # while anything is due within the next couple of seconds.
+                for _ in range(60):
+                    await run_jobs_once(app, context)
+                    async with pool.connection() as conn:
+                        cur = await conn.execute(
+                            "select count(*) from procrastinate.procrastinate_jobs"
+                            " where status = 'todo' and scheduled_at < now() + interval '2 seconds'"
+                        )
+                        row = await cur.fetchone()
+                    if not row or row[0] == 0:
+                        return
+                    await asyncio.sleep(0.1)
 
         yield Worker()
     await pool.close()

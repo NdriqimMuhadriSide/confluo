@@ -2,20 +2,21 @@
 
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from typing import Literal
+from typing import Any, Literal
 
 import uvicorn
 from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from confluo_api import audit, members, system, tenants, webhooks
+from confluo_api import audit, members, system, tenants, usage, webhooks
 from confluo_api import modules as modules_api
 from confluo_core.auth import TokenVerifier
 from confluo_core.auth_admin import AuthAdmin, SupabaseAuthAdmin
 from confluo_core.db import create_pool, ping
 from confluo_core.deps import REQUIRED_PERMISSIONS, module_enabled
 from confluo_core.job_app import build_job_app
+from confluo_core.llm import LLMGateway
 from confluo_core.logging import configure_logging
 from confluo_core.modules import discover_modules
 from confluo_core.permissions import CORE_PERMISSIONS, PermissionRegistry
@@ -33,6 +34,7 @@ def create_app(
     token_verifier: TokenVerifier | None = None,
     auth_admin: AuthAdmin | None = None,
     webhook_providers: dict[str, WebhookProvider] | None = None,
+    llm_providers: dict[str, Any] | None = None,
 ) -> FastAPI:
     settings = settings or get_settings()
     modules = discover_modules()
@@ -45,6 +47,7 @@ def create_app(
         pool = create_pool(settings)
         await pool.open(wait=False)
         app.state.pool = pool
+        app.state.llm = LLMGateway(settings, pool, llm_providers)
         # Procrastinate shares the pool; the API only defers and retries jobs.
         await app.state.job_app.open_async(pool)
         try:
@@ -80,6 +83,7 @@ def create_app(
     app.include_router(modules_api.router)
     app.include_router(audit.router)
     app.include_router(system.router)
+    app.include_router(usage.router)
     app.include_router(webhooks.router)
 
     for module in modules.values():

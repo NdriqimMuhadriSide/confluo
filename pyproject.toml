@@ -54,5 +54,7 @@ explicit_package_bases = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# Live provider calls cost money; run them explicitly with `make smoke-llm`.
+addopts = "--ignore=tests/live"
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"

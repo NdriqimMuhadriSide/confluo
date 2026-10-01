@@ -1,7 +1,7 @@
 from functools import lru_cache
 from typing import Literal
 
-from pydantic import Field, PostgresDsn, SecretStr
+from pydantic import AliasChoices, Field, PostgresDsn, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -45,6 +45,18 @@ class Settings(BaseSettings):
     # Background jobs: attempts in total, and the first retry delay (doubles each time).
     job_max_attempts: int = Field(5, ge=1, le=20)
     job_retry_base_seconds: float = Field(10.0, ge=0)
+
+    # LLM gateway: "provider:model" per tier. Providers: anthropic, voyage, fake.
+    llm_fast: str = "anthropic:claude-haiku-4-5"  # intent, extraction, classification
+    llm_dialogue: str = "anthropic:claude-opus-5"  # customer-facing replies
+    llm_embedding: str = "voyage:voyage-3.5"  # knowledge base (1024 dims)
+    # Provider keys use the vendors' usual variable names.
+    anthropic_api_key: SecretStr | None = Field(
+        None, validation_alias=AliasChoices("ANTHROPIC_API_KEY", "CONFLUO_ANTHROPIC_API_KEY")
+    )
+    voyage_api_key: SecretStr | None = Field(
+        None, validation_alias=AliasChoices("VOYAGE_API_KEY", "CONFLUO_VOYAGE_API_KEY")
+    )
 
     # Shared secret of the built-in `test` webhook provider (local/test only).
     webhook_test_secret: SecretStr | None = None

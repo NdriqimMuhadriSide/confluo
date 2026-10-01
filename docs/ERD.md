@@ -134,6 +134,22 @@ erDiagram
     text error
     timestamptz failed_at
   }
+  llm_usage {
+    int8 id PK
+    uuid tenant_id
+    text purpose
+    text tier
+    text provider
+    text model
+    int4 input_tokens
+    int4 output_tokens
+    int4 cache_read_tokens
+    int4 cache_write_tokens
+    int4 latency_ms "nullable"
+    numeric cost_usd "nullable"
+    uuid run_id "nullable"
+    timestamptz created_at
+  }
   location {
     uuid id PK
     uuid tenant_id

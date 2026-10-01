@@ -9,7 +9,8 @@ import logging
 
 from confluo_core.db import create_pool
 from confluo_core.job_app import build_job_app
-from confluo_core.jobs import job_settings_summary, worker_context
+from confluo_core.jobs import LLM_KEY, job_settings_summary, worker_context
+from confluo_core.llm import LLMGateway
 from confluo_core.logging import configure_logging
 from confluo_core.modules import discover_modules
 from confluo_core.settings import get_settings
@@ -33,7 +34,10 @@ async def main() -> None:
                 ", ".join(sorted(app.tasks)),
                 job_settings_summary(settings),
             )
-            context = worker_context(pool, **{PROVIDERS_KEY: default_providers(settings)})
+            context = worker_context(
+                pool,
+                **{PROVIDERS_KEY: default_providers(settings), LLM_KEY: LLMGateway(settings, pool)},
+            )
             await app.run_worker_async(additional_context=context)
     finally:
         await pool.close()
