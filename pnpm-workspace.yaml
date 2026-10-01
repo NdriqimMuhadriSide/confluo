@@ -1,0 +1,8 @@
+packages:
+  - apps/web
+  - apps/widget
+
+allowBuilds:
+  sharp: false
+  unrs-resolver: false
+  esbuild: true

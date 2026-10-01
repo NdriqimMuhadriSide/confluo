@@ -1,0 +1,16 @@
+[project]
+name = "confluo-worker"
+version = "0.1.0"
+description = "Confluo background worker"
+requires-python = ">=3.13"
+dependencies = [
+  "confluo-core",
+  "confluo-crm",
+]
+
+[project.scripts]
+confluo-worker = "confluo_worker.main:run"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

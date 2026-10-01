@@ -1,0 +1,50 @@
+# App services in containers, talking to the Supabase local stack on the host
+# (started separately by `supabase start`). Used by `make up`; day-to-day
+# development uses `make dev`, which runs the same services with hot reload.
+name: confluo
+
+x-python: &python
+  build:
+    context: ..
+    dockerfile: infra/docker/python.Dockerfile
+  env_file:
+    - path: ../.env
+      required: false
+  environment:
+    CONFLUO_DATABASE_URL: postgresql://postgres:postgres@host.docker.internal:54322/postgres
+    CONFLUO_SUPABASE_URL: http://host.docker.internal:54321
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
+
+services:
+  api:
+    <<: *python
+    command: ["confluo-api"]
+    environment:
+      CONFLUO_DATABASE_URL: postgresql://postgres:postgres@host.docker.internal:54322/postgres
+      CONFLUO_SUPABASE_URL: http://host.docker.internal:54321
+      CONFLUO_ENV: staging
+      CONFLUO_API_HOST: 0.0.0.0
+    ports:
+      - "8100:8100"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8100/health')"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  worker:
+    <<: *python
+    command: ["confluo-worker"]
+
+  web:
+    build:
+      context: ..
+      dockerfile: infra/docker/web.Dockerfile
+    environment:
+      CONFLUO_API_URL: http://api:8100
+    ports:
+      - "3000:3000"
+    depends_on:
+      api:
+        condition: service_healthy

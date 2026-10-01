@@ -1,0 +1,13 @@
+[project]
+name = "confluo-crm"
+version = "0.1.0"
+description = "Confluo CRM module: intake agent, channels, booking, knowledge base, customers"
+requires-python = ">=3.13"
+dependencies = ["confluo-core"]
+
+[project.entry-points."confluo.modules"]
+crm = "confluo_crm.module:module"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

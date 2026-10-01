@@ -1,0 +1,16 @@
+{
+  "name": "@confluo/widget",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Embeddable Confluo web chat widget (vanilla TS, built to a single widget.js)",
+  "scripts": {
+    "dev": "esbuild src/widget.ts --bundle --format=iife --target=es2020 --outfile=public/widget.js --watch=forever --servedir=public --serve=127.0.0.1:3001",
+    "build": "esbuild src/widget.ts --bundle --minify --format=iife --target=es2020 --outfile=dist/widget.js",
+    "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25",
+    "typescript": "^5"
+  }
+}

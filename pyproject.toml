@@ -1,0 +1,52 @@
+[project]
+name = "confluo"
+version = "0.0.0"
+description = "Confluo workspace root"
+requires-python = ">=3.13"
+dependencies = []
+
+[tool.uv.workspace]
+members = ["packages/core", "modules/crm", "apps/api", "apps/worker"]
+
+[tool.uv.sources]
+confluo-core = { workspace = true }
+confluo-crm = { workspace = true }
+confluo-api = { workspace = true }
+confluo-worker = { workspace = true }
+
+[dependency-groups]
+dev = [
+  "confluo-core",
+  "confluo-crm",
+  "confluo-api",
+  "confluo-worker",
+  "honcho>=2.0",
+  "httpx2",
+  "mypy>=1.13",
+  "pytest>=8.3",
+  "pytest-asyncio>=0.25",
+  "ruff>=0.8",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+extend-exclude = ["docs", "apps/web", "apps/widget"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "ASYNC"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["confluo_core", "confluo_crm", "confluo_api", "confluo_worker"]
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+plugins = ["pydantic.mypy"]
+mypy_path = ["packages/core/src", "modules/crm/src", "apps/api/src", "apps/worker/src"]
+explicit_package_bases = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"

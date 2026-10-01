@@ -1,0 +1,4 @@
+api: uv run confluo-api
+worker: uv run confluo-worker
+web: pnpm --filter @confluo/web dev
+widget: pnpm --filter @confluo/widget dev

@@ -1,0 +1,2 @@
+-- Local seed data, applied by `supabase db reset`. The demo tenant arrives with the
+-- "Industry presets + demo tenant" card.
