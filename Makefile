@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help setup db db-stop db-reset dev up down lint format typecheck test e2e api-client check
+.PHONY: help setup db db-stop db-reset migrate dev up down lint format typecheck test e2e api-client check
 
 help: ## List targets
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*## "}; {printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2}'
@@ -15,13 +15,18 @@ db: ## Start the Supabase local stack (Postgres, Auth, Studio) in Docker
 db-stop: ## Stop the Supabase local stack
 	supabase stop
 
-db-reset: ## Recreate the local database and re-run migrations + seed
+db-reset: ## Recreate the local database and re-run migrations
 	supabase db reset
+	$(MAKE) migrate
 
-dev: db ## Start db, then api, worker, web and widget with hot reload
+migrate: ## Apply database migrations (Alembic) and enable the app role
+	uv run alembic upgrade head
+	uv run python scripts/set_app_role_password.py
+
+dev: db migrate ## Start db, migrate, then api, worker, web and widget with hot reload
 	uv run honcho -f Procfile.dev start
 
-up: db ## Start db, then api, worker and web as Docker containers
+up: db migrate ## Start db, migrate, then api, worker and web as Docker containers
 	docker compose -f infra/docker-compose.yml up --build
 
 down: ## Stop the app containers

@@ -57,7 +57,8 @@ make check      # lint + typecheck + tests (what CI runs; db tests need `make db
 make format     # auto-format Python
 make api-client # after changing API routes or models: regenerate the dashboard's TS client
 make e2e        # browser test of sign-up / sign-in (needs `make dev` running)
-make db-reset   # recreate the local database
+make migrate    # apply database migrations (make dev does this too)
+make db-reset   # recreate the local database and migrate
 make help       # list all targets
 ```
 
@@ -74,6 +75,25 @@ magic-link sign-in, sign-out, refusals) against a running `make dev` or `make up
 
 Cloud project: `tjflufbcqjfqnblbdfma` (Ireland, eu-west-1). The Data API is disabled, so the
 publishable key only works for Auth.
+
+## Multi-tenancy
+
+A **tenant** is one customer business. Every tenant-scoped table has a `tenant_id` and a
+Postgres row-level-security policy, so isolation is enforced by the database rather than by
+each query:
+
+- Migrations (Alembic, `migrations/` + `packages/core/src/confluo_core/migrations/`) run as
+  the owner. The API and worker connect as `confluo_app`, which owns nothing and cannot
+  bypass RLS.
+- Each request or job runs in one transaction that sets `app.user_id` / `app.tenant_id`
+  with `set_config(..., true)`, so the values end with the transaction
+  (`confluo_core.tenancy`).
+- API endpoints that take `Tenant` (from `confluo_core.deps`) read the `X-Tenant-Id` header,
+  check the user is an active member (403 otherwise) and only then enter the tenant.
+- Worker jobs use `tenant_transaction(pool, tenant_id)` with the tenant from the job payload.
+- New tables: add `tenant_id uuid not null default app.current_tenant_id()`, enable RLS
+  and add a policy like `location_tenant`. `tests/tenancy/test_isolation.py` fails for any
+  table in `public` without RLS and a policy.
 
 ## CI
 

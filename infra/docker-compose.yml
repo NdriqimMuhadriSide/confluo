@@ -11,7 +11,7 @@ x-python: &python
     - path: ../.env
       required: false
   environment:
-    CONFLUO_DATABASE_URL: postgresql://postgres:postgres@host.docker.internal:54322/postgres
+    CONFLUO_DATABASE_URL: postgresql://confluo_app:confluo_app@host.docker.internal:54322/postgres
     CONFLUO_SUPABASE_URL: http://host.docker.internal:54321
   extra_hosts:
     - "host.docker.internal:host-gateway"
@@ -21,7 +21,7 @@ services:
     <<: *python
     command: ["confluo-api"]
     environment:
-      CONFLUO_DATABASE_URL: postgresql://postgres:postgres@host.docker.internal:54322/postgres
+      CONFLUO_DATABASE_URL: postgresql://confluo_app:confluo_app@host.docker.internal:54322/postgres
       CONFLUO_SUPABASE_URL: http://host.docker.internal:54321
       CONFLUO_SUPABASE_JWT_ISSUER: http://127.0.0.1:54321/auth/v1
       CONFLUO_ENV: staging

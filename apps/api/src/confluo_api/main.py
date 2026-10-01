@@ -3,13 +3,13 @@
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from typing import Literal
-from uuid import UUID
 
 import uvicorn
 from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
+from confluo_api import tenants
 from confluo_core.auth import CurrentUser, TokenVerifier, current_user
 from confluo_core.db import create_pool, ping
 from confluo_core.logging import configure_logging
@@ -36,11 +36,6 @@ class ModuleOut(BaseModel):
 
 class Manifest(BaseModel):
     modules: list[ModuleOut]
-
-
-class Me(BaseModel):
-    id: UUID
-    email: str | None
 
 
 def create_app(
@@ -75,10 +70,6 @@ def create_app(
         db_ok = await ping(request.app.state.pool)
         return Health(status="ok" if db_ok else "degraded", database=db_ok)
 
-    @app.get("/api/me", tags=["auth"], operation_id="getMe")
-    async def me(user: CurrentUser) -> Me:
-        return Me(id=user.id, email=user.email)
-
     @app.get("/api/me/manifest", tags=["system"], operation_id="getManifest")
     async def manifest(request: Request, user: CurrentUser) -> Manifest:
         # Per-tenant enablement arrives with the module registry card; for now every
@@ -97,6 +88,8 @@ def create_app(
                 for m in mods.values()
             ]
         )
+
+    app.include_router(tenants.router)
 
     for module in modules.values():
         for router in module.routers():

@@ -4,16 +4,20 @@ import pytest
 from cryptography.hazmat.primitives.asymmetric import ec
 from fastapi.testclient import TestClient
 
+from confluo_core.auth import TokenVerifier
 from tests.conftest import MakeToken
 
 USER_ID = "6f1c1d1e-8a43-4c55-9f0e-2a3b4c5d6e7f"
 
 
-def test_valid_token_returns_the_user(client: TestClient, make_token: MakeToken) -> None:
-    token = make_token(sub=USER_ID, email="anna@example.com")
-    res = client.get("/api/me", headers={"Authorization": f"Bearer {token}"})
+async def test_valid_token_yields_the_user(verifier: TokenVerifier, make_token: MakeToken) -> None:
+    user = await verifier.verify(make_token(sub=USER_ID, email="anna@example.com"))
+    assert (str(user.id), user.email) == (USER_ID, "anna@example.com")
+
+
+def test_valid_token_is_accepted(client: TestClient, make_token: MakeToken) -> None:
+    res = client.get("/api/crm/status", headers={"Authorization": f"Bearer {make_token()}"})
     assert res.status_code == 200
-    assert res.json() == {"id": USER_ID, "email": "anna@example.com"}
 
 
 def test_missing_token_is_rejected(client: TestClient) -> None:

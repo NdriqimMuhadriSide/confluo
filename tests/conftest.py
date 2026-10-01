@@ -1,6 +1,6 @@
 import time
 import uuid
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
 from typing import Any
 
 import jwt
@@ -64,7 +64,11 @@ def make_token(signing_key: ec.EllipticCurvePrivateKey, settings: Settings) -> M
 
 
 @pytest.fixture
-def client(signing_key: ec.EllipticCurvePrivateKey, settings: Settings) -> TestClient:
-    verifier = TokenVerifier(settings, jwks_client=StaticJWKS(signing_key.public_key()))
+def verifier(signing_key: ec.EllipticCurvePrivateKey, settings: Settings) -> TokenVerifier:
+    return TokenVerifier(settings, jwks_client=StaticJWKS(signing_key.public_key()))
+
+
+@pytest.fixture
+def client(verifier: TokenVerifier, settings: Settings) -> Iterator[TestClient]:
     with TestClient(create_app(settings, token_verifier=verifier)) as c:
-        return c
+        yield c

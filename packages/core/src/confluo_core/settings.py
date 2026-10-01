@@ -1,7 +1,7 @@
 from functools import lru_cache
 from typing import Literal
 
-from pydantic import Field, PostgresDsn
+from pydantic import Field, PostgresDsn, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -13,10 +13,18 @@ class Settings(BaseSettings):
     env: Literal["local", "test", "staging", "production"] = "local"
     log_level: str = "INFO"
 
+    # The API and worker connect as `confluo_app`, a non-owner role that RLS applies to.
     database_url: PostgresDsn = Field(
-        default=PostgresDsn("postgresql://postgres:postgres@127.0.0.1:54322/postgres"),
-        description="Postgres connection string (Supabase local stack by default).",
+        default=PostgresDsn("postgresql://confluo_app:confluo_app@127.0.0.1:54322/postgres"),
+        description="App connection (role confluo_app). Supabase local stack by default.",
     )
+    # Migrations run as the owner of the schema.
+    migrations_database_url: PostgresDsn = Field(
+        default=PostgresDsn("postgresql://postgres:postgres@127.0.0.1:54322/postgres"),
+        description="Owner connection used by Alembic and admin scripts.",
+    )
+    # Password `make migrate` gives the confluo_app role. Must match database_url.
+    app_db_password: SecretStr = SecretStr("confluo_app")
     supabase_url: str = "http://127.0.0.1:54321"
     # Staff access tokens are Supabase Auth JWTs, verified against the project's public
     # signing keys (JWKS) — no shared secret. Audience is what Supabase puts in `aud`.
