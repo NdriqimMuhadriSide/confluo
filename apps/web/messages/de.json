@@ -216,5 +216,37 @@
       "freeTime": "Freie Zeit in den nächsten 7 Tagen",
       "noFreeTime": "Keine freie Zeit in den nächsten 7 Tagen."
     }
+  },
+  "kb": {
+    "title": "Wissensdatenbank",
+    "intro": "Was die KI Kunden sagen darf. Veröffentlichte Einträge werden im Hintergrund indexiert und zum Beantworten von Fragen genutzt.",
+    "new": "Neuer Eintrag",
+    "kind": "Art",
+    "kinds": {
+      "faq": "Frage & Antwort",
+      "service": "Leistung",
+      "price": "Preise",
+      "hours": "Öffnungszeiten",
+      "location": "Standort",
+      "policy": "Regeln",
+      "free_text": "Sonstiges"
+    },
+    "language": "Sprache",
+    "itemTitle": "Titel",
+    "body": "Text",
+    "create": "Als Entwurf speichern",
+    "publish": "Veröffentlichen",
+    "unpublish": "Zurückziehen",
+    "status": {
+      "draft": "Entwurf",
+      "indexing": "wird indexiert…",
+      "live": "live"
+    },
+    "chunks": "{count, plural, one {# Abschnitt} other {# Abschnitte}}",
+    "try": "Frage ausprobieren",
+    "tryHint": "Durchsucht veröffentlichte Einträge so, wie es die KI tut.",
+    "search": "Suchen",
+    "noHits": "Kein veröffentlichter Eintrag passt.",
+    "score": "Score {score}"
   }
 }

@@ -5,10 +5,12 @@ from pydantic import BaseModel, Field
 
 from confluo_core.modules import ModuleManifest, NavItem
 from confluo_core.permissions import ALL, MANAGERS, Permission
-from confluo_crm import setup_api
+from confluo_crm import knowledge_api, setup_api
+from confluo_crm.knowledge import crm_tasks
 
 router = APIRouter(tags=["crm"])
 setup_api.router.tags = ["crm-setup"]
+knowledge_api.router.tags = ["crm-knowledge"]
 
 
 class CrmStatus(BaseModel):
@@ -43,7 +45,7 @@ class CrmModule:
     depends_on: list[str] = ["core"]
     config_schema = CrmConfig
     enabled_by_default = True
-    tasks = None
+    tasks = crm_tasks
     permissions = [
         Permission("crm.inbox.view", "Read customer conversations", ALL),
         Permission("crm.inbox.takeover", "Take over a conversation from the AI", ALL),
@@ -52,7 +54,7 @@ class CrmModule:
     ]
 
     def routers(self) -> list[APIRouter]:
-        return [router, setup_api.router]
+        return [router, setup_api.router, knowledge_api.router]
 
     def dashboard_manifest(self) -> ModuleManifest:
         return ModuleManifest(

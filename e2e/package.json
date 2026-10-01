@@ -5,11 +5,12 @@
   "scripts": {
     "auth": "node auth.mjs",
     "rbac": "node rbac.mjs",
-    "all": "node auth.mjs && node rbac.mjs && node modules.mjs && node jobs.mjs && node shell.mjs && node setup.mjs",
+    "all": "node auth.mjs && node rbac.mjs && node modules.mjs && node jobs.mjs && node shell.mjs && node setup.mjs && node knowledge.mjs",
     "modules": "node modules.mjs",
     "jobs": "node jobs.mjs",
     "shell": "node shell.mjs",
-    "setup": "node setup.mjs"
+    "setup": "node setup.mjs",
+    "knowledge": "node knowledge.mjs"
   },
   "devDependencies": {
     "playwright": "^1.63"

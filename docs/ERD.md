@@ -348,6 +348,7 @@ erDiagram
     vector embedding "nullable"
     tsvector tsv "nullable"
     timestamptz created_at
+    text embedding_model "nullable"
   }
   crm_knowledge_item {
     uuid id PK

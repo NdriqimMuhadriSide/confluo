@@ -216,5 +216,37 @@
       "freeTime": "Disponibilités des 7 prochains jours",
       "noFreeTime": "Aucune disponibilité dans les 7 prochains jours."
     }
+  },
+  "kb": {
+    "title": "Base de connaissances",
+    "intro": "Ce que l'IA peut dire aux clients. Les éléments publiés sont indexés en arrière-plan et servent à répondre aux questions.",
+    "new": "Nouvel élément",
+    "kind": "Type",
+    "kinds": {
+      "faq": "Question & réponse",
+      "service": "Prestation",
+      "price": "Tarifs",
+      "hours": "Heures d'ouverture",
+      "location": "Lieu",
+      "policy": "Règles",
+      "free_text": "Autre"
+    },
+    "language": "Langue",
+    "itemTitle": "Titre",
+    "body": "Texte",
+    "create": "Enregistrer comme brouillon",
+    "publish": "Publier",
+    "unpublish": "Dépublier",
+    "status": {
+      "draft": "brouillon",
+      "indexing": "indexation…",
+      "live": "en ligne"
+    },
+    "chunks": "{count, plural, one {# fragment} other {# fragments}}",
+    "try": "Essayez une question",
+    "tryHint": "Cherche dans les éléments publiés comme le fait l'IA.",
+    "search": "Chercher",
+    "noHits": "Aucun élément publié ne correspond.",
+    "score": "score {score}"
   }
 }

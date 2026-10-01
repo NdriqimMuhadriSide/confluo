@@ -216,5 +216,37 @@
       "freeTime": "Free time next 7 days",
       "noFreeTime": "No free time in the next 7 days."
     }
+  },
+  "kb": {
+    "title": "Knowledge base",
+    "intro": "What the AI may tell customers. Published items are indexed in the background and used to answer questions.",
+    "new": "New item",
+    "kind": "Kind",
+    "kinds": {
+      "faq": "Question & answer",
+      "service": "Service",
+      "price": "Prices",
+      "hours": "Opening hours",
+      "location": "Location",
+      "policy": "Policy",
+      "free_text": "Other"
+    },
+    "language": "Language",
+    "itemTitle": "Title",
+    "body": "Text",
+    "create": "Save as draft",
+    "publish": "Publish",
+    "unpublish": "Unpublish",
+    "status": {
+      "draft": "draft",
+      "indexing": "indexing…",
+      "live": "live"
+    },
+    "chunks": "{count, plural, one {# chunk} other {# chunks}}",
+    "try": "Try a question",
+    "tryHint": "Searches published items the way the AI does.",
+    "search": "Search",
+    "noHits": "No published item matches.",
+    "score": "score {score}"
   }
 }

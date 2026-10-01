@@ -216,5 +216,37 @@
       "freeTime": "Vrije tijd de komende 7 dagen",
       "noFreeTime": "Geen vrije tijd de komende 7 dagen."
     }
+  },
+  "kb": {
+    "title": "Kennisbank",
+    "intro": "Wat de AI aan klanten mag vertellen. Gepubliceerde items worden op de achtergrond geïndexeerd en gebruikt om vragen te beantwoorden.",
+    "new": "Nieuw item",
+    "kind": "Soort",
+    "kinds": {
+      "faq": "Vraag & antwoord",
+      "service": "Dienst",
+      "price": "Prijzen",
+      "hours": "Openingsuren",
+      "location": "Locatie",
+      "policy": "Beleid",
+      "free_text": "Overig"
+    },
+    "language": "Taal",
+    "itemTitle": "Titel",
+    "body": "Tekst",
+    "create": "Opslaan als concept",
+    "publish": "Publiceren",
+    "unpublish": "Publicatie intrekken",
+    "status": {
+      "draft": "concept",
+      "indexing": "wordt geïndexeerd…",
+      "live": "live"
+    },
+    "chunks": "{count, plural, one {# fragment} other {# fragmenten}}",
+    "try": "Probeer een vraag",
+    "tryHint": "Doorzoekt gepubliceerde items zoals de AI dat doet.",
+    "search": "Zoeken",
+    "noHits": "Geen gepubliceerd item komt overeen.",
+    "score": "score {score}"
   }
 }

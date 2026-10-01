@@ -95,11 +95,21 @@ async def record_failure(
         )
 
 
+@dataclass(frozen=True)
+class JobDeps:
+    """What a job may need besides its tenant connection."""
+
+    tenant_id: UUID
+    pool: AsyncConnectionPool
+    context: dict[str, Any]  # the worker's additional_context (e.g. LLM_KEY)
+
+
 def tenant_task(
-    tasks: TaskSet, *, name: str, queue: str = "default"
+    tasks: TaskSet, *, name: str, queue: str = "default", pass_deps: bool = False
 ) -> Callable[[Callable[..., Awaitable[Any]]], Any]:
-    """Declare a job that runs inside its tenant: `fn(conn, **kwargs)`, deferred with
-    `tenant_id=...` plus the kwargs."""
+    """Declare a job that runs inside its tenant: `fn(conn, **kwargs)` (or
+    `fn(conn, deps, **kwargs)` with pass_deps), deferred with `tenant_id=...` plus
+    the kwargs."""
 
     def decorate(fn: Callable[..., Awaitable[Any]]) -> Any:
         @tasks.task(name=name, queue=queue, pass_context=True)
@@ -108,6 +118,9 @@ def tenant_task(
             tenant = UUID(tenant_id)
             try:
                 async with tenant_transaction(pool, tenant) as conn:
+                    if pass_deps:
+                        deps = JobDeps(tenant, pool, context.additional_context)
+                        return await fn(conn, deps, **kwargs)
                     return await fn(conn, **kwargs)
             except Exception as exc:
                 log.warning("job %s (%s) failed: %s", context.job.id, name, exc)

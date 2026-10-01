@@ -135,6 +135,16 @@ call is logged per tenant in `llm_usage` with an estimated cost (`GET /api/usage
 added to the current AI trace. `make smoke-llm` makes one real call per provider once
 `ANTHROPIC_API_KEY` / `VOYAGE_API_KEY` are in `.env`.
 
+## Knowledge base
+
+Owners write knowledge items (FAQ, prices, hours, policies…) per language under
+**Knowledge base**. Publishing enqueues `crm:embed_knowledge_item` in the same
+transaction: the worker chunks the text, embeds it through the gateway's embedding tier
+and stores vectors (pgvector) next to a full-text index. `GET /api/crm/knowledge/search`
+merges vector and full-text ranks (reciprocal rank fusion) over published items; the
+page's "Try a question" box uses it. Each chunk records its embedding model and search
+only uses the current one, so after changing `CONFLUO_LLM_EMBEDDING` run `make reembed`.
+
 ## CI
 
 GitHub Actions ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs on every push to

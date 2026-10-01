@@ -165,6 +165,23 @@ def test_every_mutating_route_writes_an_audit_row(
         ),
         ("DELETE", "/api/crm/services/{service_id}"): call("DELETE", "/api/crm/services/{service}"),
         ("DELETE", "/api/locations/{location_id}"): call("DELETE", "/api/locations/{location}"),
+        ("POST", "/api/crm/knowledge"): lambda: post(
+            "/api/crm/knowledge",
+            "kb",
+            {"kind": "faq", "title": "Parking", "body": "Free parking.", "language": "en"},
+        ),
+        ("PUT", "/api/crm/knowledge/{item_id}"): call(
+            "PUT",
+            "/api/crm/knowledge/{kb}",
+            json={"kind": "faq", "title": "Parking", "body": "Paid parking.", "language": "en"},
+        ),
+        ("POST", "/api/crm/knowledge/{item_id}/publish"): call(
+            "POST", "/api/crm/knowledge/{kb}/publish"
+        ),
+        ("POST", "/api/crm/knowledge/{item_id}/unpublish"): call(
+            "POST", "/api/crm/knowledge/{kb}/unpublish"
+        ),
+        ("DELETE", "/api/crm/knowledge/{item_id}"): call("DELETE", "/api/crm/knowledge/{kb}"),
         ("PUT", "/api/modules/{key}"): lambda: api.put(
             "/api/modules/crm",
             headers=in_tenant(owner_h),

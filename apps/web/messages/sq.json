@@ -216,5 +216,37 @@
       "freeTime": "Koha e lirë në 7 ditët e ardhshme",
       "noFreeTime": "Asnjë kohë e lirë në 7 ditët e ardhshme."
     }
+  },
+  "kb": {
+    "title": "Baza e njohurive",
+    "intro": "Çfarë mund t'u thotë AI klientëve. Elementet e publikuara indeksohen në sfond dhe përdoren për t'iu përgjigjur pyetjeve.",
+    "new": "Element i ri",
+    "kind": "Lloji",
+    "kinds": {
+      "faq": "Pyetje & përgjigje",
+      "service": "Shërbim",
+      "price": "Çmimet",
+      "hours": "Orari i hapjes",
+      "location": "Vendndodhja",
+      "policy": "Rregullat",
+      "free_text": "Tjetër"
+    },
+    "language": "Gjuha",
+    "itemTitle": "Titulli",
+    "body": "Teksti",
+    "create": "Ruaj si draft",
+    "publish": "Publiko",
+    "unpublish": "Hiq nga publikimi",
+    "status": {
+      "draft": "draft",
+      "indexing": "duke u indeksuar…",
+      "live": "aktiv"
+    },
+    "chunks": "{count, plural, one {# fragment} other {# fragmente}}",
+    "try": "Provo një pyetje",
+    "tryHint": "Kërkon në elementet e publikuara ashtu siç bën AI.",
+    "search": "Kërko",
+    "noHits": "Asnjë element i publikuar nuk përputhet.",
+    "score": "pikë {score}"
   }
 }
