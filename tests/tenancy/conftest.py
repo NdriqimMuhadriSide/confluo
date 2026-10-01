@@ -62,7 +62,7 @@ def world() -> Iterator[World]:
 
     cfg = Config(str(ROOT / "alembic.ini"))
     cfg.cmd_opts = Namespace(x=[f"url={owner_url}"])
-    command.upgrade(cfg, "head")
+    command.upgrade(cfg, "heads")
 
     ids = {k: uuid.uuid4() for k in ("ta", "tb", "ua", "ub", "la", "lb")}
     with psycopg.connect(owner_url, autocommit=True) as conn:

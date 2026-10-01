@@ -358,3 +358,13 @@ def test_role_change_stays_in_current_tenant(
             (second_tenant, team.owner),
         ).fetchone()
     assert row == ("staff",)
+
+
+def test_deleting_a_tenant_removes_its_owners(world: World, team: Team) -> None:
+    """The last-owner rule must not block deleting the whole business."""
+    with psycopg.connect(world.owner_url, autocommit=True) as conn:
+        conn.execute("delete from tenant where id = %s", (team.tenant,))
+        left = conn.execute(
+            "select count(*) from tenant_member where tenant_id = %s", (team.tenant,)
+        ).fetchone()
+    assert left == (0,)

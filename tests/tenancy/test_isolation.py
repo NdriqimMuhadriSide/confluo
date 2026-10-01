@@ -63,6 +63,10 @@ def test_rls_enabled_on_every_table(world: World) -> None:
     assert missing == []
 
 
+# Tables written before the tenant is known (webhooks arrive unassigned).
+NULLABLE_TENANT = {"inbound_event"}
+
+
 def test_every_tenant_id_column_is_not_null(world: World) -> None:
     with psycopg.connect(world.owner_url) as conn:
         rows = conn.execute("""
@@ -70,7 +74,8 @@ def test_every_tenant_id_column_is_not_null(world: World) -> None:
             where table_schema = 'public' and column_name = 'tenant_id'
         """).fetchall()
     assert rows
-    assert [t for t, nullable in rows if nullable == "YES"] == []
+    nullable = {t for t, n in rows if n == "YES"}
+    assert nullable == NULLABLE_TENANT
 
 
 # --- Reads ------------------------------------------------------------------------

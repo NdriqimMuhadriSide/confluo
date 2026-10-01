@@ -3,7 +3,7 @@
 # Secret key of the running Supabase *local* stack, read at run time so it is never
 # committed. Used by the API for invitation emails and by the e2e tests.
 LOCAL_SECRET_KEY = $$(supabase status -o env 2>/dev/null | sed -n 's/^SECRET_KEY="\{0,1\}\([^"]*\)"\{0,1\}$$/\1/p')
-.PHONY: help setup db db-stop db-reset migrate dev up down lint format typecheck test e2e api-client check
+.PHONY: help setup db db-stop db-reset migrate dev up down lint format typecheck test e2e api-client erd seed check
 
 help: ## List targets
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*## "}; {printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2}'
@@ -24,7 +24,7 @@ db-reset: ## Recreate the local database and re-run migrations
 	$(MAKE) migrate
 
 migrate: ## Apply database migrations (Alembic) and enable the app role
-	uv run alembic upgrade head
+	uv run alembic upgrade heads
 	uv run python scripts/set_app_role_password.py
 
 dev: db migrate ## Start db, migrate, then api, worker, web and widget with hot reload
@@ -61,6 +61,12 @@ test: ## pytest (database tests need `make db`)
 e2e: ## Browser tests (auth, members/roles) against the running stack (`make dev` first)
 	pnpm --filter @confluo/e2e exec playwright install chromium
 	SUPABASE_LOCAL_SECRET_KEY=$(LOCAL_SECRET_KEY) pnpm --filter @confluo/e2e all
+
+seed: ## Create or reset the demo tenant (login demo@confluo.local / demo-confluo-2026)
+	SUPABASE_LOCAL_SECRET_KEY=$(LOCAL_SECRET_KEY) uv run python scripts/seed_demo.py
+
+erd: ## Regenerate docs/ERD.md from the migrated local database
+	uv run python scripts/generate_erd.py
 
 api-client: ## Regenerate openapi.json and the dashboard's TypeScript client
 	uv run python scripts/export_openapi.py

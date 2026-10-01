@@ -299,11 +299,15 @@ class IntakeState(TypedDict):
 | 3 | Pilot vertical: health/clinics? | **No.** The pilot is a non-clinical business, so no GDPR Art. 9 data at launch. Special-category handling (`pending_review`, legal basis) stays in the design for later. |
 | 4 | Albanian voice in the first voice release? | **No Albanian voice at all.** Voice supports en and de. Albanian stays for text channels and the dashboard. |
 | 5 | Identity verification before reschedule/cancel | **Yes.** A known verified identity on the same channel is enough; otherwise an OTP is sent to a verified phone or email on file. |
-| 6 | LLM + embedding provider | **Claude** via `LLMGateway`: a fast tier for intent and extraction, a stronger tier for dialogue. Embeddings from a separate multilingual provider behind the same gateway. |
+| 6 | LLM + embedding provider | **Claude** via `LLMGateway`: a fast tier for intent and extraction, a stronger tier for dialogue. Embeddings from **Voyage AI** (voyage-3.5, 1024 dims, decided 2026-10-01) behind the same gateway. |
+| 7 | Dashboard languages | **en, nl, fr, de, sq** (2026-10-01). Belgium is the first market, so Dutch and French were added. |
+| 8 | Hosting region | Supabase project in **Ireland (eu-west-1)**; API and worker go next to it. |
 
 ### Other defaults
 
-- Dashboard i18n: en, de, sq from day one (next-intl).
+- Dashboard i18n via next-intl (languages in decision 7).
+- Schema: see the generated [ERD](ERD.md). Tenant-scoped tables reference each other with
+  composite `(tenant_id, id)` foreign keys, so no row can point into another tenant.
 - CI: GitHub Actions running ruff, mypy, pytest (with a Postgres service), eslint,
   tsc and the Next build.
 - Deployment target decided at M2. Docker images are portable.
