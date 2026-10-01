@@ -7,6 +7,7 @@ dependencies = [
   "confluo-core",
   "langgraph>=0.6",
   "langgraph-checkpoint-postgres>=2.0",
+  "httpx2",
 ]
 
 [project.entry-points."confluo.modules"]

@@ -58,6 +58,21 @@ class Settings(BaseSettings):
         None, validation_alias=AliasChoices("VOYAGE_API_KEY", "CONFLUO_VOYAGE_API_KEY")
     )
 
+    # Key for encrypted secrets (OAuth tokens): 32 bytes, base64. Generate with
+    # `uv run python -c "from confluo_core.secrets import new_key; print(new_key())"`.
+    secrets_key: SecretStr | None = None
+    # Public HTTPS base URL of this API, when reachable from the internet; enables
+    # provider push notifications (e.g. Microsoft Graph subscriptions).
+    public_api_url: str | None = None
+    # Dashboard base URL (OAuth redirects come back here).
+    dashboard_url: str = "http://localhost:3000"
+
+    # Microsoft 365 calendar sync (Microsoft Entra app registration).
+    ms_client_id: str | None = None
+    ms_client_secret: SecretStr | None = None
+    ms_authority: str = "https://login.microsoftonline.com/common"
+    ms_graph_url: str = "https://graph.microsoft.com/v1.0"
+
     # Shared secret of the built-in `test` webhook provider (local/test only).
     webhook_test_secret: SecretStr | None = None
 

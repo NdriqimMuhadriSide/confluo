@@ -218,6 +218,22 @@
       "addDayOff": "Shto ditë të lira",
       "freeTime": "Koha e lirë në 7 ditët e ardhshme",
       "noFreeTime": "Asnjë kohë e lirë në 7 ditët e ardhshme."
+    },
+    "calendar": {
+      "title": "Kalendari Outlook",
+      "intro": "Lidhni kalendarin Microsoft 365 të këtij personi: rezervimet e konfirmuara shfaqen në Outlook, dhe koha e zënë në Outlook i bllokon ato orë këtu.",
+      "connect": "Lidh Outlook",
+      "reconnect": "Lidhe përsëri",
+      "connectedAs": "I lidhur me {email}",
+      "lastSynced": "Sinkronizuar së fundi {when}",
+      "neverSynced": "Ende pa u sinkronizuar",
+      "live": "ndryshimet në Outlook mbërrijnë brenda pak sekondash",
+      "polling": "ndryshimet në Outlook merren çdo 5 minuta",
+      "syncNow": "Sinkronizo tani",
+      "disconnect": "Shkëput",
+      "revoked": "Qasja në këtë kalendar u tërhoq. Lidheni përsëri që të mbetet i sinkronizuar.",
+      "error": "Sinkronizimi i fundit dështoi: {error}",
+      "signInFailed": "Hyrja në Microsoft u anulua ose dështoi."
     }
   },
   "kb": {

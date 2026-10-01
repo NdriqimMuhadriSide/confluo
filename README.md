@@ -2,7 +2,7 @@
 
 Modular AI ERP for SMEs. The first module is **CRM**: an AI intake agent that answers
 customers across web chat, WhatsApp, email, phone and social, books appointments and builds
-customer profiles. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+customer profiles. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md); calendar sync setup in [docs/CALENDARS.md](docs/CALENDARS.md).
 
 ## Layout
 

@@ -193,3 +193,30 @@ export async function deleteDayOff(form: FormData): Promise<void> {
   });
   done(`/settings/team/${id}`, error);
 }
+
+// --- External calendar (Outlook) ---------------------------------------------------------
+
+export async function connectOutlook(form: FormData): Promise<void> {
+  const id = str(form, "id");
+  const { data, error } = await (await apiClient()).GET("/api/crm/calendar/microsoft/authorize", {
+    params: { header: inTenant(str(form, "tenant_id")), query: { resource_id: id } },
+  });
+  if (!data) done(`/settings/team/${id}`, error);
+  redirect(data.url);
+}
+
+export async function syncCalendar(form: FormData): Promise<void> {
+  const id = str(form, "id");
+  const { error } = await (await apiClient()).POST("/api/crm/resources/{resource_id}/calendar/sync", {
+    params: { header: inTenant(str(form, "tenant_id")), path: { resource_id: id } },
+  });
+  done(`/settings/team/${id}`, error);
+}
+
+export async function disconnectCalendar(form: FormData): Promise<void> {
+  const id = str(form, "id");
+  const { error } = await (await apiClient()).DELETE("/api/crm/resources/{resource_id}/calendar", {
+    params: { header: inTenant(str(form, "tenant_id")), path: { resource_id: id } },
+  });
+  done(`/settings/team/${id}`, error);
+}

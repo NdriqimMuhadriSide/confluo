@@ -577,6 +577,7 @@ version = "0.1.0"
 source = { editable = "modules/crm" }
 dependencies = [
     { name = "confluo-core" },
+    { name = "httpx2" },
     { name = "langgraph" },
     { name = "langgraph-checkpoint-postgres" },
 ]
@@ -584,6 +585,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "confluo-core", editable = "packages/core" },
+    { name = "httpx2" },
     { name = "langgraph", specifier = ">=0.6" },
     { name = "langgraph-checkpoint-postgres", specifier = ">=2.0" },
 ]

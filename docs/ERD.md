@@ -178,6 +178,14 @@ erDiagram
     timestamptz created_at
     timestamptz published_at "nullable"
   }
+  secret {
+    uuid id PK
+    uuid tenant_id
+    text purpose
+    bytea ciphertext
+    timestamptz created_at
+    timestamptz updated_at
+  }
   tenant {
     uuid id PK
     text name
@@ -278,6 +286,14 @@ erDiagram
     text credentials_ref "nullable"
     timestamptz created_at
     timestamptz updated_at
+    text account_email "nullable"
+    text status
+    timestamptz last_synced_at "nullable"
+    text last_error "nullable"
+    timestamptz window_end "nullable"
+    text subscription_id "nullable"
+    timestamptz subscription_expires_at "nullable"
+    text client_state "nullable"
   }
   crm_call {
     uuid id PK

@@ -218,6 +218,22 @@
       "addDayOff": "Freie Tage hinzufügen",
       "freeTime": "Freie Zeit in den nächsten 7 Tagen",
       "noFreeTime": "Keine freie Zeit in den nächsten 7 Tagen."
+    },
+    "calendar": {
+      "title": "Outlook-Kalender",
+      "intro": "Verbinden Sie den Microsoft-365-Kalender dieser Person: Bestätigte Termine erscheinen in Outlook, und belegte Zeiten in Outlook blockieren diese Stunden hier.",
+      "connect": "Outlook verbinden",
+      "reconnect": "Erneut verbinden",
+      "connectedAs": "Verbunden mit {email}",
+      "lastSynced": "Zuletzt synchronisiert {when}",
+      "neverSynced": "Noch nicht synchronisiert",
+      "live": "Änderungen in Outlook kommen innerhalb von Sekunden an",
+      "polling": "Änderungen in Outlook werden alle 5 Minuten abgerufen",
+      "syncNow": "Jetzt synchronisieren",
+      "disconnect": "Trennen",
+      "revoked": "Der Zugriff auf diesen Kalender wurde entzogen. Verbinden Sie ihn erneut, um ihn synchron zu halten.",
+      "error": "Die letzte Synchronisierung ist fehlgeschlagen: {error}",
+      "signInFailed": "Die Microsoft-Anmeldung wurde abgebrochen oder ist fehlgeschlagen."
     }
   },
   "kb": {

@@ -77,6 +77,17 @@ AUDITED_ELSEWHERE = {
         "POST",
         "/api/system/jobs/{job_id}/retry",
     ): "test_jobs.py::test_manual_retry_runs_the_job_again",
+    # Need a (fake) Microsoft sign-in first.
+    ("POST", "/api/crm/calendar/microsoft/callback"): (
+        "test_calendar_microsoft.py::test_disconnect_removes_tokens_busy_time_and_subscription"
+    ),
+    ("DELETE", "/api/crm/resources/{resource_id}/calendar"): (
+        "test_calendar_microsoft.py::test_disconnect_removes_tokens_busy_time_and_subscription"
+    ),
+}
+# Writes that change no business data: they only queue a job (whose writes are audited).
+ONLY_QUEUES_A_JOB = {
+    ("POST", "/api/crm/resources/{resource_id}/calendar/sync"): "queues crm:sync_calendar",
 }
 # Writes that happen before any tenant or user is known; they only touch the ledger.
 NO_TENANT_WRITE = {
@@ -209,7 +220,7 @@ def test_every_mutating_route_writes_an_audit_row(
         for method in ops
         if method in {"post", "put", "patch", "delete"}
     }
-    mutating -= set(AUDITED_ELSEWHERE) | set(NO_TENANT_WRITE)
+    mutating -= set(AUDITED_ELSEWHERE) | set(NO_TENANT_WRITE) | set(ONLY_QUEUES_A_JOB)
     assert mutating == set(scenarios), "add a scenario for every new write endpoint"
 
     for (method, path), run in scenarios.items():

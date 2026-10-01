@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { apiClient, inTenant } from "@/lib/api/client";
 import { requireTenant } from "@/lib/session";
 
-import { addDayOff, deleteDayOff, saveSchedule } from "../../setup-actions";
+import { addDayOff, connectOutlook, deleteDayOff, disconnectCalendar, saveSchedule, syncCalendar } from "../../setup-actions";
 
 function isoDate(d: Date): string {
   return d.toISOString().slice(0, 10);
@@ -21,6 +21,7 @@ export default async function ResourcePage({ params, searchParams }: PageProps<"
   const { id } = await params;
   const t = await getTranslations("setup");
   const tc = await getTranslations("common");
+  const tcal = await getTranslations("setup.calendar");
   const format = await getFormatter();
   const { tenantId } = await requireTenant();
   const api = await apiClient();
@@ -29,10 +30,11 @@ export default async function ResourcePage({ params, searchParams }: PageProps<"
   const resource = resources?.find((r) => r.id === id);
   if (!resource) notFound();
   const path = { resource_id: id };
-  const [{ data: schedule }, { data: exceptions }, { data: free }] = await Promise.all([
+  const [{ data: schedule }, { data: exceptions }, { data: free }, { data: calendar }] = await Promise.all([
     api.GET("/api/crm/resources/{resource_id}/schedule", { params: { header, path } }),
     api.GET("/api/crm/resources/{resource_id}/exceptions", { params: { header, path } }),
     api.GET("/api/crm/resources/{resource_id}/free", { params: { header, path, query: { start: isoDate(new Date()), days: 7 } } }),
+    api.GET("/api/crm/resources/{resource_id}/calendar", { params: { header, path } }),
   ]);
 
   const hours: Partial<Record<Day, { start: string; end: string }[]>> = {};
@@ -108,6 +110,64 @@ export default async function ResourcePage({ params, searchParams }: PageProps<"
               {t("team.addDayOff")}
             </Button>
           </form>
+        </CardContent>
+      </Card>
+      <Card data-testid="calendar-card">
+        <CardHeader>
+          <CardTitle>{tcal("title")}</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm">
+          <p className="text-muted-foreground">{tcal("intro")}</p>
+          {calendar && (
+            <div className="space-y-1" data-calendar-status={calendar.status}>
+              <p className="font-medium">{tcal("connectedAs", { email: calendar.account_email ?? "" })}</p>
+              {calendar.status === "revoked" ? (
+                <p className="text-destructive">{tcal("revoked")}</p>
+              ) : (
+                <>
+                  <p className="text-muted-foreground">
+                    {calendar.last_synced_at
+                      ? tcal("lastSynced", { when: format.relativeTime(new Date(calendar.last_synced_at)) })
+                      : tcal("neverSynced")}
+                    {" · "}
+                    {calendar.live_updates ? tcal("live") : tcal("polling")}
+                  </p>
+                  {calendar.status === "error" && calendar.last_error && (
+                    <p className="text-destructive">{tcal("error", { error: calendar.last_error })}</p>
+                  )}
+                </>
+              )}
+            </div>
+          )}
+          <div className="flex flex-wrap gap-2">
+            {(!calendar || calendar.status === "revoked") && (
+              <form action={connectOutlook}>
+                <input type="hidden" name="tenant_id" value={tenantId} />
+                <input type="hidden" name="id" value={id} />
+                <Button type="submit" data-testid="connect-outlook">
+                  {calendar ? tcal("reconnect") : tcal("connect")}
+                </Button>
+              </form>
+            )}
+            {calendar && calendar.status !== "revoked" && (
+              <form action={syncCalendar}>
+                <input type="hidden" name="tenant_id" value={tenantId} />
+                <input type="hidden" name="id" value={id} />
+                <Button type="submit" variant="outline">
+                  {tcal("syncNow")}
+                </Button>
+              </form>
+            )}
+            {calendar && (
+              <form action={disconnectCalendar}>
+                <input type="hidden" name="tenant_id" value={tenantId} />
+                <input type="hidden" name="id" value={id} />
+                <Button type="submit" variant="ghost">
+                  {tcal("disconnect")}
+                </Button>
+              </form>
+            )}
+          </div>
         </CardContent>
       </Card>
       <Card>

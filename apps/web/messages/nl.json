@@ -218,6 +218,22 @@
       "addDayOff": "Vrije dagen toevoegen",
       "freeTime": "Vrije tijd de komende 7 dagen",
       "noFreeTime": "Geen vrije tijd de komende 7 dagen."
+    },
+    "calendar": {
+      "title": "Outlook-agenda",
+      "intro": "Koppel de Microsoft 365-agenda van deze persoon: bevestigde afspraken verschijnen in Outlook, en bezette tijd in Outlook blokkeert die uren hier.",
+      "connect": "Outlook koppelen",
+      "reconnect": "Opnieuw koppelen",
+      "connectedAs": "Gekoppeld aan {email}",
+      "lastSynced": "Laatst gesynchroniseerd {when}",
+      "neverSynced": "Nog niet gesynchroniseerd",
+      "live": "wijzigingen in Outlook komen binnen enkele seconden door",
+      "polling": "wijzigingen in Outlook worden elke 5 minuten opgehaald",
+      "syncNow": "Nu synchroniseren",
+      "disconnect": "Ontkoppelen",
+      "revoked": "De toegang tot deze agenda is ingetrokken. Koppel hem opnieuw om hem gesynchroniseerd te houden.",
+      "error": "De laatste synchronisatie is mislukt: {error}",
+      "signInFailed": "Aanmelden bij Microsoft is geannuleerd of mislukt."
     }
   },
   "kb": {

@@ -218,6 +218,22 @@
       "addDayOff": "Add days off",
       "freeTime": "Free time next 7 days",
       "noFreeTime": "No free time in the next 7 days."
+    },
+    "calendar": {
+      "title": "Outlook calendar",
+      "intro": "Connect this person's Microsoft 365 calendar: confirmed bookings appear in Outlook, and busy time in Outlook blocks those hours here.",
+      "connect": "Connect Outlook",
+      "reconnect": "Connect again",
+      "connectedAs": "Connected to {email}",
+      "lastSynced": "Last synced {when}",
+      "neverSynced": "Not synced yet",
+      "live": "changes in Outlook arrive within seconds",
+      "polling": "changes in Outlook are picked up every 5 minutes",
+      "syncNow": "Sync now",
+      "disconnect": "Disconnect",
+      "revoked": "Access to this calendar was withdrawn. Connect it again to keep it in sync.",
+      "error": "The last sync failed: {error}",
+      "signInFailed": "Microsoft sign-in was cancelled or failed."
     }
   },
   "kb": {

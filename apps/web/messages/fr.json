@@ -218,6 +218,22 @@
       "addDayOff": "Ajouter des congés",
       "freeTime": "Disponibilités des 7 prochains jours",
       "noFreeTime": "Aucune disponibilité dans les 7 prochains jours."
+    },
+    "calendar": {
+      "title": "Agenda Outlook",
+      "intro": "Connectez l'agenda Microsoft 365 de cette personne : les rendez-vous confirmés apparaissent dans Outlook, et les plages occupées dans Outlook bloquent ces heures ici.",
+      "connect": "Connecter Outlook",
+      "reconnect": "Reconnecter",
+      "connectedAs": "Connecté à {email}",
+      "lastSynced": "Dernière synchronisation {when}",
+      "neverSynced": "Pas encore synchronisé",
+      "live": "les changements dans Outlook arrivent en quelques secondes",
+      "polling": "les changements dans Outlook sont récupérés toutes les 5 minutes",
+      "syncNow": "Synchroniser",
+      "disconnect": "Déconnecter",
+      "revoked": "L'accès à cet agenda a été retiré. Reconnectez-le pour le garder synchronisé.",
+      "error": "La dernière synchronisation a échoué : {error}",
+      "signInFailed": "La connexion Microsoft a été annulée ou a échoué."
     }
   },
   "kb": {

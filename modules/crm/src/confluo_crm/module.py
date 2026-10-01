@@ -7,6 +7,9 @@ from pydantic import BaseModel, Field
 from confluo_core.modules import ModuleManifest, NavItem
 from confluo_core.permissions import ALL, MANAGERS, Permission
 from confluo_crm import channels_api, knowledge_api, presets, setup_api
+from confluo_crm.calendar import api as calendar_api
+from confluo_crm.calendar import sync as calendar_sync
+from confluo_crm.calendar.webhook import MicrosoftCalendarProvider
 from confluo_crm.channels import web_public
 from confluo_crm.channels.web import WebChatProvider
 from confluo_crm.intake import brain
@@ -59,13 +62,19 @@ class CrmModule:
     ]
 
     def routers(self) -> list[APIRouter]:
-        return [router, setup_api.router, knowledge_api.router, channels_api.router]
+        return [
+            router,
+            setup_api.router,
+            knowledge_api.router,
+            channels_api.router,
+            calendar_api.router,
+        ]
 
     def public_routers(self) -> list[APIRouter]:
         return [web_public.router]
 
-    def webhook_providers(self) -> list[WebChatProvider]:
-        return [WebChatProvider()]
+    def webhook_providers(self) -> list[WebChatProvider | MicrosoftCalendarProvider]:
+        return [WebChatProvider(), MicrosoftCalendarProvider()]
 
     async def apply_preset(
         self, conn: AsyncConnection, key: str, language: str, timezone: str
@@ -82,6 +91,8 @@ class CrmModule:
             ]
         )
 
+
+_ = calendar_sync  # registers the calendar jobs on crm_tasks
 
 # Offline stand-in answers for the `fake` LLM provider (local dev without keys, CI).
 brain.register()

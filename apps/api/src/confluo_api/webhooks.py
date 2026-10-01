@@ -5,6 +5,7 @@ from collections.abc import Mapping
 
 import procrastinate
 from fastapi import APIRouter, HTTPException, Request, status
+from fastapi.responses import PlainTextResponse
 from psycopg.types.json import Jsonb
 from pydantic import BaseModel
 
@@ -19,12 +20,23 @@ class WebhookAck(BaseModel):
     status: str  # "accepted" | "duplicate"
 
 
-@router.post("/webhooks/{provider}", tags=["webhooks"], operation_id="receiveWebhook")
-async def receive(provider: str, request: Request, pool: Pool) -> WebhookAck:
+@router.post(
+    "/webhooks/{provider}",
+    tags=["webhooks"],
+    operation_id="receiveWebhook",
+    response_model=WebhookAck,
+)
+async def receive(provider: str, request: Request, pool: Pool) -> WebhookAck | PlainTextResponse:
     providers: Mapping[str, WebhookProvider] = request.app.state.webhook_providers
     impl = providers.get(provider)
     if impl is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Unknown provider")
+    # Some providers first prove we own the URL (e.g. Microsoft Graph's validationToken).
+    handshake = getattr(impl, "handshake", None)
+    if handshake is not None:
+        answer = handshake(request.query_params)
+        if answer is not None:
+            return PlainTextResponse(answer)
     body = await request.body()
     headers = {k.lower(): v for k, v in request.headers.items()}
     if not impl.verify(headers, body):

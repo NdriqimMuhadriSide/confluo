@@ -59,6 +59,11 @@ await page.getByTestId("add-day-off").click();
 await page.locator('[data-day-off="Dentist"]').waitFor();
 log("staff member with weekly schedule (lunch break) and a day off");
 
+// Outlook: not connected yet, so the card offers to connect (the sign-in itself is
+// Microsoft's page; the API tests cover the rest against a fake Graph).
+await page.getByTestId("calendar-card").getByTestId("connect-outlook").waitFor();
+log("Outlook calendar card offers to connect");
+
 // Free time: only check if next Monday/Tuesday fall within the 7-day preview.
 if (daysToMonday <= 5) {
   const spans = await page.getByTestId("free-time").locator("li").evaluateAll((els) => els.map((e) => e.dataset.span));

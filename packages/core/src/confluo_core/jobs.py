@@ -35,6 +35,7 @@ log = logging.getLogger("confluo.jobs")
 
 POOL_KEY = "pool"
 LLM_KEY = "llm"  # the worker's LLMGateway, for jobs that call models
+SETTINGS_KEY = "settings"  # the worker's Settings (tests inject their own)
 
 
 class SettingsRetry(BaseRetryStrategy):
@@ -57,6 +58,7 @@ class TaskSpec:
     fn: Callable[..., Awaitable[Any]]
     queue: str
     pass_context: bool
+    cron: str | None = None  # deferred periodically; fn then receives `timestamp`
 
 
 @dataclass
@@ -66,10 +68,15 @@ class TaskSet:
     specs: list[TaskSpec] = field(default_factory=list)
 
     def task(
-        self, *, name: str, queue: str = "default", pass_context: bool = False
+        self,
+        *,
+        name: str,
+        queue: str = "default",
+        pass_context: bool = False,
+        cron: str | None = None,
     ) -> Callable[[Callable[..., Awaitable[Any]]], Callable[..., Awaitable[Any]]]:
         def decorate(fn: Callable[..., Awaitable[Any]]) -> Callable[..., Awaitable[Any]]:
-            self.specs.append(TaskSpec(name, fn, queue, pass_context))
+            self.specs.append(TaskSpec(name, fn, queue, pass_context, cron))
             return fn
 
         return decorate
@@ -148,12 +155,15 @@ def create_job_app(task_sets: dict[str, TaskSet]) -> procrastinate.App:
     for namespace, task_set in task_sets.items():
         for spec in task_set.specs:
             register: Any = app.task  # overloads depend on a literal pass_context
-            register(
+            task = register(
                 name=f"{namespace}:{spec.name}",
                 queue=spec.queue,
                 pass_context=spec.pass_context,
                 retry=RETRY,
             )(spec.fn)
+            if spec.cron:
+                # One run per tick across all workers (Procrastinate dedupes by timestamp).
+                app.periodic(cron=spec.cron)(task)
     return app
 
 
