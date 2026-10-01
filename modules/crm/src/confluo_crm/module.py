@@ -9,6 +9,7 @@ router = APIRouter(tags=["crm"])
 class CrmStatus(BaseModel):
     module: str
     status: str
+    detail: str = ""
 
 
 @router.get("/status", operation_id="crmStatus")
