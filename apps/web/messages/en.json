@@ -64,7 +64,10 @@
     "creating": "Creating…",
     "created": "{name} is ready.",
     "slugInvalid": "Use 3–40 lowercase letters, digits and dashes for the short name.",
-    "slugTaken": "That short name is taken."
+    "slugTaken": "That short name is taken.",
+    "startFrom": "Start from",
+    "startEmpty": "Start empty",
+    "startEmptyHint": "Set everything up yourself."
   },
   "members": {
     "title": "Members of {business}",

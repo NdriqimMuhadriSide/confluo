@@ -1,9 +1,10 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 import { acceptInvitation } from "@/app/(app)/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { currentTenantId, getMe } from "@/lib/api/client";
+import { apiClient, currentTenantId, getMe } from "@/lib/api/client";
+import { localized } from "@/lib/localized";
 
 import { CreateTenantForm } from "./create-tenant-form";
 
@@ -14,6 +15,13 @@ export default async function Home() {
   const me = await getMe();
   const tenantId = me ? await currentTenantId(me) : null;
   const tenant = me?.tenants.find((x) => x.id === tenantId);
+  const locale = await getLocale();
+  const { data: catalog } = await (await apiClient()).GET("/api/presets");
+  const presets = (catalog ?? []).map((p) => ({
+    key: p.key,
+    name: localized(p.name_i18n, locale),
+    description: localized(p.description_i18n, locale),
+  }));
 
   return (
     <>
@@ -60,7 +68,7 @@ export default async function Home() {
             <CardTitle>{me.tenants.length === 0 ? t("home.setUp") : t("home.addAnother")}</CardTitle>
           </CardHeader>
           <CardContent>
-            <CreateTenantForm />
+            <CreateTenantForm presets={presets} />
           </CardContent>
         </Card>
       )}

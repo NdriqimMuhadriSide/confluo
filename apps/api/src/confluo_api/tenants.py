@@ -1,7 +1,7 @@
 """Tenants the signed-in user belongs to, and the first tenant-scoped resource."""
 
 from datetime import datetime
-from typing import Annotated
+from typing import Annotated, Literal
 from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, Request, status
@@ -11,7 +11,8 @@ from pydantic import BaseModel, StringConstraints
 
 from confluo_core.auth import CurrentUser
 from confluo_core.deps import Pool, client_ip
-from confluo_core.tenancy import user_transaction
+from confluo_core.modules import ConfluoModule
+from confluo_core.tenancy import require_membership, user_transaction
 
 router = APIRouter()
 
@@ -44,6 +45,38 @@ class Me(BaseModel):
 class TenantIn(BaseModel):
     name: Name
     slug: Slug
+    # Optional industry preset (GET /api/presets) and the language for its texts.
+    preset: str | None = None
+    language: Literal["en", "nl", "fr", "de", "sq"] = "en"
+
+
+class PresetOut(BaseModel):
+    key: str
+    name_i18n: dict[str, str]
+    description_i18n: dict[str, str]
+
+
+def _catalog(request: Request) -> dict[str, list[ConfluoModule]]:
+    """Preset key -> the modules that set something up for it."""
+    modules: dict[str, ConfluoModule] = request.app.state.modules
+    found: dict[str, list[ConfluoModule]] = {}
+    for m in modules.values():
+        for p in m.presets:
+            found.setdefault(p.key, []).append(m)
+    return found
+
+
+@router.get("/api/presets", tags=["tenants"], operation_id="listPresets")
+async def list_presets(request: Request, user: CurrentUser) -> list[PresetOut]:
+    modules: dict[str, ConfluoModule] = request.app.state.modules
+    seen: dict[str, PresetOut] = {}
+    for m in modules.values():
+        for p in m.presets:
+            seen.setdefault(
+                p.key,
+                PresetOut(key=p.key, name_i18n=p.name_i18n, description_i18n=p.description_i18n),
+            )
+    return list(seen.values())
 
 
 @router.get("/api/me", tags=["auth"], operation_id="getMe")
@@ -100,7 +133,11 @@ async def accept_invitation(
 async def create_tenant(
     body: TenantIn, user: CurrentUser, pool: Pool, request: Request
 ) -> TenantOut:
-    """Create a business; the caller becomes its owner."""
+    """Create a business, optionally from a preset; the caller becomes its owner.
+    Business and preset data are created in one transaction."""
+    catalog = _catalog(request)
+    if body.preset is not None and body.preset not in catalog:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT, "Unknown preset")
     name = user.claims.get("user_metadata", {}).get("name")
     async with user_transaction(pool, user.id, user.email, client_ip(request)) as conn:
         await conn.execute(
@@ -115,4 +152,15 @@ async def create_tenant(
             raise HTTPException(status.HTTP_409_CONFLICT, "That slug is taken") from None
         row = await cur.fetchone()
         assert row is not None
-    return TenantOut(id=row[0], name=body.name, slug=body.slug, role="owner")
+        tenant_id = row[0]
+        await require_membership(conn, tenant_id, user.id)  # enter the new tenant
+        await conn.execute(
+            "update tenant set default_locale = %s where id = %s", (body.language, tenant_id)
+        )
+        if body.preset is not None:
+            cur = await conn.execute("select timezone from tenant where id = %s", (tenant_id,))
+            tz_row = await cur.fetchone()
+            timezone = tz_row[0] if tz_row else "Europe/Brussels"
+            for module in catalog[body.preset]:
+                await module.apply_preset(conn, body.preset, body.language, timezone)
+    return TenantOut(id=tenant_id, name=body.name, slug=body.slug, role="owner")

@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 
 from confluo_core.jobs import TaskSet
-from confluo_core.modules import ModuleError, ModuleManifest, discover_modules
+from confluo_core.modules import ModuleError, ModuleManifest, Preset, discover_modules
 from confluo_core.modules import _order_by_dependencies as order
 from confluo_core.permissions import Permission
 
@@ -13,6 +13,10 @@ class Fake:
     config_schema = BaseModel
     enabled_by_default = True
     tasks: TaskSet | None = None
+    presets: list[Preset] = []
+
+    async def apply_preset(self, conn: object, key: str, language: str, timezone: str) -> None:
+        return None
 
     def __init__(self, key: str, depends_on: list[str]) -> None:
         self.key = key

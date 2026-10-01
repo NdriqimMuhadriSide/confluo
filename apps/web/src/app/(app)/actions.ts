@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 import { apiClient, errorMessage, inTenant, TENANT_COOKIE } from "@/lib/api/client";
 
@@ -29,7 +29,11 @@ export async function createTenant(_: FormState, form: FormData): Promise<FormSt
   const name = String(form.get("name") ?? "").trim();
   const slug = String(form.get("slug") ?? "").trim().toLowerCase();
   const t = await getTranslations("home");
-  const { data, response } = await (await apiClient()).POST("/api/tenants", { body: { name, slug } });
+  const preset = String(form.get("preset") ?? "") || null;
+  const language = (await getLocale()) as "en" | "nl" | "fr" | "de" | "sq";
+  const { data, response } = await (await apiClient()).POST("/api/tenants", {
+    body: { name, slug, preset, language },
+  });
   if (!data) return { error: response.status === 409 ? t("slugTaken") : t("slugInvalid") };
   await chooseTenant(data.id);
   revalidatePath("/", "layout");

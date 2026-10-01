@@ -19,7 +19,9 @@ function slugify(name: string): string {
     .slice(0, 40);
 }
 
-export function CreateTenantForm() {
+export type PresetOption = { key: string; name: string; description: string };
+
+export function CreateTenantForm({ presets }: { presets: PresetOption[] }) {
   const t = useTranslations("home");
   const [state, action, pending] = useActionState(createTenant, {});
   const [slug, setSlug] = useState("");
@@ -58,6 +60,25 @@ export function CreateTenantForm() {
         />
         <p className="text-xs text-muted-foreground">{t("shortNameHint")}</p>
       </div>
+      {presets.length > 0 && (
+        <fieldset className="grid gap-2">
+          <legend className="mb-1 text-sm font-medium">{t("startFrom")}</legend>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {[...presets, { key: "", name: t("startEmpty"), description: t("startEmptyHint") }].map((p) => (
+              <label
+                key={p.key || "empty"}
+                className="flex cursor-pointer gap-2 rounded-md border p-3 text-sm has-checked:border-foreground has-checked:bg-muted"
+              >
+                <input type="radio" name="preset" value={p.key} defaultChecked={p.key === ""} className="mt-0.5" />
+                <span>
+                  <span className="block font-medium">{p.name}</span>
+                  <span className="block text-muted-foreground">{p.description}</span>
+                </span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      )}
       <FormStatus state={state} />
       <Button type="submit" disabled={pending} className="self-start" data-testid="create-business">
         {pending ? t("creating") : t("create")}

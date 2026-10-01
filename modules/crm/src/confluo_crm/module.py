@@ -1,11 +1,12 @@
 from typing import Literal
 
 from fastapi import APIRouter
+from psycopg import AsyncConnection
 from pydantic import BaseModel, Field
 
 from confluo_core.modules import ModuleManifest, NavItem
 from confluo_core.permissions import ALL, MANAGERS, Permission
-from confluo_crm import knowledge_api, setup_api
+from confluo_crm import knowledge_api, presets, setup_api
 from confluo_crm.knowledge import crm_tasks
 
 router = APIRouter(tags=["crm"])
@@ -46,6 +47,7 @@ class CrmModule:
     config_schema = CrmConfig
     enabled_by_default = True
     tasks = crm_tasks
+    presets = presets.CATALOG
     permissions = [
         Permission("crm.inbox.view", "Read customer conversations", ALL),
         Permission("crm.inbox.takeover", "Take over a conversation from the AI", ALL),
@@ -55,6 +57,11 @@ class CrmModule:
 
     def routers(self) -> list[APIRouter]:
         return [router, setup_api.router, knowledge_api.router]
+
+    async def apply_preset(
+        self, conn: AsyncConnection, key: str, language: str, timezone: str
+    ) -> None:
+        await presets.apply_preset(conn, key, language, timezone)
 
     def dashboard_manifest(self) -> ModuleManifest:
         return ModuleManifest(

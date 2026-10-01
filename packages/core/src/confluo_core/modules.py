@@ -13,6 +13,7 @@ from importlib.metadata import entry_points
 from typing import Protocol, runtime_checkable
 
 from fastapi import APIRouter
+from psycopg import AsyncConnection
 from pydantic import BaseModel
 
 from confluo_core.jobs import TaskSet
@@ -36,6 +37,15 @@ class ModuleManifest:
     nav: list[NavItem] = field(default_factory=list)
 
 
+@dataclass(frozen=True)
+class Preset:
+    """An industry starting point a module offers (names per dashboard language)."""
+
+    key: str
+    name_i18n: dict[str, str]
+    description_i18n: dict[str, str]
+
+
 @runtime_checkable
 class ConfluoModule(Protocol):
     key: str
@@ -48,10 +58,18 @@ class ConfluoModule(Protocol):
     enabled_by_default: bool
     # Background jobs, registered under the module key as namespace ("crm:embed_...").
     tasks: TaskSet | None
+    # Industry presets this module can set up for a new tenant.
+    presets: list[Preset]
 
     def routers(self) -> list[APIRouter]: ...
 
     def dashboard_manifest(self) -> ModuleManifest: ...
+
+    async def apply_preset(
+        self, conn: AsyncConnection, key: str, language: str, timezone: str
+    ) -> None:
+        """Create the preset's data in the transaction's tenant."""
+        ...
 
 
 class ModuleError(RuntimeError):

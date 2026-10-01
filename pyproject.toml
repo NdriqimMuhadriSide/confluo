@@ -40,6 +40,7 @@ select = ["E", "F", "I", "UP", "B", "SIM", "ASYNC"]
 # SQL in migrations reads better unwrapped.
 "**/migrations/*.py" = ["E501"]
 "scripts/seed_demo.py" = ["E501"]
+"modules/crm/src/confluo_crm/presets.py" = ["E501"]  # translated text
 "tests/**" = ["E501"]
 
 [tool.ruff.lint.isort]

@@ -64,7 +64,10 @@
     "creating": "Duke krijuar…",
     "created": "{name} është gati.",
     "slugInvalid": "Përdor 3 deri në 40 shkronja të vogla, shifra dhe viza për emrin e shkurtër.",
-    "slugTaken": "Ky emër i shkurtër është i zënë."
+    "slugTaken": "Ky emër i shkurtër është i zënë.",
+    "startFrom": "Fillo nga",
+    "startEmpty": "Fillo bosh",
+    "startEmptyHint": "Konfiguro gjithçka vetë."
   },
   "members": {
     "title": "Ekipi i {business}",

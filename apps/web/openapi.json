@@ -1421,6 +1421,35 @@
         "title": "PendingInvitation",
         "type": "object"
       },
+      "PresetOut": {
+        "properties": {
+          "description_i18n": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Description I18N",
+            "type": "object"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "name_i18n": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Name I18N",
+            "type": "object"
+          }
+        },
+        "required": [
+          "key",
+          "name_i18n",
+          "description_i18n"
+        ],
+        "title": "PresetOut",
+        "type": "object"
+      },
       "ResourceIn": {
         "properties": {
           "active": {
@@ -1833,11 +1862,34 @@
       },
       "TenantIn": {
         "properties": {
+          "language": {
+            "default": "en",
+            "enum": [
+              "en",
+              "nl",
+              "fr",
+              "de",
+              "sq"
+            ],
+            "title": "Language",
+            "type": "string"
+          },
           "name": {
             "maxLength": 120,
             "minLength": 1,
             "title": "Name",
             "type": "string"
+          },
+          "preset": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Preset"
           },
           "slug": {
             "maxLength": 40,
@@ -4663,6 +4715,36 @@
         ]
       }
     },
+    "/api/presets": {
+      "get": {
+        "operationId": "listPresets",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PresetOut"
+                  },
+                  "title": "Response Listpresets",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Presets",
+        "tags": [
+          "tenants"
+        ]
+      }
+    },
     "/api/system/jobs": {
       "get": {
         "description": "Jobs of this tenant that used up their retries (dead letters).",
@@ -4827,7 +4909,7 @@
     },
     "/api/tenants": {
       "post": {
-        "description": "Create a business; the caller becomes its owner.",
+        "description": "Create a business, optionally from a preset; the caller becomes its owner.\nBusiness and preset data are created in one transaction.",
         "operationId": "createTenant",
         "requestBody": {
           "content": {

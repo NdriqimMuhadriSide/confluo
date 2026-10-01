@@ -145,6 +145,20 @@ merges vector and full-text ranks (reciprocal rank fusion) over published items;
 page's "Try a question" box uses it. Each chunk records its embedding model and search
 only uses the current one, so after changing `CONFLUO_LLM_EMBEDDING` run `make reembed`.
 
+## Industry presets and the demo tenant
+
+A new business can start from a preset: **hair & beauty salon**, **car workshop**,
+**physio / clinic** (health fields marked sensitive, staff approve bookings) or
+**generic appointments** (`GET /api/presets`; defined in `confluo_crm.presets`). A preset
+sets the CRM config and creates booking fields, services (names in all five languages),
+a starter staff member/room with a schedule, a location with opening hours, and
+knowledge-base drafts in the business's language for the owner to complete. It is
+applied in the same transaction as the business.
+
+`make seed` (re)creates **Kapsalon Demo** in Ghent from the salon preset plus three
+stylists, eight customers, past and upcoming appointments, three conversations and a
+published, indexed knowledge base. Sign in as `demo@confluo.local` / `demo-confluo-2026`.
+
 ## CI
 
 GitHub Actions ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs on every push to

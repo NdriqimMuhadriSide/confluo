@@ -64,7 +64,10 @@
     "creating": "Création…",
     "created": "{name} est prête.",
     "slugInvalid": "Utilisez 3 à 40 lettres minuscules, chiffres et tirets pour le nom court.",
-    "slugTaken": "Ce nom court est déjà pris."
+    "slugTaken": "Ce nom court est déjà pris.",
+    "startFrom": "Partir de",
+    "startEmpty": "Partir de zéro",
+    "startEmptyHint": "Tout configurer vous-même."
   },
   "members": {
     "title": "Équipe de {business}",

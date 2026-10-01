@@ -25,7 +25,7 @@ export async function signIn(page, email) {
   await page.goto(`${WEB}/login`);
   await page.fill("#email", email);
   await page.fill("#password", PASSWORD);
-  await page.getByRole("button", { name: "Sign in", exact: true }).click();
+  await page.getByTestId("sign-in").click();
   await page.waitForURL(`${WEB}/`);
 }
 

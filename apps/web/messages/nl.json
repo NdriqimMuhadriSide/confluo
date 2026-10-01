@@ -64,7 +64,10 @@
     "creating": "Bezig met aanmaken…",
     "created": "{name} is klaar.",
     "slugInvalid": "Gebruik 3 tot 40 kleine letters, cijfers en koppeltekens voor de korte naam.",
-    "slugTaken": "Die korte naam is al in gebruik."
+    "slugTaken": "Die korte naam is al in gebruik.",
+    "startFrom": "Start vanuit",
+    "startEmpty": "Leeg beginnen",
+    "startEmptyHint": "Stel alles zelf in."
   },
   "members": {
     "title": "Team van {business}",

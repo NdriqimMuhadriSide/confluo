@@ -53,16 +53,22 @@ def test_erd_matches_the_schema(world: World) -> None:
     assert (ROOT / "docs" / "ERD.md").read_text() == expected, "run `make erd` and commit"
 
 
-def test_seed_creates_the_demo_tenant_and_is_repeatable(world: World) -> None:
+async def test_seed_creates_the_demo_tenant_and_is_repeatable(world: World) -> None:
+    """Run on seven different "today"s: repeatable, and shifting appointments off
+    closed days never double-books a stylist (the exclusion constraint would fail)."""
     import importlib.util
+    from datetime import date, timedelta
+
+    from psycopg import AsyncConnection
 
     spec = importlib.util.spec_from_file_location("seed_demo", ROOT / "scripts" / "seed_demo.py")
     assert spec and spec.loader
     seed = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(seed)
-    for _ in range(2):
-        with psycopg.connect(world.owner_url) as conn, conn.transaction():
-            tenant = seed.seed(conn, None)
+    for offset in range(7):
+        today = date(2027, 3, 1) + timedelta(days=offset)
+        async with await AsyncConnection.connect(world.owner_url) as conn, conn.transaction():
+            tenant = await seed.seed(conn, None, today=today)
     with psycopg.connect(world.owner_url) as conn:
         counts = conn.execute(
             "select (select count(*) from tenant where slug = 'demo'),"
@@ -71,10 +77,15 @@ def test_seed_creates_the_demo_tenant_and_is_repeatable(world: World) -> None:
             " (select count(*) from crm_availability_rule where tenant_id = %(t)s),"
             " (select count(*) from customer where tenant_id = %(t)s),"
             " (select count(*) from crm_appointment where tenant_id = %(t)s),"
-            " (select count(*) from crm_knowledge_item where tenant_id = %(t)s)",
+            " (select count(*) from crm_conversation where tenant_id = %(t)s),"
+            " (select count(*) from crm_message where tenant_id = %(t)s),"
+            " (select count(*) from crm_knowledge_item where tenant_id = %(t)s and published),"
+            " (select count(*) from crm_knowledge_item where tenant_id = %(t)s and body like '%%[%%')",
             {"t": tenant},
         ).fetchone()
-    assert counts == (1, 4, 3, 14, 5, 6, 6)
+    # tenant, services, staff, schedule rules, customers, appointments, conversations,
+    # messages, published KB items, KB items with unfilled [placeholders]
+    assert counts == (1, 4, 3, 13, 8, 10, 3, 8, 7, 0)
 
 
 def _seed_booking_basics(conn: psycopg.Connection, tenant: uuid.UUID) -> dict[str, uuid.UUID]:

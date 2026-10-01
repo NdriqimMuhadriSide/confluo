@@ -528,6 +528,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/presets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Presets */
+        get: operations["listPresets"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/system/jobs": {
         parameters: {
             query?: never;
@@ -593,7 +610,8 @@ export interface paths {
         put?: never;
         /**
          * Create Tenant
-         * @description Create a business; the caller becomes its owner.
+         * @description Create a business, optionally from a preset; the caller becomes its owner.
+         *     Business and preset data are created in one transaction.
          */
         post: operations["createTenant"];
         delete?: never;
@@ -1217,6 +1235,19 @@ export interface components {
             /** Tenant Name */
             tenant_name: string;
         };
+        /** PresetOut */
+        PresetOut: {
+            /** Description I18N */
+            description_i18n: {
+                [key: string]: string;
+            };
+            /** Key */
+            key: string;
+            /** Name I18N */
+            name_i18n: {
+                [key: string]: string;
+            };
+        };
         /** ResourceIn */
         ResourceIn: {
             /**
@@ -1411,8 +1442,16 @@ export interface components {
         };
         /** TenantIn */
         TenantIn: {
+            /**
+             * Language
+             * @default en
+             * @enum {string}
+             */
+            language: "en" | "nl" | "fr" | "de" | "sq";
             /** Name */
             name: string;
+            /** Preset */
+            preset?: string | null;
             /** Slug */
             slug: string;
         };
@@ -2948,6 +2987,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    listPresets: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresetOut"][];
                 };
             };
         };

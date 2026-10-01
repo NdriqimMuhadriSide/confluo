@@ -64,7 +64,10 @@
     "creating": "Wird erstellt…",
     "created": "{name} ist bereit.",
     "slugInvalid": "Verwende 3 bis 40 Kleinbuchstaben, Ziffern und Bindestriche für den Kurznamen.",
-    "slugTaken": "Dieser Kurzname ist bereits vergeben."
+    "slugTaken": "Dieser Kurzname ist bereits vergeben.",
+    "startFrom": "Starten mit",
+    "startEmpty": "Leer beginnen",
+    "startEmptyHint": "Alles selbst einrichten."
   },
   "members": {
     "title": "Team von {business}",
