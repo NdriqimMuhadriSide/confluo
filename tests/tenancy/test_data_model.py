@@ -67,8 +67,8 @@ async def test_seed_creates_the_demo_tenant_and_is_repeatable(world: World) -> N
     spec.loader.exec_module(seed)
     for offset in range(7):
         today = date(2027, 3, 1) + timedelta(days=offset)
-        async with await AsyncConnection.connect(world.owner_url) as conn, conn.transaction():
-            tenant = await seed.seed(conn, None, today=today)
+        async with await AsyncConnection.connect(world.owner_url) as aconn, aconn.transaction():
+            tenant = await seed.seed(aconn, None, today=today)
     with psycopg.connect(world.owner_url) as conn:
         counts = conn.execute(
             "select (select count(*) from tenant where slug = 'demo'),"
