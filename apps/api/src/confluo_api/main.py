@@ -2,17 +2,38 @@
 
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from dataclasses import asdict
-from typing import Any
+from typing import Literal
 
 import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 from confluo_core.db import create_pool, ping
 from confluo_core.logging import configure_logging
 from confluo_core.modules import ConfluoModule, discover_modules
 from confluo_core.settings import Settings, get_settings
+
+
+class Health(BaseModel):
+    status: Literal["ok", "degraded"]
+    database: bool
+
+
+class NavItemOut(BaseModel):
+    key: str
+    label: str
+    href: str
+
+
+class ModuleOut(BaseModel):
+    key: str
+    version: str
+    nav: list[NavItemOut]
+
+
+class Manifest(BaseModel):
+    modules: list[ModuleOut]
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -39,22 +60,29 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         allow_headers=["*"],
     )
 
-    @app.get("/health", tags=["system"])
-    async def health(request: Request) -> dict[str, Any]:
+    @app.get("/health", tags=["system"], operation_id="health")
+    async def health(request: Request) -> Health:
         db_ok = await ping(request.app.state.pool)
-        return {"status": "ok" if db_ok else "degraded", "database": db_ok}
+        return Health(status="ok" if db_ok else "degraded", database=db_ok)
 
-    @app.get("/api/me/manifest", tags=["system"])
-    async def manifest(request: Request) -> dict[str, Any]:
+    @app.get("/api/me/manifest", tags=["system"], operation_id="getManifest")
+    async def manifest(request: Request) -> Manifest:
         # Per-tenant enablement arrives with the module registry card; for now every
         # installed module is listed.
         mods: dict[str, ConfluoModule] = request.app.state.modules
-        return {
-            "modules": [
-                {"key": m.key, "version": m.version, **asdict(m.dashboard_manifest())}
+        return Manifest(
+            modules=[
+                ModuleOut(
+                    key=m.key,
+                    version=m.version,
+                    nav=[
+                        NavItemOut(key=n.key, label=n.label, href=n.href)
+                        for n in m.dashboard_manifest().nav
+                    ],
+                )
                 for m in mods.values()
             ]
-        }
+        )
 
     for module in modules.values():
         for router in module.routers():

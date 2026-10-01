@@ -52,11 +52,22 @@ no hot reload). Stop them with `make down` and the database with `make db-stop`.
 ## Everyday commands
 
 ```sh
-make check      # lint + typecheck + tests (what CI runs)
+make check      # lint + typecheck + tests (what CI runs; db tests need `make db`)
 make format     # auto-format Python
+make api-client # after changing API routes or models: regenerate the dashboard's TS client
 make db-reset   # recreate the local database
 make help       # list all targets
 ```
+
+## CI
+
+GitHub Actions ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs on every push to
+`main` and every pull request:
+
+- **Python**: ruff, mypy (strict) and pytest against a Postgres 17 service container
+- **Web**: eslint, tsc and production builds of the dashboard and widget
+- **API client drift**: regenerates `apps/web/openapi.json` and `src/lib/api/schema.d.ts`
+  and fails if they differ from what is committed
 
 ## Configuration
 

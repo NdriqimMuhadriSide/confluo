@@ -1,7 +1,7 @@
 import { connection } from "next/server";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { API_URL, getHealth } from "@/lib/api";
+import { API_URL, getHealth } from "@/lib/api/client";
 
 // Placeholder home page: proves web → API → database are wired up locally.
 // The real dashboard shell comes with its own card.

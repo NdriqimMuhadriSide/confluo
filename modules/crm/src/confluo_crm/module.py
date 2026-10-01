@@ -1,13 +1,19 @@
 from fastapi import APIRouter
+from pydantic import BaseModel
 
 from confluo_core.modules import ModuleManifest, NavItem
 
 router = APIRouter(tags=["crm"])
 
 
-@router.get("/status")
-async def status() -> dict[str, str]:
-    return {"module": "crm", "status": "ok"}
+class CrmStatus(BaseModel):
+    module: str
+    status: str
+
+
+@router.get("/status", operation_id="crmStatus")
+async def status() -> CrmStatus:
+    return CrmStatus(module="crm", status="ok")
 
 
 class CrmModule:
