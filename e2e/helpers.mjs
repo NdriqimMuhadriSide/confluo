@@ -18,7 +18,7 @@ export async function createConfirmedUser(email) {
     headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
     body: JSON.stringify({ email, password: PASSWORD, email_confirm: true }),
   });
-  check(r.ok, `create user: ${r.status} ${await r.text()}`);
+  if (!r.ok) throw new Error(`create user: ${r.status} ${await r.text()}`);
 }
 
 export async function signIn(page, email) {

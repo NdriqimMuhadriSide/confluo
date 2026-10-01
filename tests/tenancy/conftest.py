@@ -19,6 +19,8 @@ from alembic.config import Config
 from psycopg.conninfo import conninfo_to_dict, make_conninfo
 from psycopg_pool import AsyncConnectionPool
 
+from confluo_core.db import make_pool
+
 ADMIN_URL = os.environ.get("CONFLUO_TEST_DATABASE_URL")
 TEST_DB = "confluo_test"
 APP_PASSWORD = "confluo_app"
@@ -103,9 +105,7 @@ def world() -> Iterator[World]:
 async def pool(world: World) -> AsyncIterator[AsyncConnectionPool]:
     # max_size=1 so consecutive transactions reuse the same physical connection,
     # which is what the "no leaking between requests" test relies on.
-    p = AsyncConnectionPool(
-        world.app_url, min_size=1, max_size=1, open=False, kwargs={"autocommit": True}
-    )
+    p = make_pool(world.app_url, max_size=1)
     await p.open()
     yield p
     await p.close()

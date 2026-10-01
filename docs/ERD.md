@@ -126,6 +126,14 @@ erDiagram
     timestamptz received_at
     timestamptz processed_at "nullable"
   }
+  job_error {
+    int8 job_id PK
+    uuid tenant_id
+    text task_name
+    int4 attempts
+    text error
+    timestamptz failed_at
+  }
   location {
     uuid id PK
     uuid tenant_id

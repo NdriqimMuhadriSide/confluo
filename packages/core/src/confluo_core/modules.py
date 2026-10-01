@@ -2,7 +2,7 @@
 
 A module is a Python package that exposes a `ConfluoModule` object under the
 `confluo.modules` entry point group. Only the parts needed so far are in the
-contract; jobs, event handlers and agent tools are added by the cards that need them.
+contract; event handlers and agent tools are added by the cards that need them.
 
 Per tenant, a module is enabled or not and has a config validated against its
 `config_schema` (table `tenant_module`, see confluo_core.module_state).
@@ -15,6 +15,7 @@ from typing import Protocol, runtime_checkable
 from fastapi import APIRouter
 from pydantic import BaseModel
 
+from confluo_core.jobs import TaskSet
 from confluo_core.permissions import Permission
 
 ENTRY_POINT_GROUP = "confluo.modules"
@@ -45,6 +46,8 @@ class ConfluoModule(Protocol):
     # Per-tenant settings; every field needs a default so an untouched tenant is valid.
     config_schema: type[BaseModel]
     enabled_by_default: bool
+    # Background jobs, registered under the module key as namespace ("crm:embed_...").
+    tasks: TaskSet | None
 
     def routers(self) -> list[APIRouter]: ...
 

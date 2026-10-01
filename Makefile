@@ -60,7 +60,8 @@ test: ## pytest (database tests need `make db`)
 
 e2e: ## Browser tests (auth, members/roles) against the running stack (`make dev` first)
 	pnpm --filter @confluo/e2e exec playwright install chromium
-	SUPABASE_LOCAL_SECRET_KEY=$(LOCAL_SECRET_KEY) pnpm --filter @confluo/e2e all
+	set -a; . ./.env; set +a; \
+		SUPABASE_LOCAL_SECRET_KEY=$(LOCAL_SECRET_KEY) pnpm --filter @confluo/e2e all
 
 seed: ## Create or reset the demo tenant (login demo@confluo.local / demo-confluo-2026)
 	SUPABASE_LOCAL_SECRET_KEY=$(LOCAL_SECRET_KEY) uv run python scripts/seed_demo.py

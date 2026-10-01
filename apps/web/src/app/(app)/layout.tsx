@@ -14,7 +14,7 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
 
   return (
     <div className="flex min-h-full flex-1 flex-col">
-      <header className="flex items-center gap-4 border-b px-4 py-2">
+      <header className="flex items-center gap-4 border-b px-4 py-2" data-tenant-id={tenantId ?? undefined}>
         <span className="font-semibold tracking-tight">Confluo</span>
         {me && tenantId && (
           <>

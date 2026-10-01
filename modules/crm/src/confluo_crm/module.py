@@ -41,6 +41,7 @@ class CrmModule:
     depends_on: list[str] = ["core"]
     config_schema = CrmConfig
     enabled_by_default = True
+    tasks = None
     permissions = [
         Permission("crm.inbox.view", "Read customer conversations", ALL),
         Permission("crm.inbox.takeover", "Take over a conversation from the AI", ALL),

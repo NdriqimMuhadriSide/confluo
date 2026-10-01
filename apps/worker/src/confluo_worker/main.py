@@ -1,46 +1,43 @@
-"""Background worker process.
+"""Background worker: runs Procrastinate jobs from core and the installed modules.
 
-For now it only proves the process runs and can reach the database. The
-Postgres-backed job queue (Procrastinate) replaces the heartbeat loop in the
-"Webhook ingress ledger + job queue + retries" card.
+Jobs get the process pool (tenant transactions) and the webhook providers through
+the job context.
 """
 
 import asyncio
-import contextlib
 import logging
-import signal
 
-from confluo_core.db import create_pool, ping
+from confluo_core.db import create_pool
+from confluo_core.job_app import build_job_app
+from confluo_core.jobs import job_settings_summary, worker_context
 from confluo_core.logging import configure_logging
 from confluo_core.modules import discover_modules
-from confluo_core.settings import Settings, get_settings
+from confluo_core.settings import get_settings
+from confluo_core.webhooks import PROVIDERS_KEY, default_providers
 
 log = logging.getLogger("confluo.worker")
-
-
-async def serve(settings: Settings, stop: asyncio.Event) -> None:
-    modules = discover_modules()
-    log.info("worker started with modules: %s", ", ".join(modules) or "none")
-    pool = create_pool(settings)
-    await pool.open(wait=False)
-    try:
-        while not stop.is_set():
-            log.info("heartbeat (database %s)", "ok" if await ping(pool) else "unreachable")
-            with contextlib.suppress(TimeoutError):
-                await asyncio.wait_for(stop.wait(), timeout=settings.worker_heartbeat_seconds)
-    finally:
-        await pool.close()
-        log.info("worker stopped")
 
 
 async def main() -> None:
     settings = get_settings()
     configure_logging(settings.log_level)
-    stop = asyncio.Event()
-    loop = asyncio.get_running_loop()
-    for sig in (signal.SIGINT, signal.SIGTERM):
-        loop.add_signal_handler(sig, stop.set)
-    await serve(settings, stop)
+    modules = discover_modules()
+    app = build_job_app(modules)
+    pool = create_pool(settings)
+    await pool.open()
+    try:
+        async with app.open_async(pool):
+            log.info(
+                "worker started: modules %s, tasks %s, %s",
+                ", ".join(modules) or "none",
+                ", ".join(sorted(app.tasks)),
+                job_settings_summary(settings),
+            )
+            context = worker_context(pool, **{PROVIDERS_KEY: default_providers(settings)})
+            await app.run_worker_async(additional_context=context)
+    finally:
+        await pool.close()
+        log.info("worker stopped")
 
 
 def run() -> None:

@@ -22,13 +22,18 @@ from tests.tenancy.conftest import ROOT, World
 from tests.tenancy.test_rbac import FakeAuthAdmin
 
 
-def _not_audited() -> tuple[str, ...]:
-    path = ROOT / "packages/core/src/confluo_core/migrations/0006_audit.py"
-    spec = importlib.util.spec_from_file_location("m0006", path)
-    assert spec and spec.loader
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return tuple(mod.NOT_AUDITED)
+def _not_audited() -> set[str]:
+    """Union of NOT_AUDITED from every migration that declares one."""
+    skip: set[str] = set()
+    for path in ROOT.glob("**/migrations/*.py"):
+        if ".venv" in path.parts or path.name == "env.py":
+            continue
+        spec = importlib.util.spec_from_file_location(f"mig_{path.stem}", path)
+        assert spec and spec.loader
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        skip |= set(getattr(mod, "NOT_AUDITED", ()))
+    return skip
 
 
 def test_every_table_has_an_audit_trigger(world: World) -> None:
@@ -41,7 +46,7 @@ def test_every_table_has_an_audit_trigger(world: World) -> None:
             from pg_class c join pg_namespace n on n.oid = c.relnamespace
             where n.nspname = 'public' and c.relkind = 'r'
         """).fetchall()
-    skip = set(_not_audited())
+    skip = _not_audited()
     assert [t for t, has in rows if not has and t not in skip] == []
 
 
@@ -64,6 +69,19 @@ def _audit_count(world: World, tenant: str) -> int:
         ).fetchone()
     assert row is not None
     return int(row[0])
+
+
+# Write endpoints whose audit row is checked in another test (they need extra setup).
+AUDITED_ELSEWHERE = {
+    (
+        "POST",
+        "/api/system/jobs/{job_id}/retry",
+    ): "test_jobs.py::test_manual_retry_runs_the_job_again",
+}
+# Writes that happen before any tenant or user is known; they only touch the ledger.
+NO_TENANT_WRITE = {
+    ("POST", "/webhooks/{provider}"): "records inbound_event; the job's writes are audited",
+}
 
 
 def test_every_mutating_route_writes_an_audit_row(
@@ -127,6 +145,7 @@ def test_every_mutating_route_writes_an_audit_row(
         for method in ops
         if method in {"post", "put", "patch", "delete"}
     }
+    mutating -= set(AUDITED_ELSEWHERE) | set(NO_TENANT_WRITE)
     assert mutating == set(scenarios), "add a scenario for every new write endpoint"
 
     for (method, path), run in scenarios.items():

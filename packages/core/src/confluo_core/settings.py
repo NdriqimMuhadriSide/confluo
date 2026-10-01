@@ -42,6 +42,13 @@ class Settings(BaseSettings):
 
     worker_heartbeat_seconds: float = 30.0
 
+    # Background jobs: attempts in total, and the first retry delay (doubles each time).
+    job_max_attempts: int = Field(5, ge=1, le=20)
+    job_retry_base_seconds: float = Field(10.0, ge=0)
+
+    # Shared secret of the built-in `test` webhook provider (local/test only).
+    webhook_test_secret: SecretStr | None = None
+
     @property
     def supabase_auth_url(self) -> str:
         return f"{self.supabase_url.rstrip('/')}/auth/v1"

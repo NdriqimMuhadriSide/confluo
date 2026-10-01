@@ -75,9 +75,14 @@ export default async function ModulesPage({ searchParams }: PageProps<"/settings
     <>
       <div className="flex items-baseline justify-between">
         <h1 className="text-2xl font-semibold tracking-tight">Modules</h1>
-        <a href="/settings/activity" className="text-sm underline underline-offset-4">
-          Activity log
-        </a>
+        <span className="flex gap-4 text-sm">
+          <a href="/settings/activity" className="underline underline-offset-4">
+            Activity log
+          </a>
+          <a href="/settings/system" className="underline underline-offset-4">
+            System health
+          </a>
+        </span>
       </div>
       {typeof error === "string" && (
         <p role="alert" className="text-sm text-destructive">

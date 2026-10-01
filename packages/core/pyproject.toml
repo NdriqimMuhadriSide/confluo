@@ -11,6 +11,7 @@ dependencies = [
   "pyjwt[crypto]>=2.10",
   "alembic>=1.14",
   "sqlalchemy>=2.0",
+  "procrastinate>=3.0",
 ]
 
 [build-system]
