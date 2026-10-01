@@ -11,7 +11,11 @@
     "business": "Betrieb",
     "menu": "Menü",
     "comingSoon": "Dieser Teil von Confluo kommt bald.",
-    "roles": { "owner": "Inhaber", "admin": "Administrator", "staff": "Mitarbeiter" }
+    "roles": {
+      "owner": "Inhaber",
+      "admin": "Administrator",
+      "staff": "Mitarbeiter"
+    }
   },
   "auth": {
     "signInTitle": "Anmelden",
@@ -39,7 +43,12 @@
     "home": "Start",
     "members": "Team",
     "settings": "Einstellungen",
-    "crm": { "inbox": "Posteingang", "calendar": "Kalender", "customers": "Kunden", "knowledge": "Wissensdatenbank" }
+    "crm": {
+      "inbox": "Posteingang",
+      "calendar": "Kalender",
+      "customers": "Kunden",
+      "knowledge": "Wissensdatenbank"
+    }
   },
   "home": {
     "greeting": "Willkommen bei {business}",
@@ -73,8 +82,22 @@
   },
   "settings": {
     "title": "Einstellungen",
-    "tabs": { "modules": "Module", "usage": "KI-Nutzung", "activity": "Aktivität", "system": "Systemstatus" },
-    "modules": { "turnOn": "Einschalten", "turnOff": "Ausschalten", "saveSettings": "Einstellungen speichern", "saved": "Gespeichert." },
+    "tabs": {
+      "modules": "Module",
+      "locations": "Standorte",
+      "services": "Leistungen",
+      "team": "Personal & Räume",
+      "fields": "Buchungsfelder",
+      "usage": "KI-Nutzung",
+      "activity": "Aktivität",
+      "system": "Systemstatus"
+    },
+    "modules": {
+      "turnOn": "Einschalten",
+      "turnOff": "Ausschalten",
+      "saveSettings": "Einstellungen speichern",
+      "saved": "Gespeichert."
+    },
     "usage": {
       "intro": "Modellaufrufe der letzten {days} Tage. Kosten sind Schätzungen; maßgeblich sind die Rechnungen.",
       "total": "Geschätzte Summe",
@@ -98,6 +121,100 @@
       "last": "zuletzt {when}",
       "retried": "Erneut in die Warteschlange gestellt.",
       "retryError": "Diese Aufgabe kann nicht mehr erneut versucht werden."
+    }
+  },
+  "setup": {
+    "saved": "Gespeichert.",
+    "add": "Hinzufügen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "none": "Noch nichts vorhanden.",
+    "weekdays": {
+      "mon": "Montag",
+      "tue": "Dienstag",
+      "wed": "Mittwoch",
+      "thu": "Donnerstag",
+      "fri": "Freitag",
+      "sat": "Samstag",
+      "sun": "Sonntag"
+    },
+    "closed": "Geschlossen",
+    "from": "Von",
+    "until": "Bis",
+    "breakFrom": "Pause von",
+    "breakUntil": "Pause bis",
+    "locations": {
+      "new": "Neuer Standort",
+      "name": "Name",
+      "address": "Adresse",
+      "timezone": "Zeitzone",
+      "hours": "Öffnungszeiten"
+    },
+    "fields": {
+      "new": "Neues Buchungsfeld",
+      "label": "Bezeichnung",
+      "type": "Typ",
+      "options": "Auswahl (durch Kommas getrennt)",
+      "sensitivity": "Sensibilität",
+      "appliesTo": "Abgefragt für",
+      "entity": {
+        "appointment": "Jede Buchung",
+        "customer": "Den Kunden (einmalig)"
+      },
+      "types": {
+        "text": "Kurzer Text",
+        "long_text": "Langer Text",
+        "number": "Zahl",
+        "date": "Datum",
+        "boolean": "Ja / Nein",
+        "select": "Auswahl",
+        "phone": "Telefon",
+        "email": "E-Mail"
+      },
+      "pii": {
+        "none": "Nicht personenbezogen",
+        "personal": "Personenbezogen",
+        "sensitive": "Sensibel (z. B. Gesundheit)"
+      },
+      "archive": "Archivieren"
+    },
+    "services": {
+      "new": "Neue Leistung",
+      "name": "Name",
+      "otherLanguages": "Name in anderen Sprachen",
+      "duration": "Dauer (Minuten)",
+      "bufferBefore": "Puffer davor (Minuten)",
+      "bufferAfter": "Puffer danach (Minuten)",
+      "price": "Preis (€)",
+      "active": "Buchbar",
+      "requiredFields": "Buchungsfelder",
+      "required": "Pflicht",
+      "performedBy": "Durchgeführt von",
+      "minutes": "{count} Min.",
+      "inactive": "nicht buchbar"
+    },
+    "team": {
+      "new": "Neue Person oder neuer Raum",
+      "kind": "Art",
+      "kinds": {
+        "staff": "Personal",
+        "room": "Raum",
+        "equipment": "Gerät"
+      },
+      "name": "Name",
+      "location": "Standort",
+      "noLocation": "Kein fester Standort",
+      "member": "Teammitglied",
+      "noMember": "Nicht mit einem Login verknüpft",
+      "schedule": "Wochenplan",
+      "manage": "Plan und freie Tage",
+      "daysOff": "Freie Tage",
+      "firstDay": "Erster Tag",
+      "lastDay": "Letzter Tag",
+      "reason": "Grund",
+      "addDayOff": "Freie Tage hinzufügen",
+      "freeTime": "Freie Zeit in den nächsten 7 Tagen",
+      "noFreeTime": "Keine freie Zeit in den nächsten 7 Tagen."
     }
   }
 }

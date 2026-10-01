@@ -30,7 +30,7 @@ export default async function ActivityPage() {
             {data.map((e) => (
               <li key={e.id} className="flex flex-wrap gap-x-3 gap-y-1 py-2" data-audit={`${e.action} ${e.entity}`}>
                 <time className="w-36 shrink-0 text-muted-foreground" dateTime={e.at}>
-                  {format.dateTime(new Date(e.at), { dateStyle: "short", timeStyle: "short" })}
+                  {format.dateTime(new Date(e.at), { dateStyle: "short", timeStyle: "short", hourCycle: "h23" })}
                 </time>
                 <span className="font-medium">
                   {e.action} {e.entity}

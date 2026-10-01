@@ -38,6 +38,153 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/crm/resources": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Resources */
+        get: operations["listResources"];
+        put?: never;
+        /** Create Resource */
+        post: operations["createResource"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/crm/resources/{resource_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update Resource */
+        put: operations["updateResource"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/crm/resources/{resource_id}/exceptions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Exceptions */
+        get: operations["listExceptions"];
+        put?: never;
+        /** Add Exception */
+        post: operations["addException"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/crm/resources/{resource_id}/exceptions/{exception_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Exception */
+        delete: operations["deleteException"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/crm/resources/{resource_id}/free": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Free Time
+         * @description Working time minus days off, appointments and external busy time, in local time.
+         */
+        get: operations["getFreeTime"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/crm/resources/{resource_id}/schedule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Schedule */
+        get: operations["getSchedule"];
+        /**
+         * Set Schedule
+         * @description Replace the whole weekly schedule.
+         */
+        put: operations["setSchedule"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/crm/services": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Services */
+        get: operations["listServices"];
+        put?: never;
+        /** Create Service */
+        post: operations["createService"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/crm/services/{service_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update Service */
+        put: operations["updateService"];
+        post?: never;
+        /** Delete Service */
+        delete: operations["deleteService"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/crm/status": {
         parameters: {
             query?: never;
@@ -53,6 +200,45 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/api/fields": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Fields */
+        get: operations["listFields"];
+        put?: never;
+        /** Create Field */
+        post: operations["createField"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/fields/{field_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Archive Field
+         * @description Archive rather than delete: past appointments keep their values.
+         */
+        delete: operations["archiveField"];
+        options?: never;
+        head?: never;
+        /** Update Field */
+        patch: operations["updateField"];
         trace?: never;
     };
     "/api/invitations": {
@@ -106,6 +292,24 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/api/locations/{location_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Location */
+        delete: operations["deleteLocation"];
+        options?: never;
+        head?: never;
+        /** Update Location */
+        patch: operations["updateLocation"];
         trace?: never;
     };
     "/api/me": {
@@ -467,6 +671,53 @@ export interface components {
             /** Slug */
             slug: string;
         };
+        /**
+         * ExceptionIn
+         * @description Whole days (first_day..last_day, local dates) or a time range on one day.
+         */
+        ExceptionIn: {
+            /** End */
+            end?: string | null;
+            /**
+             * First Day
+             * Format: date
+             */
+            first_day: string;
+            /**
+             * Kind
+             * @default off
+             * @enum {string}
+             */
+            kind: "off" | "extra";
+            /** Last Day */
+            last_day?: string | null;
+            /** Reason */
+            reason?: string | null;
+            /** Start */
+            start?: string | null;
+        };
+        /** ExceptionOut */
+        ExceptionOut: {
+            /**
+             * End
+             * Format: date-time
+             */
+            end: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Kind */
+            kind: string;
+            /** Reason */
+            reason: string | null;
+            /**
+             * Start
+             * Format: date-time
+             */
+            start: string;
+        };
         /** FailedJob */
         FailedJob: {
             /** Attempts */
@@ -485,6 +736,111 @@ export interface components {
             /** Task Name */
             task_name: string;
         };
+        /** FieldIn */
+        FieldIn: {
+            /**
+             * Entity
+             * @enum {string}
+             */
+            entity: "customer" | "appointment";
+            /** Key */
+            key: string;
+            /** Label I18N */
+            label_i18n: {
+                [key: string]: string;
+            };
+            /**
+             * Options
+             * @default []
+             */
+            options: string[];
+            /**
+             * Pii Level
+             * @default personal
+             * @enum {string}
+             */
+            pii_level: "none" | "personal" | "sensitive";
+            /**
+             * Position
+             * @default 0
+             */
+            position: number;
+            /**
+             * Type
+             * @enum {string}
+             */
+            type: "text" | "long_text" | "number" | "date" | "boolean" | "select" | "phone" | "email";
+        };
+        /** FieldOut */
+        FieldOut: {
+            /** Archived */
+            archived: boolean;
+            /**
+             * Entity
+             * @enum {string}
+             */
+            entity: "customer" | "appointment";
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Key */
+            key: string;
+            /** Label I18N */
+            label_i18n: {
+                [key: string]: string;
+            };
+            /** Options */
+            options: string[];
+            /**
+             * Pii Level
+             * @enum {string}
+             */
+            pii_level: "none" | "personal" | "sensitive";
+            /** Position */
+            position: number;
+            /**
+             * Type
+             * @enum {string}
+             */
+            type: "text" | "long_text" | "number" | "date" | "boolean" | "select" | "phone" | "email";
+        };
+        /** FieldPatch */
+        FieldPatch: {
+            /** Archived */
+            archived?: boolean | null;
+            /** Label I18N */
+            label_i18n?: {
+                [key: string]: string;
+            } | null;
+            /** Options */
+            options?: string[] | null;
+            /** Pii Level */
+            pii_level?: ("none" | "personal" | "sensitive") | null;
+            /** Position */
+            position?: number | null;
+        };
+        /** FreeSpan */
+        FreeSpan: {
+            /**
+             * End
+             * Format: date-time
+             */
+            end: string;
+            /**
+             * Start
+             * Format: date-time
+             */
+            start: string;
+        };
+        /** FreeTime */
+        FreeTime: {
+            /** Spans */
+            spans: components["schemas"]["FreeSpan"][];
+            /** Timezone */
+            timezone: string;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
@@ -499,6 +855,19 @@ export interface components {
              * @enum {string}
              */
             status: "ok" | "degraded";
+        };
+        /** Interval */
+        Interval: {
+            /**
+             * End
+             * Format: time
+             */
+            end: string;
+            /**
+             * Start
+             * Format: time
+             */
+            start: string;
         };
         /** Invitation */
         Invitation: {
@@ -559,8 +928,23 @@ export interface components {
             address?: string | null;
             /** Name */
             name: string;
-            /** Timezone */
-            timezone?: string | null;
+            /**
+             * @default {
+             *       "fri": [],
+             *       "mon": [],
+             *       "sat": [],
+             *       "sun": [],
+             *       "thu": [],
+             *       "tue": [],
+             *       "wed": []
+             *     }
+             */
+            opening_hours: components["schemas"]["WeeklyHours"];
+            /**
+             * Timezone
+             * @default Europe/Brussels
+             */
+            timezone: string;
         };
         /** LocationOut */
         LocationOut: {
@@ -573,8 +957,19 @@ export interface components {
             id: string;
             /** Name */
             name: string;
+            opening_hours: components["schemas"]["WeeklyHours"];
             /** Timezone */
             timezone: string | null;
+        };
+        /** LocationPatch */
+        LocationPatch: {
+            /** Address */
+            address?: string | null;
+            /** Name */
+            name?: string | null;
+            opening_hours?: components["schemas"]["WeeklyHours"] | null;
+            /** Timezone */
+            timezone?: string | null;
         };
         /** Manifest */
         Manifest: {
@@ -679,6 +1074,49 @@ export interface components {
             /** Tenant Name */
             tenant_name: string;
         };
+        /** ResourceIn */
+        ResourceIn: {
+            /**
+             * Active
+             * @default true
+             */
+            active: boolean;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "staff" | "room" | "equipment";
+            /** Location Id */
+            location_id?: string | null;
+            /** Member Id */
+            member_id?: string | null;
+            /** Name */
+            name: string;
+        };
+        /** ResourceOut */
+        ResourceOut: {
+            /**
+             * Active
+             * @default true
+             */
+            active: boolean;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "staff" | "room" | "equipment";
+            /** Location Id */
+            location_id?: string | null;
+            /** Member Id */
+            member_id?: string | null;
+            /** Name */
+            name: string;
+        };
         /** RoleIn */
         RoleIn: {
             /**
@@ -686,6 +1124,125 @@ export interface components {
              * @enum {string}
              */
             role: "owner" | "admin" | "staff";
+        };
+        /** Schedule */
+        Schedule: {
+            /** Rules */
+            rules: components["schemas"]["WeeklyRule"][];
+        };
+        /** ServiceField */
+        ServiceField: {
+            /**
+             * Field Id
+             * Format: uuid
+             */
+            field_id: string;
+            /**
+             * Required
+             * @default true
+             */
+            required: boolean;
+        };
+        /** ServiceIn */
+        ServiceIn: {
+            /**
+             * Active
+             * @default true
+             */
+            active: boolean;
+            /**
+             * Buffer After Min
+             * @default 0
+             */
+            buffer_after_min: number;
+            /**
+             * Buffer Before Min
+             * @default 0
+             */
+            buffer_before_min: number;
+            /**
+             * Description I18N
+             * @default {}
+             */
+            description_i18n: {
+                [key: string]: string;
+            };
+            /** Duration Min */
+            duration_min: number;
+            /**
+             * Fields
+             * @default []
+             */
+            fields: components["schemas"]["ServiceField"][];
+            /** Name I18N */
+            name_i18n: {
+                [key: string]: string;
+            };
+            /**
+             * Position
+             * @default 0
+             */
+            position: number;
+            /** Price Cents */
+            price_cents?: number | null;
+            /**
+             * Resource Ids
+             * @default []
+             */
+            resource_ids: string[];
+        };
+        /** ServiceOut */
+        ServiceOut: {
+            /**
+             * Active
+             * @default true
+             */
+            active: boolean;
+            /**
+             * Buffer After Min
+             * @default 0
+             */
+            buffer_after_min: number;
+            /**
+             * Buffer Before Min
+             * @default 0
+             */
+            buffer_before_min: number;
+            /**
+             * Description I18N
+             * @default {}
+             */
+            description_i18n: {
+                [key: string]: string;
+            };
+            /** Duration Min */
+            duration_min: number;
+            /**
+             * Fields
+             * @default []
+             */
+            fields: components["schemas"]["ServiceField"][];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name I18N */
+            name_i18n: {
+                [key: string]: string;
+            };
+            /**
+             * Position
+             * @default 0
+             */
+            position: number;
+            /** Price Cents */
+            price_cents?: number | null;
+            /**
+             * Resource Ids
+             * @default []
+             */
+            resource_ids: string[];
         };
         /** TenantIn */
         TenantIn: {
@@ -758,6 +1315,66 @@ export interface components {
         WebhookAck: {
             /** Status */
             status: string;
+        };
+        /**
+         * WeeklyHours
+         * @description Opening hours per weekday; a missing or empty day is closed.
+         */
+        WeeklyHours: {
+            /**
+             * Fri
+             * @default []
+             */
+            fri: components["schemas"]["Interval"][];
+            /**
+             * Mon
+             * @default []
+             */
+            mon: components["schemas"]["Interval"][];
+            /**
+             * Sat
+             * @default []
+             */
+            sat: components["schemas"]["Interval"][];
+            /**
+             * Sun
+             * @default []
+             */
+            sun: components["schemas"]["Interval"][];
+            /**
+             * Thu
+             * @default []
+             */
+            thu: components["schemas"]["Interval"][];
+            /**
+             * Tue
+             * @default []
+             */
+            tue: components["schemas"]["Interval"][];
+            /**
+             * Wed
+             * @default []
+             */
+            wed: components["schemas"]["Interval"][];
+        };
+        /** WeeklyRule */
+        WeeklyRule: {
+            /**
+             * End
+             * Format: time
+             */
+            end: string;
+            /**
+             * Start
+             * Format: time
+             */
+            start: string;
+            /** Valid From */
+            valid_from?: string | null;
+            /** Valid To */
+            valid_to?: string | null;
+            /** Weekday */
+            weekday: number;
         };
     };
     responses: never;
@@ -840,6 +1457,451 @@ export interface operations {
             };
         };
     };
+    listResources: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    createResource: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResourceIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    updateResource: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                resource_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResourceIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    listExceptions: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                resource_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExceptionOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    addException: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                resource_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExceptionIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExceptionOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    deleteException: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                resource_id: string;
+                exception_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    getFreeTime: {
+        parameters: {
+            query: {
+                start: string;
+                days?: number;
+            };
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                resource_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FreeTime"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    getSchedule: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                resource_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Schedule"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    setSchedule: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                resource_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Schedule"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Schedule"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    listServices: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ServiceOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    createService: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ServiceIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ServiceOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    updateService: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                service_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ServiceIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ServiceOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    deleteService: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                service_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     crmStatus: {
         parameters: {
             query?: never;
@@ -858,6 +1920,143 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CrmStatus"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    listFields: {
+        parameters: {
+            query?: {
+                entity?: ("customer" | "appointment") | null;
+                include_archived?: boolean;
+            };
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FieldOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    createField: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FieldIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FieldOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    archiveField: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                field_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    updateField: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                field_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FieldPatch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FieldOut"];
                 };
             };
             /** @description Validation Error */
@@ -1016,6 +2215,74 @@ export interface operations {
         responses: {
             /** @description Successful Response */
             201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LocationOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    deleteLocation: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                location_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    updateLocation: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                location_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LocationPatch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };

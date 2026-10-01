@@ -11,7 +11,11 @@
     "business": "Business",
     "menu": "Menu",
     "comingSoon": "This part of Confluo is coming soon.",
-    "roles": { "owner": "Owner", "admin": "Admin", "staff": "Staff" }
+    "roles": {
+      "owner": "Owner",
+      "admin": "Admin",
+      "staff": "Staff"
+    }
   },
   "auth": {
     "signInTitle": "Sign in",
@@ -39,7 +43,12 @@
     "home": "Home",
     "members": "Members",
     "settings": "Settings",
-    "crm": { "inbox": "Inbox", "calendar": "Calendar", "customers": "Customers", "knowledge": "Knowledge base" }
+    "crm": {
+      "inbox": "Inbox",
+      "calendar": "Calendar",
+      "customers": "Customers",
+      "knowledge": "Knowledge base"
+    }
   },
   "home": {
     "greeting": "Welcome to {business}",
@@ -73,8 +82,22 @@
   },
   "settings": {
     "title": "Settings",
-    "tabs": { "modules": "Modules", "usage": "AI usage", "activity": "Activity", "system": "System health" },
-    "modules": { "turnOn": "Turn on", "turnOff": "Turn off", "saveSettings": "Save settings", "saved": "Saved." },
+    "tabs": {
+      "modules": "Modules",
+      "locations": "Locations",
+      "services": "Services",
+      "team": "Staff & rooms",
+      "fields": "Booking fields",
+      "usage": "AI usage",
+      "activity": "Activity",
+      "system": "System health"
+    },
+    "modules": {
+      "turnOn": "Turn on",
+      "turnOff": "Turn off",
+      "saveSettings": "Save settings",
+      "saved": "Saved."
+    },
     "usage": {
       "intro": "Model calls in the last {days} days. Costs are estimates; invoices are the source of truth.",
       "total": "Estimated total",
@@ -98,6 +121,100 @@
       "last": "last {when}",
       "retried": "Queued for another try.",
       "retryError": "That job can no longer be retried."
+    }
+  },
+  "setup": {
+    "saved": "Saved.",
+    "add": "Add",
+    "delete": "Delete",
+    "edit": "Edit",
+    "none": "Nothing here yet.",
+    "weekdays": {
+      "mon": "Monday",
+      "tue": "Tuesday",
+      "wed": "Wednesday",
+      "thu": "Thursday",
+      "fri": "Friday",
+      "sat": "Saturday",
+      "sun": "Sunday"
+    },
+    "closed": "Closed",
+    "from": "From",
+    "until": "Until",
+    "breakFrom": "Break from",
+    "breakUntil": "Break until",
+    "locations": {
+      "new": "New location",
+      "name": "Name",
+      "address": "Address",
+      "timezone": "Timezone",
+      "hours": "Opening hours"
+    },
+    "fields": {
+      "new": "New booking field",
+      "label": "Label",
+      "type": "Type",
+      "options": "Options (comma separated)",
+      "sensitivity": "Sensitivity",
+      "appliesTo": "Asked for",
+      "entity": {
+        "appointment": "Each booking",
+        "customer": "The customer (once)"
+      },
+      "types": {
+        "text": "Short text",
+        "long_text": "Long text",
+        "number": "Number",
+        "date": "Date",
+        "boolean": "Yes / no",
+        "select": "Choice",
+        "phone": "Phone",
+        "email": "Email"
+      },
+      "pii": {
+        "none": "Not personal",
+        "personal": "Personal",
+        "sensitive": "Sensitive (e.g. health)"
+      },
+      "archive": "Archive"
+    },
+    "services": {
+      "new": "New service",
+      "name": "Name",
+      "otherLanguages": "Name in other languages",
+      "duration": "Duration (minutes)",
+      "bufferBefore": "Buffer before (minutes)",
+      "bufferAfter": "Buffer after (minutes)",
+      "price": "Price (€)",
+      "active": "Bookable",
+      "requiredFields": "Booking fields",
+      "required": "required",
+      "performedBy": "Performed by",
+      "minutes": "{count} min",
+      "inactive": "not bookable"
+    },
+    "team": {
+      "new": "New staff member or room",
+      "kind": "Kind",
+      "kinds": {
+        "staff": "Staff",
+        "room": "Room",
+        "equipment": "Equipment"
+      },
+      "name": "Name",
+      "location": "Location",
+      "noLocation": "No specific location",
+      "member": "Team member",
+      "noMember": "Not linked to a login",
+      "schedule": "Weekly schedule",
+      "manage": "Schedule and days off",
+      "daysOff": "Days off",
+      "firstDay": "First day",
+      "lastDay": "Last day",
+      "reason": "Reason",
+      "addDayOff": "Add days off",
+      "freeTime": "Free time next 7 days",
+      "noFreeTime": "No free time in the next 7 days."
     }
   }
 }

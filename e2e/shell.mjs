@@ -48,13 +48,16 @@ await phone.getByRole("heading", { name: `Members of ${name}` }).waitFor();
 await sheet.waitFor({ state: "detached" });
 log("phone: the menu opens as a sheet, navigates and closes");
 
-for (const path of ["/", "/members", "/settings/modules", "/settings/usage", "/settings/activity", "/settings/system", "/inbox"]) {
+for (const path of [
+  "/", "/members", "/settings/modules", "/settings/locations", "/settings/services", "/settings/team",
+  "/settings/fields", "/settings/usage", "/settings/activity", "/settings/system", "/inbox",
+]) {
   await phone.goto(`${WEB}${path}`);
   await phone.waitForLoadState("networkidle");
   const overflow = await phone.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   check(overflow <= 0, `${path} scrolls sideways by ${overflow}px on a phone`);
 }
-log("phone: no page scrolls sideways");
+log("phone: no page scrolls sideways (11 pages)");
 
 await page.screenshot({ path: process.env.SHOT_DESKTOP ?? "/tmp/confluo-desktop.png", fullPage: true });
 await phone.goto(`${WEB}/members`);

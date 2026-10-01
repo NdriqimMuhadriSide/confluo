@@ -33,6 +33,7 @@ CORE_PERMISSIONS = [
     Permission("core.members.manage", "Invite, change roles of and remove members", MANAGERS),
     Permission("core.tenant.manage", "Edit business details", MANAGERS),
     Permission("core.locations.manage", "Add and edit locations", MANAGERS),
+    Permission("core.fields.manage", "Define booking and customer fields", MANAGERS),
     Permission("core.modules.manage", "Turn modules on or off and change their settings", MANAGERS),
     Permission("core.audit.view", "See the audit log", MANAGERS),
     Permission("core.system.manage", "See failed background jobs and retry them", MANAGERS),

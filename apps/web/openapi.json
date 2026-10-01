@@ -313,6 +313,121 @@
         "title": "CurrentTenant",
         "type": "object"
       },
+      "ExceptionIn": {
+        "description": "Whole days (first_day..last_day, local dates) or a time range on one day.",
+        "properties": {
+          "end": {
+            "anyOf": [
+              {
+                "format": "time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End"
+          },
+          "first_day": {
+            "format": "date",
+            "title": "First Day",
+            "type": "string"
+          },
+          "kind": {
+            "default": "off",
+            "enum": [
+              "off",
+              "extra"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "last_day": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Day"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "start": {
+            "anyOf": [
+              {
+                "format": "time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start"
+          }
+        },
+        "required": [
+          "first_day"
+        ],
+        "title": "ExceptionIn",
+        "type": "object"
+      },
+      "ExceptionOut": {
+        "properties": {
+          "end": {
+            "format": "date-time",
+            "title": "End",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "start": {
+            "format": "date-time",
+            "title": "Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "start",
+          "end",
+          "reason"
+        ],
+        "title": "ExceptionOut",
+        "type": "object"
+      },
       "FailedJob": {
         "properties": {
           "attempts": {
@@ -352,6 +467,276 @@
         "title": "FailedJob",
         "type": "object"
       },
+      "FieldIn": {
+        "properties": {
+          "entity": {
+            "enum": [
+              "customer",
+              "appointment"
+            ],
+            "title": "Entity",
+            "type": "string"
+          },
+          "key": {
+            "pattern": "^[a-z][a-z0-9_]{0,62}$",
+            "title": "Key",
+            "type": "string"
+          },
+          "label_i18n": {
+            "additionalProperties": {
+              "maxLength": 120,
+              "minLength": 1,
+              "type": "string"
+            },
+            "minProperties": 1,
+            "title": "Label I18N",
+            "type": "object"
+          },
+          "options": {
+            "default": [],
+            "items": {
+              "maxLength": 120,
+              "minLength": 1,
+              "type": "string"
+            },
+            "title": "Options",
+            "type": "array"
+          },
+          "pii_level": {
+            "default": "personal",
+            "enum": [
+              "none",
+              "personal",
+              "sensitive"
+            ],
+            "title": "Pii Level",
+            "type": "string"
+          },
+          "position": {
+            "default": 0,
+            "title": "Position",
+            "type": "integer"
+          },
+          "type": {
+            "enum": [
+              "text",
+              "long_text",
+              "number",
+              "date",
+              "boolean",
+              "select",
+              "phone",
+              "email"
+            ],
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "entity",
+          "key",
+          "label_i18n",
+          "type"
+        ],
+        "title": "FieldIn",
+        "type": "object"
+      },
+      "FieldOut": {
+        "properties": {
+          "archived": {
+            "title": "Archived",
+            "type": "boolean"
+          },
+          "entity": {
+            "enum": [
+              "customer",
+              "appointment"
+            ],
+            "title": "Entity",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label_i18n": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Label I18N",
+            "type": "object"
+          },
+          "options": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Options",
+            "type": "array"
+          },
+          "pii_level": {
+            "enum": [
+              "none",
+              "personal",
+              "sensitive"
+            ],
+            "title": "Pii Level",
+            "type": "string"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "type": {
+            "enum": [
+              "text",
+              "long_text",
+              "number",
+              "date",
+              "boolean",
+              "select",
+              "phone",
+              "email"
+            ],
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "entity",
+          "key",
+          "label_i18n",
+          "type",
+          "options",
+          "pii_level",
+          "position",
+          "archived"
+        ],
+        "title": "FieldOut",
+        "type": "object"
+      },
+      "FieldPatch": {
+        "properties": {
+          "archived": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Archived"
+          },
+          "label_i18n": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label I18N"
+          },
+          "options": {
+            "anyOf": [
+              {
+                "items": {
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Options"
+          },
+          "pii_level": {
+            "anyOf": [
+              {
+                "enum": [
+                  "none",
+                  "personal",
+                  "sensitive"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pii Level"
+          },
+          "position": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position"
+          }
+        },
+        "title": "FieldPatch",
+        "type": "object"
+      },
+      "FreeSpan": {
+        "properties": {
+          "end": {
+            "format": "date-time",
+            "title": "End",
+            "type": "string"
+          },
+          "start": {
+            "format": "date-time",
+            "title": "Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "start",
+          "end"
+        ],
+        "title": "FreeSpan",
+        "type": "object"
+      },
+      "FreeTime": {
+        "properties": {
+          "spans": {
+            "items": {
+              "$ref": "#/components/schemas/FreeSpan"
+            },
+            "title": "Spans",
+            "type": "array"
+          },
+          "timezone": {
+            "title": "Timezone",
+            "type": "string"
+          }
+        },
+        "required": [
+          "timezone",
+          "spans"
+        ],
+        "title": "FreeTime",
+        "type": "object"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -385,6 +770,26 @@
           "database"
         ],
         "title": "Health",
+        "type": "object"
+      },
+      "Interval": {
+        "properties": {
+          "end": {
+            "format": "time",
+            "title": "End",
+            "type": "string"
+          },
+          "start": {
+            "format": "time",
+            "title": "Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "start",
+          "end"
+        ],
+        "title": "Interval",
         "type": "object"
       },
       "Invitation": {
@@ -509,17 +914,22 @@
             "title": "Name",
             "type": "string"
           },
+          "opening_hours": {
+            "$ref": "#/components/schemas/WeeklyHours",
+            "default": {
+              "fri": [],
+              "mon": [],
+              "sat": [],
+              "sun": [],
+              "thu": [],
+              "tue": [],
+              "wed": []
+            }
+          },
           "timezone": {
-            "anyOf": [
-              {
-                "maxLength": 64,
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Timezone"
+            "default": "Europe/Brussels",
+            "title": "Timezone",
+            "type": "string"
           }
         },
         "required": [
@@ -550,6 +960,9 @@
             "title": "Name",
             "type": "string"
           },
+          "opening_hours": {
+            "$ref": "#/components/schemas/WeeklyHours"
+          },
           "timezone": {
             "anyOf": [
               {
@@ -566,9 +979,62 @@
           "id",
           "name",
           "address",
-          "timezone"
+          "timezone",
+          "opening_hours"
         ],
         "title": "LocationOut",
+        "type": "object"
+      },
+      "LocationPatch": {
+        "properties": {
+          "address": {
+            "anyOf": [
+              {
+                "maxLength": 300,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Address"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "opening_hours": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/WeeklyHours"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "timezone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Timezone"
+          }
+        },
+        "title": "LocationPatch",
         "type": "object"
       },
       "Manifest": {
@@ -827,6 +1293,120 @@
         "title": "PendingInvitation",
         "type": "object"
       },
+      "ResourceIn": {
+        "properties": {
+          "active": {
+            "default": true,
+            "title": "Active",
+            "type": "boolean"
+          },
+          "kind": {
+            "enum": [
+              "staff",
+              "room",
+              "equipment"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "location_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Location Id"
+          },
+          "member_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Member Id"
+          },
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "name"
+        ],
+        "title": "ResourceIn",
+        "type": "object"
+      },
+      "ResourceOut": {
+        "properties": {
+          "active": {
+            "default": true,
+            "title": "Active",
+            "type": "boolean"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "staff",
+              "room",
+              "equipment"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "location_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Location Id"
+          },
+          "member_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Member Id"
+          },
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "name",
+          "id"
+        ],
+        "title": "ResourceOut",
+        "type": "object"
+      },
       "RoleIn": {
         "properties": {
           "role": {
@@ -843,6 +1423,221 @@
           "role"
         ],
         "title": "RoleIn",
+        "type": "object"
+      },
+      "Schedule": {
+        "properties": {
+          "rules": {
+            "items": {
+              "$ref": "#/components/schemas/WeeklyRule"
+            },
+            "title": "Rules",
+            "type": "array"
+          }
+        },
+        "required": [
+          "rules"
+        ],
+        "title": "Schedule",
+        "type": "object"
+      },
+      "ServiceField": {
+        "properties": {
+          "field_id": {
+            "format": "uuid",
+            "title": "Field Id",
+            "type": "string"
+          },
+          "required": {
+            "default": true,
+            "title": "Required",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "field_id"
+        ],
+        "title": "ServiceField",
+        "type": "object"
+      },
+      "ServiceIn": {
+        "properties": {
+          "active": {
+            "default": true,
+            "title": "Active",
+            "type": "boolean"
+          },
+          "buffer_after_min": {
+            "default": 0,
+            "maximum": 240.0,
+            "minimum": 0.0,
+            "title": "Buffer After Min",
+            "type": "integer"
+          },
+          "buffer_before_min": {
+            "default": 0,
+            "maximum": 240.0,
+            "minimum": 0.0,
+            "title": "Buffer Before Min",
+            "type": "integer"
+          },
+          "description_i18n": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "default": {},
+            "title": "Description I18N",
+            "type": "object"
+          },
+          "duration_min": {
+            "maximum": 1440.0,
+            "minimum": 5.0,
+            "title": "Duration Min",
+            "type": "integer"
+          },
+          "fields": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/ServiceField"
+            },
+            "title": "Fields",
+            "type": "array"
+          },
+          "name_i18n": {
+            "additionalProperties": {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            "minProperties": 1,
+            "title": "Name I18N",
+            "type": "object"
+          },
+          "position": {
+            "default": 0,
+            "title": "Position",
+            "type": "integer"
+          },
+          "price_cents": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price Cents"
+          },
+          "resource_ids": {
+            "default": [],
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "Resource Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "name_i18n",
+          "duration_min"
+        ],
+        "title": "ServiceIn",
+        "type": "object"
+      },
+      "ServiceOut": {
+        "properties": {
+          "active": {
+            "default": true,
+            "title": "Active",
+            "type": "boolean"
+          },
+          "buffer_after_min": {
+            "default": 0,
+            "maximum": 240.0,
+            "minimum": 0.0,
+            "title": "Buffer After Min",
+            "type": "integer"
+          },
+          "buffer_before_min": {
+            "default": 0,
+            "maximum": 240.0,
+            "minimum": 0.0,
+            "title": "Buffer Before Min",
+            "type": "integer"
+          },
+          "description_i18n": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "default": {},
+            "title": "Description I18N",
+            "type": "object"
+          },
+          "duration_min": {
+            "maximum": 1440.0,
+            "minimum": 5.0,
+            "title": "Duration Min",
+            "type": "integer"
+          },
+          "fields": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/ServiceField"
+            },
+            "title": "Fields",
+            "type": "array"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "name_i18n": {
+            "additionalProperties": {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            "minProperties": 1,
+            "title": "Name I18N",
+            "type": "object"
+          },
+          "position": {
+            "default": 0,
+            "title": "Position",
+            "type": "integer"
+          },
+          "price_cents": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price Cents"
+          },
+          "resource_ids": {
+            "default": [],
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "Resource Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "name_i18n",
+          "duration_min",
+          "id"
+        ],
+        "title": "ServiceOut",
         "type": "object"
       },
       "TenantIn": {
@@ -1036,6 +1831,120 @@
           "status"
         ],
         "title": "WebhookAck",
+        "type": "object"
+      },
+      "WeeklyHours": {
+        "description": "Opening hours per weekday; a missing or empty day is closed.",
+        "properties": {
+          "fri": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/Interval"
+            },
+            "title": "Fri",
+            "type": "array"
+          },
+          "mon": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/Interval"
+            },
+            "title": "Mon",
+            "type": "array"
+          },
+          "sat": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/Interval"
+            },
+            "title": "Sat",
+            "type": "array"
+          },
+          "sun": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/Interval"
+            },
+            "title": "Sun",
+            "type": "array"
+          },
+          "thu": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/Interval"
+            },
+            "title": "Thu",
+            "type": "array"
+          },
+          "tue": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/Interval"
+            },
+            "title": "Tue",
+            "type": "array"
+          },
+          "wed": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/Interval"
+            },
+            "title": "Wed",
+            "type": "array"
+          }
+        },
+        "title": "WeeklyHours",
+        "type": "object"
+      },
+      "WeeklyRule": {
+        "properties": {
+          "end": {
+            "format": "time",
+            "title": "End",
+            "type": "string"
+          },
+          "start": {
+            "format": "time",
+            "title": "Start",
+            "type": "string"
+          },
+          "valid_from": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Valid From"
+          },
+          "valid_to": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Valid To"
+          },
+          "weekday": {
+            "maximum": 7.0,
+            "minimum": 1.0,
+            "title": "Weekday",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "weekday",
+          "start",
+          "end"
+        ],
+        "title": "WeeklyRule",
         "type": "object"
       }
     },
@@ -1264,6 +2173,763 @@
         ]
       }
     },
+    "/api/crm/resources": {
+      "get": {
+        "operationId": "listResources",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Tenant-Id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Tenant-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ResourceOut"
+                  },
+                  "title": "Response Listresources",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Resources"
+      },
+      "post": {
+        "operationId": "createResource",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Tenant-Id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Tenant-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResourceIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Resource"
+      }
+    },
+    "/api/crm/resources/{resource_id}": {
+      "put": {
+        "operationId": "updateResource",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "resource_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Resource Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Tenant-Id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Tenant-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResourceIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Resource"
+      }
+    },
+    "/api/crm/resources/{resource_id}/exceptions": {
+      "get": {
+        "operationId": "listExceptions",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "resource_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Resource Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Tenant-Id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Tenant-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ExceptionOut"
+                  },
+                  "title": "Response Listexceptions",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Exceptions"
+      },
+      "post": {
+        "operationId": "addException",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "resource_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Resource Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Tenant-Id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Tenant-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExceptionIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExceptionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Add Exception"
+      }
+    },
+    "/api/crm/resources/{resource_id}/exceptions/{exception_id}": {
+      "delete": {
+        "operationId": "deleteException",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "resource_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Resource Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "exception_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Exception Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Tenant-Id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Tenant-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Exception"
+      }
+    },
+    "/api/crm/resources/{resource_id}/free": {
+      "get": {
+        "description": "Working time minus days off, appointments and external busy time, in local time.",
+        "operationId": "getFreeTime",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "resource_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Resource Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "start",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "Start",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "days",
+            "required": false,
+            "schema": {
+              "default": 7,
+              "maximum": 62,
+              "minimum": 1,
+              "title": "Days",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Tenant-Id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Tenant-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FreeTime"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Free Time"
+      }
+    },
+    "/api/crm/resources/{resource_id}/schedule": {
+      "get": {
+        "operationId": "getSchedule",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "resource_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Resource Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Tenant-Id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Tenant-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Schedule"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Schedule"
+      },
+      "put": {
+        "description": "Replace the whole weekly schedule.",
+        "operationId": "setSchedule",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "resource_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Resource Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Tenant-Id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Tenant-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Schedule"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Schedule"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Set Schedule"
+      }
+    },
+    "/api/crm/services": {
+      "get": {
+        "operationId": "listServices",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Tenant-Id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Tenant-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ServiceOut"
+                  },
+                  "title": "Response Listservices",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Services"
+      },
+      "post": {
+        "operationId": "createService",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Tenant-Id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Tenant-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ServiceIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Service"
+      }
+    },
+    "/api/crm/services/{service_id}": {
+      "delete": {
+        "operationId": "deleteService",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "service_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Service Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Tenant-Id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Tenant-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Service"
+      },
+      "put": {
+        "operationId": "updateService",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "service_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Service Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Tenant-Id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Tenant-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ServiceIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Service"
+      }
+    },
     "/api/crm/status": {
       "get": {
         "operationId": "crmStatus",
@@ -1309,6 +2975,262 @@
         "summary": "Status",
         "tags": [
           "crm"
+        ]
+      }
+    },
+    "/api/fields": {
+      "get": {
+        "operationId": "listFields",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "entity",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "customer",
+                    "appointment"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Entity"
+            }
+          },
+          {
+            "in": "query",
+            "name": "include_archived",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Include Archived",
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Tenant-Id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Tenant-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/FieldOut"
+                  },
+                  "title": "Response Listfields",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Fields",
+        "tags": [
+          "fields"
+        ]
+      },
+      "post": {
+        "operationId": "createField",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Tenant-Id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Tenant-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FieldIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FieldOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Field",
+        "tags": [
+          "fields"
+        ]
+      }
+    },
+    "/api/fields/{field_id}": {
+      "delete": {
+        "description": "Archive rather than delete: past appointments keep their values.",
+        "operationId": "archiveField",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "field_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Field Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Tenant-Id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Tenant-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Archive Field",
+        "tags": [
+          "fields"
+        ]
+      },
+      "patch": {
+        "operationId": "updateField",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "field_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Field Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Tenant-Id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Tenant-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FieldPatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FieldOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Field",
+        "tags": [
+          "fields"
         ]
       }
     },
@@ -1574,6 +3496,123 @@
           }
         ],
         "summary": "Create Location",
+        "tags": [
+          "locations"
+        ]
+      }
+    },
+    "/api/locations/{location_id}": {
+      "delete": {
+        "operationId": "deleteLocation",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "location_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Location Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Tenant-Id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Tenant-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Location",
+        "tags": [
+          "locations"
+        ]
+      },
+      "patch": {
+        "operationId": "updateLocation",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "location_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Location Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Tenant-Id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Tenant-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LocationPatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Location",
         "tags": [
           "locations"
         ]

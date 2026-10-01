@@ -74,7 +74,7 @@ export default async function SystemHealthPage({ searchParams }: PageProps<"/set
                     <p className="truncate text-muted-foreground">{j.error}</p>
                     <p className="text-xs text-muted-foreground">
                       {t("attempts", { count: j.attempts })} ·{" "}
-                      {t("last", { when: format.dateTime(new Date(j.failed_at), { dateStyle: "short", timeStyle: "short" }) })}
+                      {t("last", { when: format.dateTime(new Date(j.failed_at), { dateStyle: "short", timeStyle: "short", hourCycle: "h23" }) })}
                     </p>
                   </div>
                   <form action={retryJob}>

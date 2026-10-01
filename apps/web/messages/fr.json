@@ -11,7 +11,11 @@
     "business": "Entreprise",
     "menu": "Menu",
     "comingSoon": "Cette partie de Confluo arrive bientôt.",
-    "roles": { "owner": "Propriétaire", "admin": "Administrateur", "staff": "Collaborateur" }
+    "roles": {
+      "owner": "Propriétaire",
+      "admin": "Administrateur",
+      "staff": "Collaborateur"
+    }
   },
   "auth": {
     "signInTitle": "Connexion",
@@ -39,7 +43,12 @@
     "home": "Accueil",
     "members": "Équipe",
     "settings": "Paramètres",
-    "crm": { "inbox": "Messages", "calendar": "Agenda", "customers": "Clients", "knowledge": "Base de connaissances" }
+    "crm": {
+      "inbox": "Messages",
+      "calendar": "Agenda",
+      "customers": "Clients",
+      "knowledge": "Base de connaissances"
+    }
   },
   "home": {
     "greeting": "Bienvenue chez {business}",
@@ -73,8 +82,22 @@
   },
   "settings": {
     "title": "Paramètres",
-    "tabs": { "modules": "Modules", "usage": "Utilisation de l'IA", "activity": "Activité", "system": "État du système" },
-    "modules": { "turnOn": "Activer", "turnOff": "Désactiver", "saveSettings": "Enregistrer les paramètres", "saved": "Enregistré." },
+    "tabs": {
+      "modules": "Modules",
+      "locations": "Lieux",
+      "services": "Prestations",
+      "team": "Personnel & salles",
+      "fields": "Champs de réservation",
+      "usage": "Utilisation de l'IA",
+      "activity": "Activité",
+      "system": "État du système"
+    },
+    "modules": {
+      "turnOn": "Activer",
+      "turnOff": "Désactiver",
+      "saveSettings": "Enregistrer les paramètres",
+      "saved": "Enregistré."
+    },
     "usage": {
       "intro": "Appels aux modèles des {days} derniers jours. Les coûts sont estimés ; les factures font foi.",
       "total": "Total estimé",
@@ -98,6 +121,100 @@
       "last": "dernière {when}",
       "retried": "Remise en file d'attente.",
       "retryError": "Cette tâche ne peut plus être relancée."
+    }
+  },
+  "setup": {
+    "saved": "Enregistré.",
+    "add": "Ajouter",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "none": "Rien pour l'instant.",
+    "weekdays": {
+      "mon": "Lundi",
+      "tue": "Mardi",
+      "wed": "Mercredi",
+      "thu": "Jeudi",
+      "fri": "Vendredi",
+      "sat": "Samedi",
+      "sun": "Dimanche"
+    },
+    "closed": "Fermé",
+    "from": "De",
+    "until": "À",
+    "breakFrom": "Pause de",
+    "breakUntil": "Pause jusqu'à",
+    "locations": {
+      "new": "Nouveau lieu",
+      "name": "Nom",
+      "address": "Adresse",
+      "timezone": "Fuseau horaire",
+      "hours": "Heures d'ouverture"
+    },
+    "fields": {
+      "new": "Nouveau champ de réservation",
+      "label": "Libellé",
+      "type": "Type",
+      "options": "Choix (séparés par des virgules)",
+      "sensitivity": "Sensibilité",
+      "appliesTo": "Demandé pour",
+      "entity": {
+        "appointment": "Chaque réservation",
+        "customer": "Le client (une fois)"
+      },
+      "types": {
+        "text": "Texte court",
+        "long_text": "Texte long",
+        "number": "Nombre",
+        "date": "Date",
+        "boolean": "Oui / non",
+        "select": "Choix",
+        "phone": "Téléphone",
+        "email": "E-mail"
+      },
+      "pii": {
+        "none": "Non personnel",
+        "personal": "Personnel",
+        "sensitive": "Sensible (ex. santé)"
+      },
+      "archive": "Archiver"
+    },
+    "services": {
+      "new": "Nouvelle prestation",
+      "name": "Nom",
+      "otherLanguages": "Nom dans d'autres langues",
+      "duration": "Durée (minutes)",
+      "bufferBefore": "Marge avant (minutes)",
+      "bufferAfter": "Marge après (minutes)",
+      "price": "Prix (€)",
+      "active": "Réservable",
+      "requiredFields": "Champs de réservation",
+      "required": "obligatoire",
+      "performedBy": "Réalisée par",
+      "minutes": "{count} min",
+      "inactive": "non réservable"
+    },
+    "team": {
+      "new": "Nouveau membre du personnel ou nouvelle salle",
+      "kind": "Type",
+      "kinds": {
+        "staff": "Personnel",
+        "room": "Salle",
+        "equipment": "Équipement"
+      },
+      "name": "Nom",
+      "location": "Lieu",
+      "noLocation": "Pas de lieu précis",
+      "member": "Membre de l'équipe",
+      "noMember": "Non lié à un compte",
+      "schedule": "Horaire hebdomadaire",
+      "manage": "Horaire et congés",
+      "daysOff": "Congés",
+      "firstDay": "Premier jour",
+      "lastDay": "Dernier jour",
+      "reason": "Motif",
+      "addDayOff": "Ajouter des congés",
+      "freeTime": "Disponibilités des 7 prochains jours",
+      "noFreeTime": "Aucune disponibilité dans les 7 prochains jours."
     }
   }
 }

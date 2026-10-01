@@ -116,11 +116,55 @@ def test_every_mutating_route_writes_an_audit_row(
         res = api.post("/api/invitations", headers=in_tenant(owner_h), json={"email": "r@x.be"})
         return api.delete(f"/api/invitations/{res.json()['id']}", headers=in_tenant(owner_h))
 
+    def post(url: str, key: str, body: dict[str, Any]) -> Any:
+        res = api.post(url, headers=in_tenant(owner_h), json=body)
+        state[key] = res.json().get("id")
+        return res
+
+    def call(method: str, url: str, **kw: Any) -> Callable[[], Any]:
+        return lambda: api.request(method, url.format(**state), headers=in_tenant(owner_h), **kw)
+
+    service = {"name_i18n": {"en": "Cut"}, "duration_min": 30}
     scenarios: dict[tuple[str, str], Callable[[], Any]] = {
         ("POST", "/api/tenants"): create_tenant,
-        ("POST", "/api/locations"): lambda: api.post(
-            "/api/locations", headers=in_tenant(owner_h), json={"name": "Main"}
+        ("POST", "/api/locations"): lambda: post("/api/locations", "location", {"name": "Main"}),
+        ("PATCH", "/api/locations/{location_id}"): call(
+            "PATCH", "/api/locations/{location}", json={"address": "Kouter 1"}
         ),
+        ("POST", "/api/fields"): lambda: post(
+            "/api/fields",
+            "field",
+            {"entity": "appointment", "key": "note", "type": "text", "label_i18n": {"en": "Note"}},
+        ),
+        ("PATCH", "/api/fields/{field_id}"): call(
+            "PATCH", "/api/fields/{field}", json={"label_i18n": {"en": "Notes"}}
+        ),
+        ("DELETE", "/api/fields/{field_id}"): call("DELETE", "/api/fields/{field}"),
+        ("POST", "/api/crm/resources"): lambda: post(
+            "/api/crm/resources", "resource", {"kind": "staff", "name": "Eva"}
+        ),
+        ("PUT", "/api/crm/resources/{resource_id}"): call(
+            "PUT", "/api/crm/resources/{resource}", json={"kind": "staff", "name": "Eva M."}
+        ),
+        ("PUT", "/api/crm/resources/{resource_id}/schedule"): call(
+            "PUT",
+            "/api/crm/resources/{resource}/schedule",
+            json={"rules": [{"weekday": 1, "start": "09:00", "end": "17:00"}]},
+        ),
+        ("POST", "/api/crm/resources/{resource_id}/exceptions"): lambda: post(
+            f"/api/crm/resources/{state['resource']}/exceptions",
+            "exception",
+            {"first_day": "2030-01-02"},
+        ),
+        ("DELETE", "/api/crm/resources/{resource_id}/exceptions/{exception_id}"): call(
+            "DELETE", "/api/crm/resources/{resource}/exceptions/{exception}"
+        ),
+        ("POST", "/api/crm/services"): lambda: post("/api/crm/services", "service", service),
+        ("PUT", "/api/crm/services/{service_id}"): call(
+            "PUT", "/api/crm/services/{service}", json=service | {"duration_min": 45}
+        ),
+        ("DELETE", "/api/crm/services/{service_id}"): call("DELETE", "/api/crm/services/{service}"),
+        ("DELETE", "/api/locations/{location_id}"): call("DELETE", "/api/locations/{location}"),
         ("PUT", "/api/modules/{key}"): lambda: api.put(
             "/api/modules/crm",
             headers=in_tenant(owner_h),

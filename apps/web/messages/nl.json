@@ -11,7 +11,11 @@
     "business": "Zaak",
     "menu": "Menu",
     "comingSoon": "Dit deel van Confluo komt binnenkort.",
-    "roles": { "owner": "Eigenaar", "admin": "Beheerder", "staff": "Medewerker" }
+    "roles": {
+      "owner": "Eigenaar",
+      "admin": "Beheerder",
+      "staff": "Medewerker"
+    }
   },
   "auth": {
     "signInTitle": "Aanmelden",
@@ -39,7 +43,12 @@
     "home": "Start",
     "members": "Team",
     "settings": "Instellingen",
-    "crm": { "inbox": "Inbox", "calendar": "Agenda", "customers": "Klanten", "knowledge": "Kennisbank" }
+    "crm": {
+      "inbox": "Inbox",
+      "calendar": "Agenda",
+      "customers": "Klanten",
+      "knowledge": "Kennisbank"
+    }
   },
   "home": {
     "greeting": "Welkom bij {business}",
@@ -73,8 +82,22 @@
   },
   "settings": {
     "title": "Instellingen",
-    "tabs": { "modules": "Modules", "usage": "AI-gebruik", "activity": "Activiteit", "system": "Systeemstatus" },
-    "modules": { "turnOn": "Inschakelen", "turnOff": "Uitschakelen", "saveSettings": "Instellingen opslaan", "saved": "Opgeslagen." },
+    "tabs": {
+      "modules": "Modules",
+      "locations": "Locaties",
+      "services": "Diensten",
+      "team": "Medewerkers & ruimtes",
+      "fields": "Boekingsvelden",
+      "usage": "AI-gebruik",
+      "activity": "Activiteit",
+      "system": "Systeemstatus"
+    },
+    "modules": {
+      "turnOn": "Inschakelen",
+      "turnOff": "Uitschakelen",
+      "saveSettings": "Instellingen opslaan",
+      "saved": "Opgeslagen."
+    },
     "usage": {
       "intro": "Modelaanroepen van de voorbije {days} dagen. Kosten zijn schattingen; de facturen zijn bepalend.",
       "total": "Geschat totaal",
@@ -98,6 +121,100 @@
       "last": "laatste {when}",
       "retried": "Opnieuw in de wachtrij gezet.",
       "retryError": "Die taak kan niet meer opnieuw geprobeerd worden."
+    }
+  },
+  "setup": {
+    "saved": "Opgeslagen.",
+    "add": "Toevoegen",
+    "delete": "Verwijderen",
+    "edit": "Bewerken",
+    "none": "Hier staat nog niets.",
+    "weekdays": {
+      "mon": "Maandag",
+      "tue": "Dinsdag",
+      "wed": "Woensdag",
+      "thu": "Donderdag",
+      "fri": "Vrijdag",
+      "sat": "Zaterdag",
+      "sun": "Zondag"
+    },
+    "closed": "Gesloten",
+    "from": "Van",
+    "until": "Tot",
+    "breakFrom": "Pauze van",
+    "breakUntil": "Pauze tot",
+    "locations": {
+      "new": "Nieuwe locatie",
+      "name": "Naam",
+      "address": "Adres",
+      "timezone": "Tijdzone",
+      "hours": "Openingsuren"
+    },
+    "fields": {
+      "new": "Nieuw boekingsveld",
+      "label": "Label",
+      "type": "Type",
+      "options": "Keuzes (gescheiden door komma's)",
+      "sensitivity": "Gevoeligheid",
+      "appliesTo": "Gevraagd voor",
+      "entity": {
+        "appointment": "Elke boeking",
+        "customer": "De klant (eenmalig)"
+      },
+      "types": {
+        "text": "Korte tekst",
+        "long_text": "Lange tekst",
+        "number": "Getal",
+        "date": "Datum",
+        "boolean": "Ja / nee",
+        "select": "Keuze",
+        "phone": "Telefoon",
+        "email": "E-mail"
+      },
+      "pii": {
+        "none": "Niet persoonlijk",
+        "personal": "Persoonlijk",
+        "sensitive": "Gevoelig (bv. gezondheid)"
+      },
+      "archive": "Archiveren"
+    },
+    "services": {
+      "new": "Nieuwe dienst",
+      "name": "Naam",
+      "otherLanguages": "Naam in andere talen",
+      "duration": "Duur (minuten)",
+      "bufferBefore": "Buffer vooraf (minuten)",
+      "bufferAfter": "Buffer achteraf (minuten)",
+      "price": "Prijs (€)",
+      "active": "Boekbaar",
+      "requiredFields": "Boekingsvelden",
+      "required": "verplicht",
+      "performedBy": "Uitgevoerd door",
+      "minutes": "{count} min",
+      "inactive": "niet boekbaar"
+    },
+    "team": {
+      "new": "Nieuwe medewerker of ruimte",
+      "kind": "Soort",
+      "kinds": {
+        "staff": "Medewerker",
+        "room": "Ruimte",
+        "equipment": "Toestel"
+      },
+      "name": "Naam",
+      "location": "Locatie",
+      "noLocation": "Geen vaste locatie",
+      "member": "Teamlid",
+      "noMember": "Niet gekoppeld aan een login",
+      "schedule": "Weekrooster",
+      "manage": "Rooster en vrije dagen",
+      "daysOff": "Vrije dagen",
+      "firstDay": "Eerste dag",
+      "lastDay": "Laatste dag",
+      "reason": "Reden",
+      "addDayOff": "Vrije dagen toevoegen",
+      "freeTime": "Vrije tijd de komende 7 dagen",
+      "noFreeTime": "Geen vrije tijd de komende 7 dagen."
     }
   }
 }

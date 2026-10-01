@@ -11,7 +11,11 @@
     "business": "Biznesi",
     "menu": "Menyja",
     "comingSoon": "Kjo pjesë e Confluo vjen së shpejti.",
-    "roles": { "owner": "Pronar", "admin": "Administrator", "staff": "Punonjës" }
+    "roles": {
+      "owner": "Pronar",
+      "admin": "Administrator",
+      "staff": "Punonjës"
+    }
   },
   "auth": {
     "signInTitle": "Hyr",
@@ -39,7 +43,12 @@
     "home": "Kreu",
     "members": "Ekipi",
     "settings": "Cilësimet",
-    "crm": { "inbox": "Mesazhet", "calendar": "Kalendari", "customers": "Klientët", "knowledge": "Baza e njohurive" }
+    "crm": {
+      "inbox": "Mesazhet",
+      "calendar": "Kalendari",
+      "customers": "Klientët",
+      "knowledge": "Baza e njohurive"
+    }
   },
   "home": {
     "greeting": "Mirë se vjen te {business}",
@@ -73,8 +82,22 @@
   },
   "settings": {
     "title": "Cilësimet",
-    "tabs": { "modules": "Modulet", "usage": "Përdorimi i AI", "activity": "Aktiviteti", "system": "Gjendja e sistemit" },
-    "modules": { "turnOn": "Aktivizo", "turnOff": "Çaktivizo", "saveSettings": "Ruaj cilësimet", "saved": "U ruajt." },
+    "tabs": {
+      "modules": "Modulet",
+      "locations": "Vendndodhjet",
+      "services": "Shërbimet",
+      "team": "Stafi & dhomat",
+      "fields": "Fushat e rezervimit",
+      "usage": "Përdorimi i AI",
+      "activity": "Aktiviteti",
+      "system": "Gjendja e sistemit"
+    },
+    "modules": {
+      "turnOn": "Aktivizo",
+      "turnOff": "Çaktivizo",
+      "saveSettings": "Ruaj cilësimet",
+      "saved": "U ruajt."
+    },
     "usage": {
       "intro": "Thirrjet e modeleve në {days} ditët e fundit. Kostot janë vlerësime; faturat janë burimi i saktë.",
       "total": "Totali i vlerësuar",
@@ -98,6 +121,100 @@
       "last": "e fundit {when}",
       "retried": "U vendos përsëri në radhë.",
       "retryError": "Kjo detyrë nuk mund të provohet më."
+    }
+  },
+  "setup": {
+    "saved": "U ruajt.",
+    "add": "Shto",
+    "delete": "Fshi",
+    "edit": "Ndrysho",
+    "none": "Ende asgjë këtu.",
+    "weekdays": {
+      "mon": "E hënë",
+      "tue": "E martë",
+      "wed": "E mërkurë",
+      "thu": "E enjte",
+      "fri": "E premte",
+      "sat": "E shtunë",
+      "sun": "E diel"
+    },
+    "closed": "Mbyllur",
+    "from": "Nga",
+    "until": "Deri",
+    "breakFrom": "Pushim nga",
+    "breakUntil": "Pushim deri",
+    "locations": {
+      "new": "Vendndodhje e re",
+      "name": "Emri",
+      "address": "Adresa",
+      "timezone": "Zona kohore",
+      "hours": "Orari i hapjes"
+    },
+    "fields": {
+      "new": "Fushë e re rezervimi",
+      "label": "Etiketa",
+      "type": "Lloji",
+      "options": "Zgjedhjet (të ndara me presje)",
+      "sensitivity": "Ndjeshmëria",
+      "appliesTo": "Pyetet për",
+      "entity": {
+        "appointment": "Çdo rezervim",
+        "customer": "Klientin (një herë)"
+      },
+      "types": {
+        "text": "Tekst i shkurtër",
+        "long_text": "Tekst i gjatë",
+        "number": "Numër",
+        "date": "Data",
+        "boolean": "Po / jo",
+        "select": "Zgjedhje",
+        "phone": "Telefon",
+        "email": "Email"
+      },
+      "pii": {
+        "none": "Jo personale",
+        "personal": "Personale",
+        "sensitive": "E ndjeshme (p.sh. shëndeti)"
+      },
+      "archive": "Arkivo"
+    },
+    "services": {
+      "new": "Shërbim i ri",
+      "name": "Emri",
+      "otherLanguages": "Emri në gjuhë të tjera",
+      "duration": "Kohëzgjatja (minuta)",
+      "bufferBefore": "Kohë rezervë para (minuta)",
+      "bufferAfter": "Kohë rezervë pas (minuta)",
+      "price": "Çmimi (€)",
+      "active": "I rezervueshëm",
+      "requiredFields": "Fushat e rezervimit",
+      "required": "e detyrueshme",
+      "performedBy": "Kryhet nga",
+      "minutes": "{count} min",
+      "inactive": "jo i rezervueshëm"
+    },
+    "team": {
+      "new": "Anëtar i ri stafi ose dhomë e re",
+      "kind": "Lloji",
+      "kinds": {
+        "staff": "Staf",
+        "room": "Dhomë",
+        "equipment": "Pajisje"
+      },
+      "name": "Emri",
+      "location": "Vendndodhja",
+      "noLocation": "Pa vendndodhje të caktuar",
+      "member": "Anëtar i ekipit",
+      "noMember": "I palidhur me një llogari",
+      "schedule": "Orari javor",
+      "manage": "Orari dhe ditët e lira",
+      "daysOff": "Ditët e lira",
+      "firstDay": "Dita e parë",
+      "lastDay": "Dita e fundit",
+      "reason": "Arsyeja",
+      "addDayOff": "Shto ditë të lira",
+      "freeTime": "Koha e lirë në 7 ditët e ardhshme",
+      "noFreeTime": "Asnjë kohë e lirë në 7 ditët e ardhshme."
     }
   }
 }

@@ -5,8 +5,10 @@ from pydantic import BaseModel, Field
 
 from confluo_core.modules import ModuleManifest, NavItem
 from confluo_core.permissions import ALL, MANAGERS, Permission
+from confluo_crm import setup_api
 
 router = APIRouter(tags=["crm"])
+setup_api.router.tags = ["crm-setup"]
 
 
 class CrmStatus(BaseModel):
@@ -50,7 +52,7 @@ class CrmModule:
     ]
 
     def routers(self) -> list[APIRouter]:
-        return [router]
+        return [router, setup_api.router]
 
     def dashboard_manifest(self) -> ModuleManifest:
         return ModuleManifest(

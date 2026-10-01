@@ -4,13 +4,13 @@ from datetime import datetime
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, HTTPException, Request, status
 from psycopg import errors
 from psycopg.rows import class_row
-from pydantic import BaseModel, Field, StringConstraints
+from pydantic import BaseModel, StringConstraints
 
 from confluo_core.auth import CurrentUser
-from confluo_core.deps import Pool, Tenant, TenantContext, client_ip, requires
+from confluo_core.deps import Pool, client_ip
 from confluo_core.tenancy import user_transaction
 
 router = APIRouter()
@@ -44,19 +44,6 @@ class Me(BaseModel):
 class TenantIn(BaseModel):
     name: Name
     slug: Slug
-
-
-class LocationIn(BaseModel):
-    name: Name
-    address: str | None = Field(default=None, max_length=300)
-    timezone: str | None = Field(default=None, max_length=64)
-
-
-class LocationOut(BaseModel):
-    id: UUID
-    name: str
-    address: str | None
-    timezone: str | None
 
 
 @router.get("/api/me", tags=["auth"], operation_id="getMe")
@@ -129,32 +116,3 @@ async def create_tenant(
         row = await cur.fetchone()
         assert row is not None
     return TenantOut(id=row[0], name=body.name, slug=body.slug, role="owner")
-
-
-@router.get("/api/locations", tags=["locations"], operation_id="listLocations")
-async def list_locations(tenant: Tenant) -> list[LocationOut]:
-    cur = tenant.conn.cursor(row_factory=class_row(LocationOut))
-    await cur.execute("select id, name, address, timezone from location order by name")
-    return await cur.fetchall()
-
-
-@router.post(
-    "/api/locations",
-    tags=["locations"],
-    operation_id="createLocation",
-    status_code=status.HTTP_201_CREATED,
-)
-async def create_location(
-    body: LocationIn,
-    tenant: Annotated[TenantContext, Depends(requires("core.locations.manage"))],
-) -> LocationOut:
-    # tenant_id defaults to app.current_tenant_id() in the database.
-    cur = tenant.conn.cursor(row_factory=class_row(LocationOut))
-    await cur.execute(
-        "insert into location (name, address, timezone) values (%s, %s, %s)"
-        " returning id, name, address, timezone",
-        (body.name, body.address, body.timezone),
-    )
-    row = await cur.fetchone()
-    assert row is not None
-    return row

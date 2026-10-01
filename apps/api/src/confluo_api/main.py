@@ -9,7 +9,7 @@ from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from confluo_api import audit, members, system, tenants, usage, webhooks
+from confluo_api import audit, fields, locations, members, system, tenants, usage, webhooks
 from confluo_api import modules as modules_api
 from confluo_core.auth import TokenVerifier
 from confluo_core.auth_admin import AuthAdmin, SupabaseAuthAdmin
@@ -80,6 +80,8 @@ def create_app(
 
     app.include_router(tenants.router)
     app.include_router(members.router)
+    app.include_router(locations.router)
+    app.include_router(fields.router)
     app.include_router(modules_api.router)
     app.include_router(audit.router)
     app.include_router(system.router)
