@@ -1,5 +1,7 @@
+from typing import Literal
+
 from fastapi import APIRouter
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from confluo_core.modules import ModuleManifest, NavItem
 from confluo_core.permissions import ALL, MANAGERS, Permission
@@ -17,10 +19,28 @@ async def status() -> CrmStatus:
     return CrmStatus(module="crm", status="ok")
 
 
+class CrmConfig(BaseModel):
+    """Per-tenant CRM settings (Settings → Modules)."""
+
+    booking_mode: Literal["approval", "auto"] = Field(
+        "approval",
+        title="Booking mode",
+        description="Approval: staff confirm AI bookings. Auto: confirmed immediately.",
+    )
+    reminder_hours_before: int = Field(
+        24, ge=1, le=168, title="Reminder", description="Hours before the appointment."
+    )
+    ai_enabled: bool = Field(
+        True, title="AI answers customers", description="Off: every message goes to staff."
+    )
+
+
 class CrmModule:
     key = "crm"
     version = "0.1.0"
     depends_on: list[str] = ["core"]
+    config_schema = CrmConfig
+    enabled_by_default = True
     permissions = [
         Permission("crm.inbox.view", "Read customer conversations", ALL),
         Permission("crm.inbox.takeover", "Take over a conversation from the AI", ALL),
@@ -34,9 +54,10 @@ class CrmModule:
     def dashboard_manifest(self) -> ModuleManifest:
         return ModuleManifest(
             nav=[
-                NavItem(key="inbox", label="Inbox", href="/inbox"),
-                NavItem(key="calendar", label="Calendar", href="/calendar"),
-                NavItem(key="customers", label="Customers", href="/customers"),
+                NavItem("inbox", "Inbox", "/inbox", permission="crm.inbox.view"),
+                NavItem("calendar", "Calendar", "/calendar"),
+                NavItem("customers", "Customers", "/customers"),
+                NavItem("knowledge", "Knowledge base", "/knowledge", permission="crm.kb.edit"),
             ]
         )
 

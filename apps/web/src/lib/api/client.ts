@@ -64,3 +64,12 @@ export function errorMessage(error: unknown, fallback: string): string {
   if (Array.isArray(detail)) return fallback;
   return fallback;
 }
+
+export type Manifest = Schemas["Manifest"];
+
+export async function getManifest(tenantId: string): Promise<Manifest> {
+  const { data } = await (await apiClient()).GET("/api/me/manifest", {
+    params: { header: inTenant(tenantId) },
+  });
+  return data ?? { modules: [], nav: [], permissions: [] };
+}

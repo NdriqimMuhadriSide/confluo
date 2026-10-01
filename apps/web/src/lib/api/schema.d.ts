@@ -118,7 +118,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Manifest */
+        /**
+         * Manifest
+         * @description Enabled modules and the nav items the caller may see, in the current tenant.
+         */
         get: operations["getManifest"];
         put?: never;
         post?: never;
@@ -161,6 +164,40 @@ export interface paths {
         head?: never;
         /** Change Role */
         patch: operations["changeMemberRole"];
+        trace?: never;
+    };
+    "/api/modules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Modules */
+        get: operations["listModules"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/modules/{key}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update Module */
+        put: operations["updateModule"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/tenant": {
@@ -341,7 +378,11 @@ export interface components {
         /** Manifest */
         Manifest: {
             /** Modules */
-            modules: components["schemas"]["ModuleOut"][];
+            modules: string[];
+            /** Nav */
+            nav: components["schemas"]["NavItemOut"][];
+            /** Permissions */
+            permissions: string[];
         };
         /** Me */
         Me: {
@@ -378,12 +419,31 @@ export interface components {
         };
         /** ModuleOut */
         ModuleOut: {
+            /** Config */
+            config: {
+                [key: string]: unknown;
+            };
+            /** Config Schema */
+            config_schema: {
+                [key: string]: unknown;
+            };
+            /** Depends On */
+            depends_on: string[];
+            /** Enabled */
+            enabled: boolean;
             /** Key */
             key: string;
-            /** Nav */
-            nav: components["schemas"]["NavItemOut"][];
             /** Version */
             version: string;
+        };
+        /** ModuleUpdate */
+        ModuleUpdate: {
+            /** Config */
+            config?: {
+                [key: string]: unknown;
+            } | null;
+            /** Enabled */
+            enabled?: boolean | null;
         };
         /** NavItemOut */
         NavItemOut: {
@@ -393,6 +453,8 @@ export interface components {
             key: string;
             /** Label */
             label: string;
+            /** Module */
+            module: string;
         };
         /** PendingInvitation */
         PendingInvitation: {
@@ -470,7 +532,9 @@ export interface operations {
     crmStatus: {
         parameters: {
             query?: never;
-            header?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
             path?: never;
             cookie?: never;
         };
@@ -483,6 +547,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CrmStatus"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -704,7 +777,9 @@ export interface operations {
     getManifest: {
         parameters: {
             query?: never;
-            header?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
             path?: never;
             cookie?: never;
         };
@@ -717,6 +792,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Manifest"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -807,6 +891,74 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Member"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    listModules: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModuleOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    updateModule: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                key: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ModuleUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModuleOut"];
                 };
             };
             /** @description Validation Error */

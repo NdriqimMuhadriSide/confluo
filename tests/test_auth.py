@@ -16,8 +16,9 @@ async def test_valid_token_yields_the_user(verifier: TokenVerifier, make_token: 
 
 
 def test_valid_token_is_accepted(client: TestClient, make_token: MakeToken) -> None:
-    res = client.get("/api/crm/status", headers={"Authorization": f"Bearer {make_token()}"})
-    assert res.status_code == 200
+    # Auth runs before body validation, so a 422 here means the token was accepted.
+    res = client.post("/api/tenants", headers={"Authorization": f"Bearer {make_token()}"}, json={})
+    assert res.status_code == 422
 
 
 def test_missing_token_is_rejected(client: TestClient) -> None:

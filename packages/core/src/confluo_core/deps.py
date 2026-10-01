@@ -93,3 +93,18 @@ def requires(
         return tenant
 
     return check
+
+
+def module_enabled(module_key: str) -> Callable[..., Coroutine[Any, Any, TenantContext]]:
+    """Dependency for a module's routes: the tenant context, or 404 when the tenant
+    has the module switched off (to the tenant, a disabled module doesn't exist)."""
+
+    async def check(tenant: Tenant, request: Request) -> TenantContext:
+        from confluo_core.module_state import is_enabled
+
+        module = request.app.state.modules[module_key]
+        if not await is_enabled(tenant.conn, module):
+            raise HTTPException(status.HTTP_404_NOT_FOUND, "Not Found")
+        return tenant
+
+    return check
