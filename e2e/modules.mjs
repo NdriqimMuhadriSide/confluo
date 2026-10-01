@@ -5,7 +5,7 @@ import { WEB, check, log, ownerWithBusiness } from "./helpers.mjs";
 
 const browser = await chromium.launch();
 const { page } = await ownerWithBusiness(browser, "modules");
-const nav = page.locator("header nav");
+const nav = page.locator("aside nav");
 
 for (const item of ["Inbox", "Calendar", "Customers", "Knowledge base"]) {
   await nav.getByRole("link", { name: item }).waitFor();

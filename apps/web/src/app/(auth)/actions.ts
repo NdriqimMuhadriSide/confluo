@@ -2,6 +2,7 @@
 
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 import { originFromHeaders } from "@/lib/origin";
 import { createClient } from "@/lib/supabase/server";
@@ -33,13 +34,14 @@ async function signIn(_: AuthState, form: FormData): Promise<AuthState> {
     email,
     password: String(form.get("password") ?? ""),
   });
-  if (error) return { error: "Wrong email or password.", email };
+  if (error) return { error: (await getTranslations("auth"))("wrongCredentials"), email };
   redirect(safeNext(field(form, "next")));
 }
 
 async function sendMagicLink(_: AuthState, form: FormData): Promise<AuthState> {
+  const t = await getTranslations("auth");
   const email = field(form, "email");
-  if (!email) return { error: "Enter your email address first." };
+  if (!email) return { error: t("enterEmailFirst") };
   const supabase = await createClient();
   const next = encodeURIComponent(safeNext(field(form, "next")));
   const { error } = await supabase.auth.signInWithOtp({
@@ -52,16 +54,17 @@ async function sendMagicLink(_: AuthState, form: FormData): Promise<AuthState> {
   // Same answer whether or not the account exists, so the form can't be used to
   // probe which emails are registered.
   if (error && error.status !== 400 && error.status !== 422) {
-    return { error: "Could not send the link. Try again in a minute.", email };
+    return { error: t("linkFailed"), email };
   }
-  return { message: `If ${email} has an account, a sign-in link is on its way.`, email };
+  return { message: t("linkSent", { email }), email };
 }
 
 export async function signUp(_: AuthState, form: FormData): Promise<AuthState> {
+  const t = await getTranslations("auth");
   const password = String(form.get("password") ?? "");
   const email = field(form, "email");
   if (password.length < 8) {
-    return { error: "Use at least 8 characters for the password.", email };
+    return { error: t("passwordTooShort"), email };
   }
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signUp({
@@ -74,7 +77,7 @@ export async function signUp(_: AuthState, form: FormData): Promise<AuthState> {
   });
   if (error) return { error: error.message, email };
   if (!data.session) {
-    return { message: "Check your email to confirm your account, then sign in.", email };
+    return { message: t("checkEmail"), email };
   }
   redirect("/");
 }

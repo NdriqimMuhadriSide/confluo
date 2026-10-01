@@ -1,0 +1,103 @@
+{
+  "common": {
+    "appName": "Confluo",
+    "signOut": "Afmelden",
+    "save": "Opslaan",
+    "remove": "Verwijderen",
+    "revoke": "Intrekken",
+    "accept": "Aanvaarden",
+    "retry": "Opnieuw proberen",
+    "language": "Taal",
+    "business": "Zaak",
+    "menu": "Menu",
+    "comingSoon": "Dit deel van Confluo komt binnenkort.",
+    "roles": { "owner": "Eigenaar", "admin": "Beheerder", "staff": "Medewerker" }
+  },
+  "auth": {
+    "signInTitle": "Aanmelden",
+    "signUpTitle": "Maak je account aan",
+    "name": "Naam",
+    "email": "E-mail",
+    "password": "Wachtwoord",
+    "signIn": "Aanmelden",
+    "signingIn": "Bezig met aanmelden…",
+    "magicLink": "Stuur me een aanmeldlink",
+    "noAccount": "Nog geen account?",
+    "signUp": "Registreren",
+    "haveAccount": "Heb je al een account?",
+    "createAccount": "Account aanmaken",
+    "creatingAccount": "Account wordt aangemaakt…",
+    "wrongCredentials": "Verkeerd e-mailadres of wachtwoord.",
+    "enterEmailFirst": "Vul eerst je e-mailadres in.",
+    "linkFailed": "De link kon niet verstuurd worden. Probeer het over een minuut opnieuw.",
+    "linkSent": "Als {email} een account heeft, is er een aanmeldlink onderweg.",
+    "passwordTooShort": "Gebruik minstens 8 tekens voor het wachtwoord.",
+    "checkEmail": "Bevestig je account via de e-mail die we stuurden en meld je daarna aan.",
+    "linkInvalid": "Die aanmeldlink is ongeldig of verlopen. Vraag een nieuwe aan."
+  },
+  "nav": {
+    "home": "Start",
+    "members": "Team",
+    "settings": "Instellingen",
+    "crm": { "inbox": "Inbox", "calendar": "Agenda", "customers": "Klanten", "knowledge": "Kennisbank" }
+  },
+  "home": {
+    "greeting": "Welkom bij {business}",
+    "youAre": "Je bent hier {role}.",
+    "invitations": "Uitnodigingen",
+    "joinAs": "Word {role} bij {business}",
+    "setUp": "Stel je zaak in",
+    "addAnother": "Nog een zaak toevoegen",
+    "businessName": "Naam van de zaak",
+    "shortName": "Korte naam",
+    "shortNameHint": "Kleine letters, cijfers en koppeltekens.",
+    "create": "Zaak aanmaken",
+    "creating": "Bezig met aanmaken…",
+    "created": "{name} is klaar.",
+    "slugInvalid": "Gebruik 3 tot 40 kleine letters, cijfers en koppeltekens voor de korte naam.",
+    "slugTaken": "Die korte naam is al in gebruik."
+  },
+  "members": {
+    "title": "Team van {business}",
+    "team": "Team",
+    "invite": "Iemand uitnodigen",
+    "inviteButton": "Uitnodigen",
+    "inviting": "Bezig met uitnodigen…",
+    "role": "Rol",
+    "roleOf": "Rol van {email}",
+    "pending": "in afwachting",
+    "invited": "{email} uitgenodigd als {role}.",
+    "emailSent": "We hebben een uitnodiging gemaild.",
+    "atSignIn": "Die persoon ziet de uitnodiging bij de volgende aanmelding.",
+    "invalidEmail": "Vul een geldig e-mailadres in."
+  },
+  "settings": {
+    "title": "Instellingen",
+    "tabs": { "modules": "Modules", "usage": "AI-gebruik", "activity": "Activiteit", "system": "Systeemstatus" },
+    "modules": { "turnOn": "Inschakelen", "turnOff": "Uitschakelen", "saveSettings": "Instellingen opslaan", "saved": "Opgeslagen." },
+    "usage": {
+      "intro": "Modelaanroepen van de voorbije {days} dagen. Kosten zijn schattingen; de facturen zijn bepalend.",
+      "total": "Geschat totaal",
+      "day": "Dag",
+      "model": "Model",
+      "purpose": "Doel",
+      "calls": "Aanroepen",
+      "tokens": "Tokens in / uit",
+      "none": "Nog geen AI-gebruik."
+    },
+    "system": {
+      "status": "Status",
+      "api": "API",
+      "database": "Database",
+      "session": "API aanvaardt je sessie",
+      "up": "actief",
+      "down": "onbereikbaar",
+      "failedJobs": "Mislukte achtergrondtaken",
+      "allGood": "Alles werkt. Geen mislukte taken.",
+      "attempts": "{count} pogingen",
+      "last": "laatste {when}",
+      "retried": "Opnieuw in de wachtrij gezet.",
+      "retryError": "Die taak kan niet meer opnieuw geprobeerd worden."
+    }
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "common": {
+    "appName": "Confluo",
+    "signOut": "Se déconnecter",
+    "save": "Enregistrer",
+    "remove": "Retirer",
+    "revoke": "Révoquer",
+    "accept": "Accepter",
+    "retry": "Réessayer",
+    "language": "Langue",
+    "business": "Entreprise",
+    "menu": "Menu",
+    "comingSoon": "Cette partie de Confluo arrive bientôt.",
+    "roles": { "owner": "Propriétaire", "admin": "Administrateur", "staff": "Collaborateur" }
+  },
+  "auth": {
+    "signInTitle": "Connexion",
+    "signUpTitle": "Créer votre compte",
+    "name": "Nom",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "signIn": "Se connecter",
+    "signingIn": "Connexion…",
+    "magicLink": "M'envoyer un lien de connexion",
+    "noAccount": "Pas encore de compte ?",
+    "signUp": "S'inscrire",
+    "haveAccount": "Vous avez déjà un compte ?",
+    "createAccount": "Créer le compte",
+    "creatingAccount": "Création du compte…",
+    "wrongCredentials": "E-mail ou mot de passe incorrect.",
+    "enterEmailFirst": "Indiquez d'abord votre adresse e-mail.",
+    "linkFailed": "Impossible d'envoyer le lien. Réessayez dans une minute.",
+    "linkSent": "Si {email} a un compte, un lien de connexion est en route.",
+    "passwordTooShort": "Utilisez au moins 8 caractères pour le mot de passe.",
+    "checkEmail": "Confirmez votre compte via l'e-mail envoyé, puis connectez-vous.",
+    "linkInvalid": "Ce lien de connexion n'est pas valide ou a expiré. Demandez-en un nouveau."
+  },
+  "nav": {
+    "home": "Accueil",
+    "members": "Équipe",
+    "settings": "Paramètres",
+    "crm": { "inbox": "Messages", "calendar": "Agenda", "customers": "Clients", "knowledge": "Base de connaissances" }
+  },
+  "home": {
+    "greeting": "Bienvenue chez {business}",
+    "youAre": "Votre rôle ici : {role}.",
+    "invitations": "Invitations",
+    "joinAs": "Rejoindre {business} en tant que {role}",
+    "setUp": "Configurez votre entreprise",
+    "addAnother": "Ajouter une autre entreprise",
+    "businessName": "Nom de l'entreprise",
+    "shortName": "Nom court",
+    "shortNameHint": "Lettres minuscules, chiffres et tirets.",
+    "create": "Créer l'entreprise",
+    "creating": "Création…",
+    "created": "{name} est prête.",
+    "slugInvalid": "Utilisez 3 à 40 lettres minuscules, chiffres et tirets pour le nom court.",
+    "slugTaken": "Ce nom court est déjà pris."
+  },
+  "members": {
+    "title": "Équipe de {business}",
+    "team": "Équipe",
+    "invite": "Inviter quelqu'un",
+    "inviteButton": "Inviter",
+    "inviting": "Invitation…",
+    "role": "Rôle",
+    "roleOf": "Rôle de {email}",
+    "pending": "en attente",
+    "invited": "{email} invité(e) en tant que {role}.",
+    "emailSent": "Nous lui avons envoyé une invitation par e-mail.",
+    "atSignIn": "La personne verra l'invitation à sa prochaine connexion.",
+    "invalidEmail": "Indiquez une adresse e-mail valide."
+  },
+  "settings": {
+    "title": "Paramètres",
+    "tabs": { "modules": "Modules", "usage": "Utilisation de l'IA", "activity": "Activité", "system": "État du système" },
+    "modules": { "turnOn": "Activer", "turnOff": "Désactiver", "saveSettings": "Enregistrer les paramètres", "saved": "Enregistré." },
+    "usage": {
+      "intro": "Appels aux modèles des {days} derniers jours. Les coûts sont estimés ; les factures font foi.",
+      "total": "Total estimé",
+      "day": "Jour",
+      "model": "Modèle",
+      "purpose": "Usage",
+      "calls": "Appels",
+      "tokens": "Tokens entrée / sortie",
+      "none": "Pas encore d'utilisation de l'IA."
+    },
+    "system": {
+      "status": "État",
+      "api": "API",
+      "database": "Base de données",
+      "session": "L'API accepte votre session",
+      "up": "en ligne",
+      "down": "hors ligne",
+      "failedJobs": "Tâches en arrière-plan échouées",
+      "allGood": "Tout fonctionne. Aucune tâche échouée.",
+      "attempts": "{count} tentatives",
+      "last": "dernière {when}",
+      "retried": "Remise en file d'attente.",
+      "retryError": "Cette tâche ne peut plus être relancée."
+    }
+  }
+}

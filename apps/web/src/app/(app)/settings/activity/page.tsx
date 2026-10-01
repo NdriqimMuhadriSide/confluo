@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { getFormatter } from "next-intl/server";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { apiClient, inTenant } from "@/lib/api/client";
@@ -14,6 +15,7 @@ function summary(diff: Record<string, unknown>): string {
 
 // The tenant's audit trail: who changed what, newest first.
 export default async function ActivityPage() {
+  const format = await getFormatter();
   const { tenantId } = await requireTenant();
   const { data, response } = await (await apiClient()).GET("/api/audit", {
     params: { header: inTenant(tenantId), query: { limit: 100 } },
@@ -22,14 +24,13 @@ export default async function ActivityPage() {
 
   return (
     <>
-      <h1 className="text-2xl font-semibold tracking-tight">Activity</h1>
       <Card>
         <CardContent>
           <ul className="divide-y text-sm">
             {data.map((e) => (
               <li key={e.id} className="flex flex-wrap gap-x-3 gap-y-1 py-2" data-audit={`${e.action} ${e.entity}`}>
                 <time className="w-36 shrink-0 text-muted-foreground" dateTime={e.at}>
-                  {new Date(e.at).toLocaleString("en-GB", { dateStyle: "short", timeStyle: "short" })}
+                  {format.dateTime(new Date(e.at), { dateStyle: "short", timeStyle: "short" })}
                 </time>
                 <span className="font-medium">
                   {e.action} {e.entity}

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -64,6 +65,7 @@ function Field({ name, prop, value }: { name: string; prop: Prop; value: unknown
 }
 
 export default async function ModulesPage({ searchParams }: PageProps<"/settings/modules">) {
+  const t = await getTranslations("settings.modules");
   const { tenantId } = await requireTenant();
   const { data: modules, response } = await (await apiClient()).GET("/api/modules", {
     params: { header: inTenant(tenantId) },
@@ -73,17 +75,6 @@ export default async function ModulesPage({ searchParams }: PageProps<"/settings
 
   return (
     <>
-      <div className="flex items-baseline justify-between">
-        <h1 className="text-2xl font-semibold tracking-tight">Modules</h1>
-        <span className="flex gap-4 text-sm">
-          <a href="/settings/activity" className="underline underline-offset-4">
-            Activity log
-          </a>
-          <a href="/settings/system" className="underline underline-offset-4">
-            System health
-          </a>
-        </span>
-      </div>
       {typeof error === "string" && (
         <p role="alert" className="text-sm text-destructive">
           {error}
@@ -91,7 +82,7 @@ export default async function ModulesPage({ searchParams }: PageProps<"/settings
       )}
       {saved && !error && (
         <p role="status" className="text-sm text-muted-foreground">
-          Saved.
+          {t("saved")}
         </p>
       )}
       {(modules ?? []).map((m) => {
@@ -108,7 +99,7 @@ export default async function ModulesPage({ searchParams }: PageProps<"/settings
                 <input type="hidden" name="key" value={m.key} />
                 <input type="hidden" name="enabled" value={String(!m.enabled)} />
                 <Button type="submit" size="sm" variant={m.enabled ? "outline" : "default"}>
-                  {m.enabled ? "Turn off" : "Turn on"}
+                  {m.enabled ? t("turnOff") : t("turnOn")}
                 </Button>
               </form>
             </CardHeader>
@@ -122,7 +113,7 @@ export default async function ModulesPage({ searchParams }: PageProps<"/settings
                     <Field key={name} name={name} prop={prop} value={m.config[name]} />
                   ))}
                   <Button type="submit" className="self-start">
-                    Save settings
+                    {t("saveSettings")}
                   </Button>
                 </form>
               </CardContent>

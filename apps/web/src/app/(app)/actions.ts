@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 import { apiClient, errorMessage, inTenant, TENANT_COOKIE } from "@/lib/api/client";
 
@@ -27,11 +28,12 @@ export async function switchTenant(form: FormData): Promise<void> {
 export async function createTenant(_: FormState, form: FormData): Promise<FormState> {
   const name = String(form.get("name") ?? "").trim();
   const slug = String(form.get("slug") ?? "").trim().toLowerCase();
-  const { data, error } = await (await apiClient()).POST("/api/tenants", { body: { name, slug } });
-  if (!data) return { error: errorMessage(error, "Use 3–40 lowercase letters, digits and dashes for the web address.") };
+  const t = await getTranslations("home");
+  const { data, response } = await (await apiClient()).POST("/api/tenants", { body: { name, slug } });
+  if (!data) return { error: response.status === 409 ? t("slugTaken") : t("slugInvalid") };
   await chooseTenant(data.id);
   revalidatePath("/", "layout");
-  return { message: `${data.name} is ready.` };
+  return { message: t("created", { name: data.name }) };
 }
 
 export async function acceptInvitation(form: FormData): Promise<void> {
@@ -47,17 +49,18 @@ export async function inviteMember(_: FormState, form: FormData): Promise<FormSt
   const tenantId = String(form.get("tenant_id"));
   const email = String(form.get("email") ?? "").trim();
   const role = String(form.get("role")) as "owner" | "admin" | "staff";
-  const { data, error } = await (await apiClient()).POST("/api/invitations", {
+  const { data, error, response } = await (await apiClient()).POST("/api/invitations", {
     params: { header: inTenant(tenantId) },
     body: { email, role },
   });
-  if (!data) return { error: errorMessage(error, "Enter a valid email address.") };
+  const t = await getTranslations();
+  if (!data) {
+    return { error: response.status === 422 ? t("members.invalidEmail") : errorMessage(error, t("members.invalidEmail")) };
+  }
   revalidatePath("/members");
-  const note =
-    data.email_outcome === "email_sent"
-      ? "We emailed them an invitation."
-      : "They'll see the invitation next time they sign in.";
-  return { message: `Invited ${data.email} as ${data.role}. ${note}` };
+  const note = data.email_outcome === "email_sent" ? t("members.emailSent") : t("members.atSignIn");
+  const roleName = t(`common.roles.${data.role}`);
+  return { message: `${t("members.invited", { email: data.email, role: roleName })} ${note}` };
 }
 
 // Row actions report errors (e.g. "needs at least one owner") through the URL, so

@@ -38,6 +38,6 @@ export async function ownerWithBusiness(browser, label) {
   const name = `${label} ${Date.now()}`;
   await page.fill("#name", name);
   await page.getByRole("button", { name: "Create business" }).click();
-  await page.getByRole("heading", { name: new RegExp(name) }).waitFor();
+  await page.getByTestId("business-heading").getByText(name).waitFor();
   return { page, email, name };
 }

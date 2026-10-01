@@ -58,10 +58,10 @@ await page.waitForURL(`${WEB}/`);
 await page.locator("header").getByText(email).waitFor();
 log("confirmation link signs the user in");
 
+// The header email comes from GET /api/me, so it proves the API accepted the token.
 async function assertApiAcceptsSession() {
-  const row = page.locator("div", { hasText: /^API accepts your session/ }).last();
-  const text = await row.innerText();
-  if (!text.includes("up")) throw new Error(`API did not accept session: ${text}`);
+  const shown = await page.getByTestId("user-email").innerText();
+  if (shown.trim() !== email) throw new Error(`API did not accept session: header shows ${shown}`);
 }
 await assertApiAcceptsSession();
 log("API /api/me accepts the session token");

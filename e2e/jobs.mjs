@@ -25,7 +25,7 @@ async function sendWebhook(payload) {
 
 const browser = await chromium.launch();
 const { page } = await ownerWithBusiness(browser, "jobs");
-const tenantId = await page.locator("header").getAttribute("data-tenant-id");
+const tenantId = await page.locator("[data-tenant-id]").first().getAttribute("data-tenant-id");
 check(tenantId, "no tenant id in header");
 
 await page.goto(`${WEB}/settings/system`);

@@ -62,6 +62,16 @@ make db-reset   # recreate the local database and migrate
 make help       # list all targets
 ```
 
+## Dashboard
+
+Next.js 16 + Tailwind + shadcn/ui. Signed-in pages share one shell: a top bar with the
+business switcher, a sidebar built from the module manifest (a menu sheet on phones) and a
+Settings area (Modules, AI usage, Activity, System health). UI text lives in
+`apps/web/messages/{en,nl,fr,de,sq}.json` (next-intl); the language comes from the
+switcher (cookie) or the browser. `pnpm lint` fails when a language is missing a key or
+a placeholder. `make e2e` includes `e2e/shell.mjs`, which checks the language switch and
+the phone layout (no sideways scrolling).
+
 ## Authentication
 
 Staff sign in with Supabase Auth (email + password, or a magic link). The dashboard keeps

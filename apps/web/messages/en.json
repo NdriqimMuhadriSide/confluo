@@ -1,0 +1,103 @@
+{
+  "common": {
+    "appName": "Confluo",
+    "signOut": "Sign out",
+    "save": "Save",
+    "remove": "Remove",
+    "revoke": "Revoke",
+    "accept": "Accept",
+    "retry": "Retry",
+    "language": "Language",
+    "business": "Business",
+    "menu": "Menu",
+    "comingSoon": "This part of Confluo is coming soon.",
+    "roles": { "owner": "Owner", "admin": "Admin", "staff": "Staff" }
+  },
+  "auth": {
+    "signInTitle": "Sign in",
+    "signUpTitle": "Create your account",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign in",
+    "signingIn": "Signing in…",
+    "magicLink": "Email me a sign-in link",
+    "noAccount": "No account yet?",
+    "signUp": "Sign up",
+    "haveAccount": "Already have an account?",
+    "createAccount": "Create account",
+    "creatingAccount": "Creating account…",
+    "wrongCredentials": "Wrong email or password.",
+    "enterEmailFirst": "Enter your email address first.",
+    "linkFailed": "Could not send the link. Try again in a minute.",
+    "linkSent": "If {email} has an account, a sign-in link is on its way.",
+    "passwordTooShort": "Use at least 8 characters for the password.",
+    "checkEmail": "Check your email to confirm your account, then sign in.",
+    "linkInvalid": "That sign-in link is invalid or has expired. Request a new one."
+  },
+  "nav": {
+    "home": "Home",
+    "members": "Members",
+    "settings": "Settings",
+    "crm": { "inbox": "Inbox", "calendar": "Calendar", "customers": "Customers", "knowledge": "Knowledge base" }
+  },
+  "home": {
+    "greeting": "Welcome to {business}",
+    "youAre": "You are {role} here.",
+    "invitations": "Invitations",
+    "joinAs": "Join {business} as {role}",
+    "setUp": "Set up your business",
+    "addAnother": "Add another business",
+    "businessName": "Business name",
+    "shortName": "Short name",
+    "shortNameHint": "Lowercase letters, digits and dashes.",
+    "create": "Create business",
+    "creating": "Creating…",
+    "created": "{name} is ready.",
+    "slugInvalid": "Use 3–40 lowercase letters, digits and dashes for the short name.",
+    "slugTaken": "That short name is taken."
+  },
+  "members": {
+    "title": "Members of {business}",
+    "team": "Team",
+    "invite": "Invite someone",
+    "inviteButton": "Invite",
+    "inviting": "Inviting…",
+    "role": "Role",
+    "roleOf": "Role of {email}",
+    "pending": "pending",
+    "invited": "Invited {email} as {role}.",
+    "emailSent": "We emailed them an invitation.",
+    "atSignIn": "They'll see the invitation next time they sign in.",
+    "invalidEmail": "Enter a valid email address."
+  },
+  "settings": {
+    "title": "Settings",
+    "tabs": { "modules": "Modules", "usage": "AI usage", "activity": "Activity", "system": "System health" },
+    "modules": { "turnOn": "Turn on", "turnOff": "Turn off", "saveSettings": "Save settings", "saved": "Saved." },
+    "usage": {
+      "intro": "Model calls in the last {days} days. Costs are estimates; invoices are the source of truth.",
+      "total": "Estimated total",
+      "day": "Day",
+      "model": "Model",
+      "purpose": "Purpose",
+      "calls": "Calls",
+      "tokens": "Tokens in / out",
+      "none": "No AI usage yet."
+    },
+    "system": {
+      "status": "Status",
+      "api": "API",
+      "database": "Database",
+      "session": "API accepts your session",
+      "up": "up",
+      "down": "down",
+      "failedJobs": "Failed background jobs",
+      "allGood": "Everything is running. No failed jobs.",
+      "attempts": "{count} attempts",
+      "last": "last {when}",
+      "retried": "Queued for another try.",
+      "retryError": "That job can no longer be retried."
+    }
+  }
+}

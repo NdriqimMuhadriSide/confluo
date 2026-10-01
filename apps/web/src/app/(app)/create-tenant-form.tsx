@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useActionState, useState } from "react";
 
 import { createTenant } from "@/app/(app)/actions";
@@ -19,24 +20,30 @@ function slugify(name: string): string {
 }
 
 export function CreateTenantForm() {
+  const t = useTranslations("home");
   const [state, action, pending] = useActionState(createTenant, {});
   const [slug, setSlug] = useState("");
   const [slugEdited, setSlugEdited] = useState(false);
 
+  // After a business is created the form starts over for the next one
+  // (adjusting state while rendering when the action result changes).
+  const [seen, setSeen] = useState(state);
+  if (state !== seen) {
+    setSeen(state);
+    if (state.message) {
+      setSlug("");
+      setSlugEdited(false);
+    }
+  }
+
   return (
     <form action={action} className="flex flex-col gap-4">
       <div className="grid gap-2">
-        <Label htmlFor="name">Business name</Label>
-        <Input
-          id="name"
-          name="name"
-          required
-          maxLength={120}
-          onChange={(e) => !slugEdited && setSlug(slugify(e.target.value))}
-        />
+        <Label htmlFor="name">{t("businessName")}</Label>
+        <Input id="name" name="name" required maxLength={120} onChange={(e) => !slugEdited && setSlug(slugify(e.target.value))} />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="slug">Short name</Label>
+        <Label htmlFor="slug">{t("shortName")}</Label>
         <Input
           id="slug"
           name="slug"
@@ -49,11 +56,11 @@ export function CreateTenantForm() {
             setSlug(e.target.value);
           }}
         />
-        <p className="text-xs text-muted-foreground">Lowercase letters, digits and dashes.</p>
+        <p className="text-xs text-muted-foreground">{t("shortNameHint")}</p>
       </div>
       <FormStatus state={state} />
-      <Button type="submit" disabled={pending}>
-        {pending ? "Creating…" : "Create business"}
+      <Button type="submit" disabled={pending} className="self-start" data-testid="create-business">
+        {pending ? t("creating") : t("create")}
       </Button>
     </form>
   );

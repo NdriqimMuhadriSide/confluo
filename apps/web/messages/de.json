@@ -1,0 +1,103 @@
+{
+  "common": {
+    "appName": "Confluo",
+    "signOut": "Abmelden",
+    "save": "Speichern",
+    "remove": "Entfernen",
+    "revoke": "Zurückziehen",
+    "accept": "Annehmen",
+    "retry": "Erneut versuchen",
+    "language": "Sprache",
+    "business": "Betrieb",
+    "menu": "Menü",
+    "comingSoon": "Dieser Teil von Confluo kommt bald.",
+    "roles": { "owner": "Inhaber", "admin": "Administrator", "staff": "Mitarbeiter" }
+  },
+  "auth": {
+    "signInTitle": "Anmelden",
+    "signUpTitle": "Konto erstellen",
+    "name": "Name",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "signIn": "Anmelden",
+    "signingIn": "Anmeldung läuft…",
+    "magicLink": "Anmeldelink per E-Mail senden",
+    "noAccount": "Noch kein Konto?",
+    "signUp": "Registrieren",
+    "haveAccount": "Schon ein Konto?",
+    "createAccount": "Konto erstellen",
+    "creatingAccount": "Konto wird erstellt…",
+    "wrongCredentials": "Falsche E-Mail-Adresse oder falsches Passwort.",
+    "enterEmailFirst": "Gib zuerst deine E-Mail-Adresse ein.",
+    "linkFailed": "Der Link konnte nicht gesendet werden. Versuche es in einer Minute erneut.",
+    "linkSent": "Falls {email} ein Konto hat, ist ein Anmeldelink unterwegs.",
+    "passwordTooShort": "Das Passwort muss mindestens 8 Zeichen haben.",
+    "checkEmail": "Bestätige dein Konto über die E-Mail, die wir gesendet haben, und melde dich dann an.",
+    "linkInvalid": "Dieser Anmeldelink ist ungültig oder abgelaufen. Fordere einen neuen an."
+  },
+  "nav": {
+    "home": "Start",
+    "members": "Team",
+    "settings": "Einstellungen",
+    "crm": { "inbox": "Posteingang", "calendar": "Kalender", "customers": "Kunden", "knowledge": "Wissensdatenbank" }
+  },
+  "home": {
+    "greeting": "Willkommen bei {business}",
+    "youAre": "Deine Rolle hier: {role}.",
+    "invitations": "Einladungen",
+    "joinAs": "{business} als {role} beitreten",
+    "setUp": "Richte deinen Betrieb ein",
+    "addAnother": "Weiteren Betrieb hinzufügen",
+    "businessName": "Name des Betriebs",
+    "shortName": "Kurzname",
+    "shortNameHint": "Kleinbuchstaben, Ziffern und Bindestriche.",
+    "create": "Betrieb erstellen",
+    "creating": "Wird erstellt…",
+    "created": "{name} ist bereit.",
+    "slugInvalid": "Verwende 3 bis 40 Kleinbuchstaben, Ziffern und Bindestriche für den Kurznamen.",
+    "slugTaken": "Dieser Kurzname ist bereits vergeben."
+  },
+  "members": {
+    "title": "Team von {business}",
+    "team": "Team",
+    "invite": "Jemanden einladen",
+    "inviteButton": "Einladen",
+    "inviting": "Wird eingeladen…",
+    "role": "Rolle",
+    "roleOf": "Rolle von {email}",
+    "pending": "ausstehend",
+    "invited": "{email} als {role} eingeladen.",
+    "emailSent": "Wir haben eine Einladung per E-Mail geschickt.",
+    "atSignIn": "Die Einladung erscheint bei der nächsten Anmeldung.",
+    "invalidEmail": "Gib eine gültige E-Mail-Adresse ein."
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "tabs": { "modules": "Module", "usage": "KI-Nutzung", "activity": "Aktivität", "system": "Systemstatus" },
+    "modules": { "turnOn": "Einschalten", "turnOff": "Ausschalten", "saveSettings": "Einstellungen speichern", "saved": "Gespeichert." },
+    "usage": {
+      "intro": "Modellaufrufe der letzten {days} Tage. Kosten sind Schätzungen; maßgeblich sind die Rechnungen.",
+      "total": "Geschätzte Summe",
+      "day": "Tag",
+      "model": "Modell",
+      "purpose": "Zweck",
+      "calls": "Aufrufe",
+      "tokens": "Tokens ein / aus",
+      "none": "Noch keine KI-Nutzung."
+    },
+    "system": {
+      "status": "Status",
+      "api": "API",
+      "database": "Datenbank",
+      "session": "API akzeptiert deine Sitzung",
+      "up": "erreichbar",
+      "down": "nicht erreichbar",
+      "failedJobs": "Fehlgeschlagene Hintergrundaufgaben",
+      "allGood": "Alles läuft. Keine fehlgeschlagenen Aufgaben.",
+      "attempts": "{count} Versuche",
+      "last": "zuletzt {when}",
+      "retried": "Erneut in die Warteschlange gestellt.",
+      "retryError": "Diese Aufgabe kann nicht mehr erneut versucht werden."
+    }
+  }
+}

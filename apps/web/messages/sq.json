@@ -1,0 +1,103 @@
+{
+  "common": {
+    "appName": "Confluo",
+    "signOut": "Dil",
+    "save": "Ruaj",
+    "remove": "Hiq",
+    "revoke": "Anulo",
+    "accept": "Prano",
+    "retry": "Provo përsëri",
+    "language": "Gjuha",
+    "business": "Biznesi",
+    "menu": "Menyja",
+    "comingSoon": "Kjo pjesë e Confluo vjen së shpejti.",
+    "roles": { "owner": "Pronar", "admin": "Administrator", "staff": "Punonjës" }
+  },
+  "auth": {
+    "signInTitle": "Hyr",
+    "signUpTitle": "Krijo llogarinë tënde",
+    "name": "Emri",
+    "email": "Email",
+    "password": "Fjalëkalimi",
+    "signIn": "Hyr",
+    "signingIn": "Duke hyrë…",
+    "magicLink": "Më dërgo një lidhje hyrjeje me email",
+    "noAccount": "Nuk ke ende llogari?",
+    "signUp": "Regjistrohu",
+    "haveAccount": "Ke tashmë një llogari?",
+    "createAccount": "Krijo llogarinë",
+    "creatingAccount": "Duke krijuar llogarinë…",
+    "wrongCredentials": "Email ose fjalëkalim i gabuar.",
+    "enterEmailFirst": "Shkruaj fillimisht adresën tënde të email-it.",
+    "linkFailed": "Lidhja nuk u dërgua dot. Provo përsëri pas një minute.",
+    "linkSent": "Nëse {email} ka llogari, një lidhje hyrjeje është në rrugë.",
+    "passwordTooShort": "Fjalëkalimi duhet të ketë të paktën 8 karaktere.",
+    "checkEmail": "Konfirmo llogarinë përmes email-it që të dërguam, pastaj hyr.",
+    "linkInvalid": "Kjo lidhje hyrjeje është e pavlefshme ose ka skaduar. Kërko një të re."
+  },
+  "nav": {
+    "home": "Kreu",
+    "members": "Ekipi",
+    "settings": "Cilësimet",
+    "crm": { "inbox": "Mesazhet", "calendar": "Kalendari", "customers": "Klientët", "knowledge": "Baza e njohurive" }
+  },
+  "home": {
+    "greeting": "Mirë se vjen te {business}",
+    "youAre": "Roli yt këtu: {role}.",
+    "invitations": "Ftesat",
+    "joinAs": "Bashkohu me {business} si {role}",
+    "setUp": "Konfiguro biznesin tënd",
+    "addAnother": "Shto një biznes tjetër",
+    "businessName": "Emri i biznesit",
+    "shortName": "Emri i shkurtër",
+    "shortNameHint": "Shkronja të vogla, shifra dhe viza.",
+    "create": "Krijo biznesin",
+    "creating": "Duke krijuar…",
+    "created": "{name} është gati.",
+    "slugInvalid": "Përdor 3 deri në 40 shkronja të vogla, shifra dhe viza për emrin e shkurtër.",
+    "slugTaken": "Ky emër i shkurtër është i zënë."
+  },
+  "members": {
+    "title": "Ekipi i {business}",
+    "team": "Ekipi",
+    "invite": "Fto dikë",
+    "inviteButton": "Fto",
+    "inviting": "Duke ftuar…",
+    "role": "Roli",
+    "roleOf": "Roli i {email}",
+    "pending": "në pritje",
+    "invited": "{email} u ftua si {role}.",
+    "emailSent": "I dërguam një ftesë me email.",
+    "atSignIn": "Ftesa do të shfaqet herën tjetër që të hyjë.",
+    "invalidEmail": "Shkruaj një adresë email-i të vlefshme."
+  },
+  "settings": {
+    "title": "Cilësimet",
+    "tabs": { "modules": "Modulet", "usage": "Përdorimi i AI", "activity": "Aktiviteti", "system": "Gjendja e sistemit" },
+    "modules": { "turnOn": "Aktivizo", "turnOff": "Çaktivizo", "saveSettings": "Ruaj cilësimet", "saved": "U ruajt." },
+    "usage": {
+      "intro": "Thirrjet e modeleve në {days} ditët e fundit. Kostot janë vlerësime; faturat janë burimi i saktë.",
+      "total": "Totali i vlerësuar",
+      "day": "Dita",
+      "model": "Modeli",
+      "purpose": "Qëllimi",
+      "calls": "Thirrje",
+      "tokens": "Tokene hyrëse / dalëse",
+      "none": "Ende nuk ka përdorim të AI."
+    },
+    "system": {
+      "status": "Gjendja",
+      "api": "API",
+      "database": "Baza e të dhënave",
+      "session": "API e pranon seancën tënde",
+      "up": "aktive",
+      "down": "jashtë funksionit",
+      "failedJobs": "Detyra në sfond që dështuan",
+      "allGood": "Gjithçka po funksionon. Asnjë detyrë e dështuar.",
+      "attempts": "{count} përpjekje",
+      "last": "e fundit {when}",
+      "retried": "U vendos përsëri në radhë.",
+      "retryError": "Kjo detyrë nuk mund të provohet më."
+    }
+  }
+}
