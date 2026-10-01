@@ -11,15 +11,26 @@ from argparse import Namespace
 from collections.abc import AsyncIterator, Iterator
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 import psycopg
 import pytest
 from alembic import command
 from alembic.config import Config
+from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 from psycopg.conninfo import conninfo_to_dict, make_conninfo
+from psycopg.rows import dict_row
 from psycopg_pool import AsyncConnectionPool
 
 from confluo_core.db import make_pool
+from confluo_core.job_app import build_job_app
+from confluo_core.jobs import LLM_KEY, run_jobs_once, worker_context
+from confluo_core.llm import LLMGateway
+from confluo_core.llm.fake_provider import FakeProvider
+from confluo_core.modules import discover_modules
+from confluo_core.settings import Settings
+from confluo_core.webhooks import PROVIDERS_KEY, default_providers
+from confluo_crm.channels.web import CHECKPOINTER_KEY
 
 ADMIN_URL = os.environ.get("CONFLUO_TEST_DATABASE_URL")
 TEST_DB = "confluo_test"
@@ -109,3 +120,79 @@ async def pool(world: World) -> AsyncIterator[AsyncConnectionPool]:
     await p.open()
     yield p
     await p.close()
+
+
+# --- Web chat / intake graph fixtures --------------------------------------------------
+
+
+def fake_settings(world: World) -> Settings:
+    return Settings(
+        database_url=world.app_url,
+        llm_fast="fake:claude-haiku-4-5",
+        llm_dialogue="fake:claude-opus-5",
+        llm_embedding="fake:voyage-3.5",
+    )
+
+
+async def make_checkpointer(world: World) -> tuple[AsyncPostgresSaver, AsyncConnectionPool]:
+    pool = AsyncConnectionPool(
+        world.app_url,
+        min_size=1,
+        max_size=2,
+        open=False,
+        kwargs={"autocommit": True, "prepare_threshold": 0, "row_factory": dict_row},
+    )
+    await pool.open()
+    return AsyncPostgresSaver(pool), pool  # type: ignore[arg-type]
+
+
+@pytest.fixture
+def chat_shop(world: World) -> dict[str, uuid.UUID]:
+    """A fresh tenant with an owner and published knowledge (not yet embedded)."""
+    ids = {k: uuid.uuid4() for k in ("tenant", "owner")}
+    with psycopg.connect(world.owner_url, autocommit=True) as conn:
+        conn.execute(
+            "insert into tenant (id, name, slug) values (%s, 'Salon Zon', %s)",
+            (ids["tenant"], f"zon-{ids['tenant'].hex[:10]}"),
+        )
+        conn.execute(
+            "insert into app_user (id, email) values (%s, %s)",
+            (ids["owner"], f"o{ids['owner'].hex[:6]}@x.be"),
+        )
+        conn.execute(
+            "insert into tenant_member (tenant_id, user_id, role) values (%s, %s, 'owner')",
+            (ids["tenant"], ids["owner"]),
+        )
+    return ids
+
+
+@pytest.fixture
+async def chat_worker(world: World) -> AsyncIterator[Any]:
+    """Runs due jobs like the worker process, with the fake LLM and a checkpointer."""
+    pool = make_pool(world.app_url, max_size=6)
+    await pool.open()
+    settings = fake_settings(world)
+    app = build_job_app(discover_modules())
+    llm = LLMGateway(settings, pool, {"fake": FakeProvider()})
+    saver, saver_pool = await make_checkpointer(world)
+    async with app.open_async(pool):
+        ctx = worker_context(
+            pool,
+            **{
+                PROVIDERS_KEY: default_providers(settings, discover_modules()),
+                LLM_KEY: llm,
+                CHECKPOINTER_KEY: saver,
+            },
+        )
+
+        class Worker:
+            db = pool
+            gateway = llm
+            checkpointer = saver
+
+            async def run(self) -> None:
+                await run_jobs_once(app, ctx)
+
+        yield Worker()
+    await saver_pool.close()
+    await pool.close()

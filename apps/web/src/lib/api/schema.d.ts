@@ -38,6 +38,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/crm/channels/web": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Web Chat */
+        get: operations["getWebChat"];
+        /** Update Web Chat */
+        put: operations["updateWebChat"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/crm/knowledge": {
         parameters: {
             query?: never;
@@ -646,6 +664,23 @@ export interface paths {
         };
         /** Health */
         get: operations["health"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/public/crm/web/{key}/config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Widget Config */
+        get: operations["webChatConfig"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1515,6 +1550,49 @@ export interface components {
             /** Error Type */
             type: string;
         };
+        /** WebChat */
+        WebChat: {
+            /** Enabled */
+            enabled: boolean;
+            /** Key */
+            key: string | null;
+            settings: components["schemas"]["WebChatSettings"];
+        };
+        /** WebChatSettings */
+        WebChatSettings: {
+            /**
+             * Allowed Origins
+             * @default []
+             */
+            allowed_origins: string[];
+            /**
+             * Color
+             * @default #111827
+             */
+            color: string;
+            /**
+             * Greeting
+             * @default {}
+             */
+            greeting: {
+                [key: string]: string;
+            };
+            /** Logo Url */
+            logo_url?: string | null;
+            /**
+             * Title
+             * @default {}
+             */
+            title: {
+                [key: string]: string;
+            };
+        };
+        /** WebChatUpdate */
+        WebChatUpdate: {
+            /** Enabled */
+            enabled: boolean;
+            settings: components["schemas"]["WebChatSettings"];
+        };
         /** WebhookAck */
         WebhookAck: {
             /** Status */
@@ -1579,6 +1657,21 @@ export interface components {
             valid_to?: string | null;
             /** Weekday */
             weekday: number;
+        };
+        /** WidgetConfig */
+        WidgetConfig: {
+            /** Color */
+            color: string;
+            /** Greeting */
+            greeting: {
+                [key: string]: string;
+            };
+            /** Logo Url */
+            logo_url: string | null;
+            /** Title */
+            title: {
+                [key: string]: string;
+            };
         };
     };
     responses: never;
@@ -1648,6 +1741,72 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AuditEntry"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    getWebChat: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebChat"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    updateWebChat: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebChatUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebChat"];
                 };
             };
             /** @description Validation Error */
@@ -3190,6 +3349,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Health"];
+                };
+            };
+        };
+    };
+    webChatConfig: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                key: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WidgetConfig"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

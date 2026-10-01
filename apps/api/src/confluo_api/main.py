@@ -58,12 +58,13 @@ def create_app(
 
     app = FastAPI(title="Confluo API", version="0.1.0", lifespan=lifespan)
     app.state.modules = modules
+    app.state.settings = settings
     app.state.token_verifier = token_verifier or TokenVerifier(settings)
     app.state.auth_admin = auth_admin or SupabaseAuthAdmin(settings)
     app.state.permissions = permissions
     app.state.job_app = build_job_app(modules)
     app.state.webhook_providers = (
-        default_providers(settings) if webhook_providers is None else webhook_providers
+        default_providers(settings, modules) if webhook_providers is None else webhook_providers
     )
     app.add_middleware(
         CORSMiddleware,
@@ -98,6 +99,9 @@ def create_app(
                 prefix=f"/api/{module.key}",
                 dependencies=[Depends(module_enabled(module.key))],
             )
+
+        for router in module.public_routers():
+            app.include_router(router, prefix=f"/public/{module.key}")
 
     unknown = sorted(p for p in REQUIRED_PERMISSIONS if p not in permissions)
     if unknown:

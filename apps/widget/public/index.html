@@ -1,9 +1,24 @@
 <!doctype html>
 <html lang="en">
-  <head><meta charset="utf-8" /><title>Confluo widget test page</title></head>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Widget test site</title>
+    <style>body { font-family: Georgia, serif; max-width: 640px; margin: 40px auto; padding: 0 16px; color: #333; }</style>
+  </head>
   <body>
-    <h1>Widget test page</h1>
-    <p>The chat launcher should appear in the bottom-right corner.</p>
-    <script src="/widget.js" data-confluo-tenant="demo" async></script>
+    <h1>Kapsalon test site</h1>
+    <p>A stand-in for a customer's website. Open with <code>?key=wk_…&amp;api=http://127.0.0.1:8100</code>; the chat button appears bottom right.</p>
+    <script>
+      // Production sites use one static script tag with src=".../widget.js" and data-confluo-key.
+      const params = new URLSearchParams(location.search);
+      const s = document.createElement("script");
+      s.src = "/widget.js";
+      s.async = true;
+      s.dataset.confluoKey = params.get("key") || "";
+      s.dataset.confluoApi = params.get("api") || "http://127.0.0.1:8100";
+      if (params.get("lang")) s.dataset.confluoLang = params.get("lang");
+      document.body.appendChild(s);
+    </script>
   </body>
 </html>

@@ -6,7 +6,10 @@ from pydantic import BaseModel, Field
 
 from confluo_core.modules import ModuleManifest, NavItem
 from confluo_core.permissions import ALL, MANAGERS, Permission
-from confluo_crm import knowledge_api, presets, setup_api
+from confluo_crm import channels_api, knowledge_api, presets, setup_api
+from confluo_crm.channels import web_public
+from confluo_crm.channels.web import WebChatProvider
+from confluo_crm.intake import brain
 from confluo_crm.knowledge import crm_tasks
 
 router = APIRouter(tags=["crm"])
@@ -56,7 +59,13 @@ class CrmModule:
     ]
 
     def routers(self) -> list[APIRouter]:
-        return [router, setup_api.router, knowledge_api.router]
+        return [router, setup_api.router, knowledge_api.router, channels_api.router]
+
+    def public_routers(self) -> list[APIRouter]:
+        return [web_public.router]
+
+    def webhook_providers(self) -> list[WebChatProvider]:
+        return [WebChatProvider()]
 
     async def apply_preset(
         self, conn: AsyncConnection, key: str, language: str, timezone: str
@@ -73,5 +82,8 @@ class CrmModule:
             ]
         )
 
+
+# Offline stand-in answers for the `fake` LLM provider (local dev without keys, CI).
+brain.register()
 
 module = CrmModule()

@@ -185,6 +185,7 @@ class LLMGateway:
                 tools=list(tools),
                 output_schema=output_schema,
                 cache=cache,
+                purpose=purpose,
             )
         )
         await self._log(

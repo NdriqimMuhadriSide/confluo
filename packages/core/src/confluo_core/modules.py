@@ -10,7 +10,7 @@ Per tenant, a module is enabled or not and has a config validated against its
 
 from dataclasses import dataclass, field
 from importlib.metadata import entry_points
-from typing import Protocol, runtime_checkable
+from typing import Any, Protocol, runtime_checkable
 
 from fastapi import APIRouter
 from psycopg import AsyncConnection
@@ -62,6 +62,13 @@ class ConfluoModule(Protocol):
     presets: list[Preset]
 
     def routers(self) -> list[APIRouter]: ...
+
+    # Unauthenticated routes (widget config, chat socket), mounted under /public/{key};
+    # each must verify the caller itself.
+    def public_routers(self) -> list[APIRouter]: ...
+
+    # Inbound channels that come through the webhook ledger (WebhookProvider objects).
+    def webhook_providers(self) -> list[Any]: ...
 
     def dashboard_manifest(self) -> ModuleManifest: ...
 

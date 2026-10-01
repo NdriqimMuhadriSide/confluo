@@ -60,8 +60,15 @@ class WebhookProvider(Protocol):
         """The tenant this event belongs to (e.g. via crm_channel_connection)."""
         ...
 
-    async def handle(self, event: WebhookEvent, tenant_id: UUID, pool: AsyncConnectionPool) -> None:
-        """Process the event for its tenant. Raise to retry."""
+    async def handle(
+        self,
+        event: WebhookEvent,
+        tenant_id: UUID,
+        pool: AsyncConnectionPool,
+        context: Mapping[str, Any],
+    ) -> None:
+        """Process the event for its tenant (`context`: the worker's job context, e.g.
+        the LLM gateway under LLM_KEY). Raise to retry."""
         ...
 
 
@@ -96,7 +103,13 @@ class TestProvider:
         tenant = event.payload.get("tenant_id")
         return UUID(tenant) if tenant else None
 
-    async def handle(self, event: WebhookEvent, tenant_id: UUID, pool: AsyncConnectionPool) -> None:
+    async def handle(
+        self,
+        event: WebhookEvent,
+        tenant_id: UUID,
+        pool: AsyncConnectionPool,
+        context: Mapping[str, Any],
+    ) -> None:
         if "fail" in event.payload:
             raise RuntimeError(str(event.payload["fail"]))
         async with tenant_transaction(pool, tenant_id) as conn:
@@ -105,8 +118,13 @@ class TestProvider:
             )
 
 
-def default_providers(settings: Settings) -> dict[str, WebhookProvider]:
+def default_providers(
+    settings: Settings, modules: Mapping[str, Any] | None = None
+) -> dict[str, WebhookProvider]:
     providers: dict[str, WebhookProvider] = {}
+    for module in (modules or {}).values():
+        for provider in module.webhook_providers():
+            providers[provider.key] = provider
     if settings.webhook_test_secret and settings.env in ("local", "test"):
         test = TestProvider(settings.webhook_test_secret.get_secret_value())
         providers[test.key] = test
@@ -148,7 +166,7 @@ async def process_inbound_event(context: procrastinate.JobContext, /, event_id: 
         tenant = tenant or await provider.route(event, pool)
         if tenant is None:
             raise UnroutableEvent(f"no tenant for {event.provider} event {event.external_id}")
-        await provider.handle(event, tenant, pool)
+        await provider.handle(event, tenant, pool, context.additional_context)
     except Exception as exc:
         status = "dead" if is_last_attempt(context) else "failed"
         await _finish(pool, eid, status, tenant, f"{type(exc).__name__}: {exc}"[:2000])

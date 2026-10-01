@@ -182,6 +182,9 @@ def test_every_mutating_route_writes_an_audit_row(
             "POST", "/api/crm/knowledge/{kb}/unpublish"
         ),
         ("DELETE", "/api/crm/knowledge/{item_id}"): call("DELETE", "/api/crm/knowledge/{kb}"),
+        ("PUT", "/api/crm/channels/web"): call(
+            "PUT", "/api/crm/channels/web", json={"enabled": True, "settings": {"color": "#123456"}}
+        ),
         ("PUT", "/api/modules/{key}"): lambda: api.put(
             "/api/modules/crm",
             headers=in_tenant(owner_h),

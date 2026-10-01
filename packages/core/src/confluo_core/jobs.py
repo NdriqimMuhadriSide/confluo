@@ -132,9 +132,12 @@ def tenant_task(
     return decorate
 
 
-async def defer_in(conn: AsyncConnection, task: Any, **kwargs: Any) -> int:
-    """Enqueue `task` on `conn`'s open transaction: the job exists only if it commits."""
-    job_id: int = await task.configure(connection=conn).defer_async(**kwargs)
+async def defer_in(
+    conn: AsyncConnection, task: Any, *, lock: str | None = None, **kwargs: Any
+) -> int:
+    """Enqueue `task` on `conn`'s open transaction: the job exists only if it commits.
+    Jobs sharing a `lock` run one at a time, in order (e.g. one chat session)."""
+    job_id: int = await task.configure(connection=conn, lock=lock).defer_async(**kwargs)
     return job_id
 
 

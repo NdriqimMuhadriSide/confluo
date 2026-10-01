@@ -2063,6 +2063,101 @@
         "title": "ValidationError",
         "type": "object"
       },
+      "WebChat": {
+        "properties": {
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Key"
+          },
+          "settings": {
+            "$ref": "#/components/schemas/WebChatSettings"
+          }
+        },
+        "required": [
+          "enabled",
+          "key",
+          "settings"
+        ],
+        "title": "WebChat",
+        "type": "object"
+      },
+      "WebChatSettings": {
+        "properties": {
+          "allowed_origins": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Allowed Origins",
+            "type": "array"
+          },
+          "color": {
+            "default": "#111827",
+            "pattern": "^#[0-9a-fA-F]{6}$",
+            "title": "Color",
+            "type": "string"
+          },
+          "greeting": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "default": {},
+            "title": "Greeting",
+            "type": "object"
+          },
+          "logo_url": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "pattern": "^https://",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Logo Url"
+          },
+          "title": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "default": {},
+            "title": "Title",
+            "type": "object"
+          }
+        },
+        "title": "WebChatSettings",
+        "type": "object"
+      },
+      "WebChatUpdate": {
+        "properties": {
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "settings": {
+            "$ref": "#/components/schemas/WebChatSettings"
+          }
+        },
+        "required": [
+          "enabled",
+          "settings"
+        ],
+        "title": "WebChatUpdate",
+        "type": "object"
+      },
       "WebhookAck": {
         "properties": {
           "status": {
@@ -2188,6 +2283,47 @@
           "end"
         ],
         "title": "WeeklyRule",
+        "type": "object"
+      },
+      "WidgetConfig": {
+        "properties": {
+          "color": {
+            "title": "Color",
+            "type": "string"
+          },
+          "greeting": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Greeting",
+            "type": "object"
+          },
+          "logo_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Logo Url"
+          },
+          "title": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Title",
+            "type": "object"
+          }
+        },
+        "required": [
+          "color",
+          "title",
+          "greeting",
+          "logo_url"
+        ],
+        "title": "WidgetConfig",
         "type": "object"
       }
     },
@@ -2413,6 +2549,110 @@
         "summary": "List Audit",
         "tags": [
           "audit"
+        ]
+      }
+    },
+    "/api/crm/channels/web": {
+      "get": {
+        "operationId": "getWebChat",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Tenant-Id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Tenant-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebChat"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Web Chat",
+        "tags": [
+          "crm-channels"
+        ]
+      },
+      "put": {
+        "operationId": "updateWebChat",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Tenant-Id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Tenant-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebChatUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebChat"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Web Chat",
+        "tags": [
+          "crm-channels"
         ]
       }
     },
@@ -5032,6 +5272,48 @@
         "summary": "Health",
         "tags": [
           "system"
+        ]
+      }
+    },
+    "/public/crm/web/{key}/config": {
+      "get": {
+        "operationId": "webChatConfig",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "title": "Key",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WidgetConfig"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Widget Config",
+        "tags": [
+          "web-chat"
         ]
       }
     },

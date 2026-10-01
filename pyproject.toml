@@ -25,6 +25,7 @@ dev = [
   "mypy>=1.13",
   "pytest>=8.3",
   "pytest-asyncio>=0.25",
+  "pytest-timeout>=2.3",
   "ruff>=0.8",
 ]
 
@@ -41,6 +42,7 @@ select = ["E", "F", "I", "UP", "B", "SIM", "ASYNC"]
 "**/migrations/*.py" = ["E501"]
 "scripts/seed_demo.py" = ["E501"]
 "modules/crm/src/confluo_crm/presets.py" = ["E501"]  # translated text
+"modules/crm/src/confluo_crm/intake/brain.py" = ["E501"]  # word lists and templates
 "tests/**" = ["E501"]
 
 [tool.ruff.lint.isort]

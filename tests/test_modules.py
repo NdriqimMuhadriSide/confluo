@@ -25,6 +25,12 @@ class Fake:
     def routers(self) -> list[APIRouter]:
         return []
 
+    def public_routers(self) -> list[APIRouter]:
+        return []
+
+    def webhook_providers(self) -> list[object]:
+        return []
+
     def dashboard_manifest(self) -> ModuleManifest:
         return ModuleManifest()
 

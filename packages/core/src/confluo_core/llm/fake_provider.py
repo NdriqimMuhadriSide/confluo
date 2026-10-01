@@ -15,6 +15,15 @@ from confluo_core.llm.types import ChatRequest, ChatResult, EmbedInput, EmbedRes
 DIMENSIONS = 1024
 
 
+# Deterministic answers per request purpose, registered by modules (e.g. the CRM
+# intake graph's keyword-based "brain") so local dev and CI run without a real model.
+RESPONDERS: dict[str, Callable[[ChatRequest], ChatResult]] = {}
+
+
+def register_responder(purpose: str, responder: Callable[[ChatRequest], ChatResult]) -> None:
+    RESPONDERS[purpose] = responder
+
+
 class FakeProvider:
     name = "fake"
 
@@ -33,6 +42,8 @@ class FakeProvider:
             return self.script.pop(0)
         if self.responder:
             return self.responder(request)
+        if request.purpose in RESPONDERS:
+            return RESPONDERS[request.purpose](request)
         last = request.messages[-1].text if request.messages else ""
         text = '{"echo": true}' if request.output_schema else f"echo: {last}"
         tokens = max(1, len((request.system + last).split()))

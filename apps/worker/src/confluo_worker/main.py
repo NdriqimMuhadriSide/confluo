@@ -36,7 +36,10 @@ async def main() -> None:
             )
             context = worker_context(
                 pool,
-                **{PROVIDERS_KEY: default_providers(settings), LLM_KEY: LLMGateway(settings, pool)},
+                **{
+                    PROVIDERS_KEY: default_providers(settings, modules),
+                    LLM_KEY: LLMGateway(settings, pool),
+                },
             )
             await app.run_worker_async(additional_context=context)
     finally:

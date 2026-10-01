@@ -58,6 +58,9 @@ class ChatRequest:
     output_schema: dict[str, Any] | None = None
     # Reuse the prompt prefix (system + tools + earlier turns) across calls.
     cache: bool = True
+    # What the call is for ("intake_understand", ...); logged, and lets the fake
+    # provider answer deterministically per purpose.
+    purpose: str = ""
 
 
 @dataclass(frozen=True)

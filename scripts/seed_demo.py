@@ -33,6 +33,7 @@ SLUG = "demo"
 DEMO_EMAIL = "demo@confluo.local"
 DEMO_PASSWORD = "demo-confluo-2026"  # local demo only
 TZ = ZoneInfo("Europe/Brussels")
+WIDGET_KEY = "wk_demo_kapsalon"  # local demo only
 
 
 def demo_user_id(supabase_url: str) -> uuid.UUID | None:
@@ -288,6 +289,27 @@ async def seed(
                     (len(msgs) - i) * 3,
                 ),
             )
+
+    # Web chat for the local widget test site (apps/widget, port 3001).
+    await conn.execute(
+        "insert into crm_channel_connection (channel, external_account_id, status, settings)"
+        " values ('web', %s, 'active', %s)",
+        (
+            WIDGET_KEY,
+            Jsonb(
+                {
+                    "color": "#0f766e",
+                    "title": {"nl": "Kapsalon Demo", "en": "Kapsalon Demo", "fr": "Kapsalon Demo"},
+                    "greeting": {
+                        "nl": "Hallo! Stel gerust je vraag over afspraken, prijzen of parkeren.",
+                        "en": "Hi! Ask us anything about appointments, prices or parking.",
+                        "fr": "Bonjour ! Posez-nous vos questions sur les rendez-vous, les prix ou le parking.",
+                    },
+                    "allowed_origins": ["http://localhost:3001", "http://127.0.0.1:3001"],
+                }
+            ),
+        ),
+    )
 
     # Complete the preset's knowledge drafts and publish them.
     fill = {
