@@ -3,7 +3,7 @@
 # Secret key of the running Supabase *local* stack, read at run time so it is never
 # committed. Used by the API for invitation emails and by the e2e tests.
 LOCAL_SECRET_KEY = $$(supabase status -o env 2>/dev/null | sed -n 's/^SECRET_KEY="\{0,1\}\([^"]*\)"\{0,1\}$$/\1/p')
-.PHONY: help setup db db-stop db-reset migrate dev up down lint format typecheck test e2e smoke-llm api-client erd seed check
+.PHONY: help setup db db-stop db-reset migrate dev up down lint format typecheck test e2e smoke-llm api-client api-client-check erd seed check
 
 help: ## List targets
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*## "}; {printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2}'
@@ -76,4 +76,9 @@ api-client: ## Regenerate openapi.json and the dashboard's TypeScript client
 	uv run python scripts/export_openapi.py
 	pnpm --filter @confluo/web gen:api
 
-check: lint typecheck test ## Everything CI runs
+api-client-check: ## Fail if openapi.json or the generated TS client is stale
+	$(MAKE) -s api-client >/dev/null
+	git diff --exit-code -- apps/web/openapi.json apps/web/src/lib/api/schema.d.ts \
+		|| (echo "API client was stale: regenerated, review and commit it" && exit 1)
+
+check: lint typecheck test api-client-check ## Everything CI runs
