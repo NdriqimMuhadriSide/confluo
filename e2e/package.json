@@ -3,7 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "auth": "node auth.mjs"
+    "auth": "node auth.mjs",
+    "rbac": "node rbac.mjs",
+    "all": "node auth.mjs && node rbac.mjs"
   },
   "devDependencies": {
     "playwright": "^1.63"

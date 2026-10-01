@@ -2,8 +2,7 @@
 
 A module is a Python package that exposes a `ConfluoModule` object under the
 `confluo.modules` entry point group. Only the parts needed so far are in the
-contract; jobs, agent tools, permissions and migrations are added by the cards
-that need them.
+contract; jobs, agent tools and migrations are added by the cards that need them.
 """
 
 from dataclasses import dataclass, field
@@ -11,6 +10,8 @@ from importlib.metadata import entry_points
 from typing import Protocol, runtime_checkable
 
 from fastapi import APIRouter
+
+from confluo_core.permissions import Permission
 
 ENTRY_POINT_GROUP = "confluo.modules"
 
@@ -34,6 +35,8 @@ class ConfluoModule(Protocol):
     key: str
     version: str
     depends_on: list[str]
+    # Permission keys must start with the module key, e.g. "crm.inbox.takeover".
+    permissions: list[Permission]
 
     def routers(self) -> list[APIRouter]: ...
 
@@ -53,6 +56,9 @@ def discover_modules() -> dict[str, ConfluoModule]:
             raise ModuleError(f"entry point {ep.name!r} does not implement ConfluoModule")
         if module.key != ep.name:
             raise ModuleError(f"entry point {ep.name!r} exposes module key {module.key!r}")
+        foreign = [p.key for p in module.permissions if not p.key.startswith(f"{module.key}.")]
+        if foreign:
+            raise ModuleError(f"module {module.key!r} declares foreign permissions {foreign}")
         found[module.key] = module
     return _order_by_dependencies(found)
 

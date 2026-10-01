@@ -9,11 +9,14 @@ from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from confluo_api import tenants
+from confluo_api import members, tenants
 from confluo_core.auth import CurrentUser, TokenVerifier, current_user
+from confluo_core.auth_admin import AuthAdmin, SupabaseAuthAdmin
 from confluo_core.db import create_pool, ping
+from confluo_core.deps import REQUIRED_PERMISSIONS
 from confluo_core.logging import configure_logging
 from confluo_core.modules import ConfluoModule, discover_modules
+from confluo_core.permissions import CORE_PERMISSIONS, PermissionRegistry
 from confluo_core.settings import Settings, get_settings
 
 
@@ -39,10 +42,15 @@ class Manifest(BaseModel):
 
 
 def create_app(
-    settings: Settings | None = None, token_verifier: TokenVerifier | None = None
+    settings: Settings | None = None,
+    token_verifier: TokenVerifier | None = None,
+    auth_admin: AuthAdmin | None = None,
 ) -> FastAPI:
     settings = settings or get_settings()
     modules = discover_modules()
+    permissions = PermissionRegistry(
+        [*CORE_PERMISSIONS, *(p for m in modules.values() for p in m.permissions)]
+    )
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
@@ -57,6 +65,8 @@ def create_app(
     app = FastAPI(title="Confluo API", version="0.1.0", lifespan=lifespan)
     app.state.modules = modules
     app.state.token_verifier = token_verifier or TokenVerifier(settings)
+    app.state.auth_admin = auth_admin or SupabaseAuthAdmin(settings)
+    app.state.permissions = permissions
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,
@@ -90,6 +100,7 @@ def create_app(
         )
 
     app.include_router(tenants.router)
+    app.include_router(members.router)
 
     for module in modules.values():
         for router in module.routers():
@@ -99,6 +110,9 @@ def create_app(
                 router, prefix=f"/api/{module.key}", dependencies=[Depends(current_user)]
             )
 
+    unknown = sorted(p for p in REQUIRED_PERMISSIONS if p not in permissions)
+    if unknown:
+        raise RuntimeError(f"routes require undeclared permissions: {unknown}")
     return app
 
 

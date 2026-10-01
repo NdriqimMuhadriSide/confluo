@@ -32,6 +32,9 @@ class Settings(BaseSettings):
     # Expected `iss` claim. Defaults to <supabase_url>/auth/v1; set it when the API
     # reaches Supabase under a different host than the one that issues tokens (Docker).
     supabase_jwt_issuer: str | None = None
+    # Server-side Supabase key (sb_secret_...), used only to send invitation emails.
+    # Without it invitations are still recorded; new users just get no email.
+    supabase_secret_key: SecretStr | None = None
 
     api_host: str = "127.0.0.1"
     api_port: int = 8100

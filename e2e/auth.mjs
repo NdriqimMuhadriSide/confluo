@@ -55,7 +55,7 @@ const confirm = await latestLink(email);
 log(`confirmation email received: "${confirm.subject}"`);
 await page.goto(confirm.link);
 await page.waitForURL(`${WEB}/`);
-await page.getByText(`Signed in as ${email}`).waitFor();
+await page.locator("header").getByText(email).waitFor();
 log("confirmation link signs the user in");
 
 async function assertApiAcceptsSession() {
@@ -84,7 +84,7 @@ log("wrong password is refused");
 await page.fill("#password", password);
 await page.getByRole("button", { name: "Sign in", exact: true }).click();
 await page.waitForURL(`${WEB}/`);
-await page.getByText(`Signed in as ${email}`).waitFor();
+await page.locator("header").getByText(email).waitFor();
 await assertApiAcceptsSession();
 log("password sign-in works");
 
@@ -99,7 +99,7 @@ const magic = await latestLink(email);
 log(`magic link email received: "${magic.subject}"`);
 await p2.goto(magic.link);
 await p2.waitForURL(`${WEB}/`);
-await p2.getByText(`Signed in as ${email}`).waitFor();
+await p2.locator("header").getByText(email).waitFor();
 log("magic link signs the user in");
 
 // 9. Magic link for an unknown email gives the same neutral answer, sends nothing

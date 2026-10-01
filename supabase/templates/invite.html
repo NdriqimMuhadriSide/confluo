@@ -1,0 +1,8 @@
+<!-- Invitation to a Confluo business. The link goes to the dashboard's /auth/confirm
+     route with a token hash (server-side verification), not Supabase's default
+     fragment-based link, which a server can't read. Keep the cloud project's
+     template (Authentication → Emails → Invite user) in sync with this file. -->
+<h2>You're invited to {{ .Data.invited_to }} on Confluo</h2>
+<p>You've been added to the team of <strong>{{ .Data.invited_to }}</strong>.</p>
+<p><a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=invite&next=/">Accept the invitation</a></p>
+<p>The link signs you in. Afterwards you can sign in any time with an emailed link.</p>

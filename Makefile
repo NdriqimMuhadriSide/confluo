@@ -1,4 +1,8 @@
 .DEFAULT_GOAL := help
+
+# Secret key of the running Supabase *local* stack, read at run time so it is never
+# committed. Used by the API for invitation emails and by the e2e tests.
+LOCAL_SECRET_KEY = $$(supabase status -o env 2>/dev/null | sed -n 's/^SECRET_KEY="\{0,1\}\([^"]*\)"\{0,1\}$$/\1/p')
 .PHONY: help setup db db-stop db-reset migrate dev up down lint format typecheck test e2e api-client check
 
 help: ## List targets
@@ -24,10 +28,12 @@ migrate: ## Apply database migrations (Alembic) and enable the app role
 	uv run python scripts/set_app_role_password.py
 
 dev: db migrate ## Start db, migrate, then api, worker, web and widget with hot reload
-	uv run honcho -f Procfile.dev start
+	CONFLUO_SUPABASE_SECRET_KEY=$${CONFLUO_SUPABASE_SECRET_KEY:-$(LOCAL_SECRET_KEY)} \
+		uv run honcho -f Procfile.dev start
 
 up: db migrate ## Start db, migrate, then api, worker and web as Docker containers
-	docker compose -f infra/docker-compose.yml up --build
+	CONFLUO_SUPABASE_SECRET_KEY=$${CONFLUO_SUPABASE_SECRET_KEY:-$(LOCAL_SECRET_KEY)} \
+		docker compose -f infra/docker-compose.yml up --build
 
 down: ## Stop the app containers
 	docker compose -f infra/docker-compose.yml down
@@ -52,9 +58,9 @@ export CONFLUO_TEST_DATABASE_URL
 test: ## pytest (database tests need `make db`)
 	uv run pytest
 
-e2e: ## Browser test of sign-up/sign-in against the running stack (`make dev` first)
+e2e: ## Browser tests (auth, members/roles) against the running stack (`make dev` first)
 	pnpm --filter @confluo/e2e exec playwright install chromium
-	pnpm --filter @confluo/e2e auth
+	SUPABASE_LOCAL_SECRET_KEY=$(LOCAL_SECRET_KEY) pnpm --filter @confluo/e2e all
 
 api-client: ## Regenerate openapi.json and the dashboard's TypeScript client
 	uv run python scripts/export_openapi.py

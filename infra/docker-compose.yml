@@ -24,6 +24,7 @@ services:
       CONFLUO_DATABASE_URL: postgresql://confluo_app:confluo_app@host.docker.internal:54322/postgres
       CONFLUO_SUPABASE_URL: http://host.docker.internal:54321
       CONFLUO_SUPABASE_JWT_ISSUER: http://127.0.0.1:54321/auth/v1
+      CONFLUO_SUPABASE_SECRET_KEY: ${CONFLUO_SUPABASE_SECRET_KEY:-}
       CONFLUO_ENV: staging
       CONFLUO_API_HOST: 0.0.0.0
     ports:

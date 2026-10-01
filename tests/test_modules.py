@@ -2,10 +2,12 @@ from fastapi import APIRouter
 
 from confluo_core.modules import ModuleError, ModuleManifest, discover_modules
 from confluo_core.modules import _order_by_dependencies as order
+from confluo_core.permissions import Permission
 
 
 class Fake:
     version = "0"
+    permissions: list[Permission] = []
 
     def __init__(self, key: str, depends_on: list[str]) -> None:
         self.key = key

@@ -32,11 +32,17 @@ async def _set(conn: AsyncConnection, name: str, value: UUID | None) -> None:
 
 @asynccontextmanager
 async def user_transaction(
-    pool: AsyncConnectionPool, user_id: UUID
+    pool: AsyncConnectionPool, user_id: UUID, email: str | None = None
 ) -> AsyncIterator[AsyncConnection]:
-    """A transaction acting as `user_id`, before any tenant is chosen."""
+    """A transaction acting as `user_id`, before any tenant is chosen.
+
+    `email` must come from the verified token; invitations are matched on it.
+    """
     async with pool.connection() as conn, conn.transaction():
         await _set(conn, "app.user_id", user_id)
+        await conn.execute(
+            "select set_config('app.user_email', %s, true)", ((email or "").lower(),)
+        )
         yield conn
 
 

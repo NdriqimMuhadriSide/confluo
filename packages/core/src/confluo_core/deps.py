@@ -1,8 +1,8 @@
 """FastAPI dependencies for tenant-scoped endpoints, shared by the API and modules."""
 
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterator, Callable, Coroutine
 from dataclasses import dataclass
-from typing import Annotated
+from typing import Annotated, Any
 from uuid import UUID
 
 from fastapi import Depends, Header, HTTPException, Request, status
@@ -10,6 +10,7 @@ from psycopg import AsyncConnection
 from psycopg_pool import AsyncConnectionPool
 
 from confluo_core.auth import AuthUser, CurrentUser
+from confluo_core.permissions import PermissionRegistry
 from confluo_core.tenancy import NotAMember, require_membership, user_transaction
 
 TENANT_HEADER = "X-Tenant-Id"
@@ -23,29 +24,72 @@ def get_pool(request: Request) -> AsyncConnectionPool:
 Pool = Annotated[AsyncConnectionPool, Depends(get_pool)]
 
 
+def get_permissions(request: Request) -> PermissionRegistry:
+    registry: PermissionRegistry = request.app.state.permissions
+    return registry
+
+
+Permissions = Annotated[PermissionRegistry, Depends(get_permissions)]
+
+
 @dataclass(frozen=True)
 class TenantContext:
     conn: AsyncConnection
     tenant_id: UUID
     user: AuthUser
     role: str
+    permissions: frozenset[str]
+
+    def can(self, permission: str) -> bool:
+        return permission in self.permissions
 
 
 async def tenant_context(
     user: CurrentUser,
     pool: Pool,
+    registry: Permissions,
     tenant_id: Annotated[UUID, Header(alias=TENANT_HEADER)],
 ) -> AsyncIterator[TenantContext]:
     """One transaction per request, scoped to the tenant in the X-Tenant-Id header.
 
     403 when the user isn't an active member of that tenant (or it doesn't exist).
     """
-    async with user_transaction(pool, user.id) as conn:
+    async with user_transaction(pool, user.id, user.email) as conn:
         try:
             role = await require_membership(conn, tenant_id, user.id)
         except NotAMember:
             raise HTTPException(status.HTTP_403_FORBIDDEN, "Not a member of this tenant") from None
-        yield TenantContext(conn=conn, tenant_id=tenant_id, user=user, role=role)
+        yield TenantContext(
+            conn=conn,
+            tenant_id=tenant_id,
+            user=user,
+            role=role,
+            permissions=registry.for_role(role),
+        )
 
 
 Tenant = Annotated[TenantContext, Depends(tenant_context)]
+
+
+# Every permission passed to requires(); create_app checks they all exist, so a typo
+# fails at startup instead of silently refusing everyone.
+REQUIRED_PERMISSIONS: set[str] = set()
+
+
+def requires(
+    permission: str,
+) -> Callable[[TenantContext], Coroutine[Any, Any, TenantContext]]:
+    """Dependency factory: the tenant context, or 403 without `permission`.
+
+    @router.post("/x")
+    async def x(tenant: Annotated[TenantContext, Depends(requires("crm.kb.edit"))]): ...
+    """
+
+    REQUIRED_PERMISSIONS.add(permission)
+
+    async def check(tenant: Tenant) -> TenantContext:
+        if not tenant.can(permission):
+            raise HTTPException(status.HTTP_403_FORBIDDEN, f"Missing permission {permission}")
+        return tenant
+
+    return check

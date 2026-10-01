@@ -95,6 +95,25 @@ each query:
   and add a policy like `location_tenant`. `tests/tenancy/test_isolation.py` fails for any
   table in `public` without RLS and a policy.
 
+## Roles and permissions
+
+Roles are `owner`, `admin` and `staff`. Permissions are strings declared by core
+(`confluo_core.permissions`) and by each module (`ConfluoModule.permissions`, prefixed
+with the module key) with the roles that get them. Guard a route with
+`Depends(requires("crm.kb.edit"))`; the app refuses to start if a route requires an
+undeclared permission. `GET /api/tenant` returns the caller's role and permissions.
+
+Escalation rules are also enforced in the database (migration `0002_rbac`): only owners
+and admins change members or invitations, only owners grant or touch the owner role, a
+business keeps at least one owner, and members join only via `app.create_tenant()` or
+`app.accept_invitation()`. Inside a tenant context only that tenant is visible.
+
+**Invitations:** an admin invites an email with a role. New people get Supabase's invite
+email (template `supabase/templates/invite.html`, which links to `/auth/confirm` with a
+token hash); people who already have an account see the invitation at their next sign-in.
+Either way they accept it in the dashboard, which checks the invitation's email against
+their verified token.
+
 ## CI
 
 GitHub Actions ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs on every push to
