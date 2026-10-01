@@ -40,6 +40,7 @@ select = ["E", "F", "I", "UP", "B", "SIM", "ASYNC"]
 # SQL in migrations reads better unwrapped.
 "**/migrations/*.py" = ["E501"]
 "scripts/seed_demo.py" = ["E501"]
+"tests/**" = ["E501"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["confluo_core", "confluo_crm", "confluo_api", "confluo_worker"]

@@ -14,17 +14,21 @@ which values are allowed.
 
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from typing import Literal
 from uuid import UUID
 
 from psycopg import AsyncConnection
 from psycopg_pool import AsyncConnectionPool
+
+# Who the audit log credits for writes in a transaction (see migration 0006).
+Actor = Literal["user", "ai", "system"]
 
 
 class NotAMember(Exception):
     pass
 
 
-async def _set(conn: AsyncConnection, name: str, value: UUID | None) -> None:
+async def _set(conn: AsyncConnection, name: str, value: object | None) -> None:
     await conn.execute(
         "select set_config(%s, %s, true)", (name, str(value) if value is not None else "")
     )
@@ -32,17 +36,21 @@ async def _set(conn: AsyncConnection, name: str, value: UUID | None) -> None:
 
 @asynccontextmanager
 async def user_transaction(
-    pool: AsyncConnectionPool, user_id: UUID, email: str | None = None
+    pool: AsyncConnectionPool,
+    user_id: UUID,
+    email: str | None = None,
+    client_ip: str | None = None,
 ) -> AsyncIterator[AsyncConnection]:
     """A transaction acting as `user_id`, before any tenant is chosen.
 
     `email` must come from the verified token; invitations are matched on it.
+    `client_ip` ends up in the audit log.
     """
     async with pool.connection() as conn, conn.transaction():
         await _set(conn, "app.user_id", user_id)
-        await conn.execute(
-            "select set_config('app.user_email', %s, true)", ((email or "").lower(),)
-        )
+        await _set(conn, "app.user_email", (email or "").lower())
+        await _set(conn, "app.actor_type", "user")
+        await _set(conn, "app.client_ip", client_ip)
         yield conn
 
 
@@ -66,14 +74,19 @@ async def require_membership(conn: AsyncConnection, tenant_id: UUID, user_id: UU
 
 @asynccontextmanager
 async def tenant_transaction(
-    pool: AsyncConnectionPool, tenant_id: UUID, user_id: UUID | None = None
+    pool: AsyncConnectionPool,
+    tenant_id: UUID,
+    user_id: UUID | None = None,
+    actor: Actor | None = None,
 ) -> AsyncIterator[AsyncConnection]:
     """A transaction scoped to `tenant_id`, for trusted callers such as worker jobs.
 
     No membership check: use it only where the tenant comes from our own data
     (a job payload, a webhook routed by channel connection), never from a request.
+    `actor` defaults to "user" when a user is given, else "system"; the agent passes "ai".
     """
     async with pool.connection() as conn, conn.transaction():
         await _set(conn, "app.user_id", user_id)
         await _set(conn, "app.tenant_id", tenant_id)
+        await _set(conn, "app.actor_type", actor or ("user" if user_id else "system"))
         yield conn

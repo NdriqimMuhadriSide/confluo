@@ -1,5 +1,6 @@
 """FastAPI dependencies for tenant-scoped endpoints, shared by the API and modules."""
 
+import ipaddress
 from collections.abc import AsyncIterator, Callable, Coroutine
 from dataclasses import dataclass
 from typing import Annotated, Any
@@ -44,7 +45,19 @@ class TenantContext:
         return permission in self.permissions
 
 
+def client_ip(request: Request) -> str | None:
+    """The caller's IP for the audit log, or None if the peer isn't an IP address
+    (unix socket, test client). Behind a proxy, set uvicorn's --forwarded-allow-ips
+    so request.client reflects X-Forwarded-For."""
+    host = request.client.host if request.client else None
+    try:
+        return str(ipaddress.ip_address(host)) if host else None
+    except ValueError:
+        return None
+
+
 async def tenant_context(
+    request: Request,
     user: CurrentUser,
     pool: Pool,
     registry: Permissions,
@@ -54,7 +67,7 @@ async def tenant_context(
 
     403 when the user isn't an active member of that tenant (or it doesn't exist).
     """
-    async with user_transaction(pool, user.id, user.email) as conn:
+    async with user_transaction(pool, user.id, user.email, client_ip(request)) as conn:
         try:
             role = await require_membership(conn, tenant_id, user.id)
         except NotAMember:

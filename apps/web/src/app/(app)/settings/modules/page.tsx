@@ -73,7 +73,12 @@ export default async function ModulesPage({ searchParams }: PageProps<"/settings
 
   return (
     <>
-      <h1 className="text-2xl font-semibold tracking-tight">Modules</h1>
+      <div className="flex items-baseline justify-between">
+        <h1 className="text-2xl font-semibold tracking-tight">Modules</h1>
+        <a href="/settings/activity" className="text-sm underline underline-offset-4">
+          Activity log
+        </a>
+      </div>
       {typeof error === "string" && (
         <p role="alert" className="text-sm text-destructive">
           {error}

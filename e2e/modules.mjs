@@ -46,5 +46,10 @@ await page.getByRole("alert").getByText(/reminder_hours_before/).waitFor();
 check((await crm.locator("#cfg-reminder_hours_before").inputValue()) === "48", "invalid value stored");
 log("an out-of-range value is rejected by the schema and nothing is stored");
 
+await page.goto(`${WEB}/settings/activity`);
+await page.locator('[data-audit="update tenant_module"]').first().waitFor();
+await page.locator('[data-audit="insert tenant"]').waitFor();
+log("the changes appear in Settings → Activity (audit log)");
+
 await browser.close();
 console.log("\nALL PASSED (modules)");

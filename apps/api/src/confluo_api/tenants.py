@@ -4,13 +4,13 @@ from datetime import datetime
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from psycopg import errors
 from psycopg.rows import class_row
 from pydantic import BaseModel, Field, StringConstraints
 
 from confluo_core.auth import CurrentUser
-from confluo_core.deps import Pool, Tenant, TenantContext, requires
+from confluo_core.deps import Pool, Tenant, TenantContext, client_ip, requires
 from confluo_core.tenancy import user_transaction
 
 router = APIRouter()
@@ -60,8 +60,8 @@ class LocationOut(BaseModel):
 
 
 @router.get("/api/me", tags=["auth"], operation_id="getMe")
-async def me(user: CurrentUser, pool: Pool) -> Me:
-    async with user_transaction(pool, user.id, user.email) as conn:
+async def me(user: CurrentUser, pool: Pool, request: Request) -> Me:
+    async with user_transaction(pool, user.id, user.email, client_ip(request)) as conn:
         cur = conn.cursor(row_factory=class_row(TenantOut))
         await cur.execute(
             "select t.id, t.name, t.slug, m.role from tenant t"
@@ -81,9 +81,11 @@ async def me(user: CurrentUser, pool: Pool) -> Me:
     tags=["auth"],
     operation_id="acceptInvitation",
 )
-async def accept_invitation(invitation_id: UUID, user: CurrentUser, pool: Pool) -> TenantOut:
+async def accept_invitation(
+    invitation_id: UUID, user: CurrentUser, pool: Pool, request: Request
+) -> TenantOut:
     """Join the tenant of an invitation addressed to the signed-in user's email."""
-    async with user_transaction(pool, user.id, user.email) as conn:
+    async with user_transaction(pool, user.id, user.email, client_ip(request)) as conn:
         try:
             async with conn.transaction():
                 cur = await conn.execute("select app.accept_invitation(%s)", (invitation_id,))
@@ -108,10 +110,12 @@ async def accept_invitation(invitation_id: UUID, user: CurrentUser, pool: Pool) 
     operation_id="createTenant",
     status_code=status.HTTP_201_CREATED,
 )
-async def create_tenant(body: TenantIn, user: CurrentUser, pool: Pool) -> TenantOut:
+async def create_tenant(
+    body: TenantIn, user: CurrentUser, pool: Pool, request: Request
+) -> TenantOut:
     """Create a business; the caller becomes its owner."""
     name = user.claims.get("user_metadata", {}).get("name")
-    async with user_transaction(pool, user.id, user.email) as conn:
+    async with user_transaction(pool, user.id, user.email, client_ip(request)) as conn:
         await conn.execute(
             "insert into app_user (id, email, name) values (%s, %s, %s)"
             " on conflict (id) do update set email = excluded.email",

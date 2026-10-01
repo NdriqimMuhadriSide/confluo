@@ -4,6 +4,40 @@
  */
 
 export interface paths {
+    "/api/ai-actions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Ai Actions */
+        get: operations["listAIActions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/audit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Audit */
+        get: operations["listAudit"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/crm/status": {
         parameters: {
             query?: never;
@@ -258,6 +292,84 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AIAction */
+        AIAction: {
+            /** Approval Status */
+            approval_status: string;
+            /** Confidence */
+            confidence: number | null;
+            /** Conversation Id */
+            conversation_id: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Input */
+            input: {
+                [key: string]: unknown;
+            };
+            /** Input Tokens */
+            input_tokens: number | null;
+            /** Latency Ms */
+            latency_ms: number | null;
+            /** Model */
+            model: string | null;
+            /** Node */
+            node: string;
+            /** Outcome */
+            outcome: string | null;
+            /** Output */
+            output: {
+                [key: string]: unknown;
+            };
+            /** Output Tokens */
+            output_tokens: number | null;
+            /** Rationale */
+            rationale: string | null;
+            /**
+             * Run Id
+             * Format: uuid
+             */
+            run_id: string;
+            /** Sources */
+            sources: unknown[];
+            /** Tool */
+            tool: string | null;
+        };
+        /** AuditEntry */
+        AuditEntry: {
+            /** Action */
+            action: string;
+            /** Actor Email */
+            actor_email: string | null;
+            /** Actor Id */
+            actor_id: string | null;
+            /** Actor Type */
+            actor_type: string;
+            /**
+             * At
+             * Format: date-time
+             */
+            at: string;
+            /** Diff */
+            diff: {
+                [key: string]: unknown;
+            };
+            /** Entity */
+            entity: string;
+            /** Entity Id */
+            entity_id: string | null;
+            /** Id */
+            id: number;
+            /** Ip */
+            ip: string | null;
+        };
         /** CrmStatus */
         CrmStatus: {
             /** Module */
@@ -529,6 +641,78 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    listAIActions: {
+        parameters: {
+            query?: {
+                run_id?: string | null;
+                conversation_id?: string | null;
+                limit?: number;
+            };
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AIAction"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    listAudit: {
+        parameters: {
+            query?: {
+                entity?: string | null;
+                entity_id?: string | null;
+                /** @description Return entries with a smaller id (paging). */
+                before?: number | null;
+                limit?: number;
+            };
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuditEntry"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     crmStatus: {
         parameters: {
             query?: never;
