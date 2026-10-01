@@ -1,0 +1,11 @@
+{
+  "name": "@confluo/e2e",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "auth": "node auth.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.63"
+  }
+}

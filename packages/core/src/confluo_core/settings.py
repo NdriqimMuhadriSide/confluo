@@ -1,7 +1,7 @@
 from functools import lru_cache
 from typing import Literal
 
-from pydantic import Field, PostgresDsn, SecretStr
+from pydantic import Field, PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -18,13 +18,26 @@ class Settings(BaseSettings):
         description="Postgres connection string (Supabase local stack by default).",
     )
     supabase_url: str = "http://127.0.0.1:54321"
-    supabase_jwt_secret: SecretStr | None = None
+    # Staff access tokens are Supabase Auth JWTs, verified against the project's public
+    # signing keys (JWKS) — no shared secret. Audience is what Supabase puts in `aud`.
+    supabase_jwt_audience: str = "authenticated"
+    # Expected `iss` claim. Defaults to <supabase_url>/auth/v1; set it when the API
+    # reaches Supabase under a different host than the one that issues tokens (Docker).
+    supabase_jwt_issuer: str | None = None
 
     api_host: str = "127.0.0.1"
     api_port: int = 8100
     cors_origins: list[str] = ["http://localhost:3000", "http://127.0.0.1:3000"]
 
     worker_heartbeat_seconds: float = 30.0
+
+    @property
+    def supabase_auth_url(self) -> str:
+        return f"{self.supabase_url.rstrip('/')}/auth/v1"
+
+    @property
+    def jwt_issuer(self) -> str:
+        return self.supabase_jwt_issuer or self.supabase_auth_url
 
 
 @lru_cache

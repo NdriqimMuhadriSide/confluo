@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help setup db db-stop db-reset dev up down lint format typecheck test api-client check
+.PHONY: help setup db db-stop db-reset dev up down lint format typecheck test e2e api-client check
 
 help: ## List targets
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*## "}; {printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2}'
@@ -46,6 +46,10 @@ export CONFLUO_TEST_DATABASE_URL
 
 test: ## pytest (database tests need `make db`)
 	uv run pytest
+
+e2e: ## Browser test of sign-up/sign-in against the running stack (`make dev` first)
+	pnpm --filter @confluo/e2e exec playwright install chromium
+	pnpm --filter @confluo/e2e auth
 
 api-client: ## Regenerate openapi.json and the dashboard's TypeScript client
 	uv run python scripts/export_openapi.py

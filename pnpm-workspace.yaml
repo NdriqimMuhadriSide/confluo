@@ -1,6 +1,7 @@
 packages:
   - apps/web
   - apps/widget
+  - e2e
 
 allowBuilds:
   sharp: false

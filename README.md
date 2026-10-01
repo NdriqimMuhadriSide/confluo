@@ -44,7 +44,8 @@ make dev     # start Supabase, then api, worker, web and widget with hot reload
 | Postgres | `postgresql://postgres:postgres@127.0.0.1:54322/postgres` |
 | Email testing (Mailpit) | http://127.0.0.1:54324 |
 
-The dashboard home page shows whether the API and database are reachable.
+Open the dashboard, create an account at `/signup` and confirm it from the email in
+Mailpit. The home page then shows whether the API, the database and your session work.
 
 `make up` runs api, worker and web as Docker containers instead (production-like images,
 no hot reload). Stop them with `make down` and the database with `make db-stop`.
@@ -55,9 +56,24 @@ no hot reload). Stop them with `make down` and the database with `make db-stop`.
 make check      # lint + typecheck + tests (what CI runs; db tests need `make db`)
 make format     # auto-format Python
 make api-client # after changing API routes or models: regenerate the dashboard's TS client
+make e2e        # browser test of sign-up / sign-in (needs `make dev` running)
 make db-reset   # recreate the local database
 make help       # list all targets
 ```
+
+## Authentication
+
+Staff sign in with Supabase Auth (email + password, or a magic link). The dashboard keeps
+the session in cookies via `@supabase/ssr`; `src/proxy.ts` refreshes it and sends
+signed-out visitors to `/login`. Every API call carries the user's access token, and the
+API verifies it locally against the project's public signing keys (ES256, JWKS) with the
+`current_user` dependency in `confluo_core.auth`. All module routes require it.
+
+`make e2e` runs a browser test of the whole flow (sign-up, confirmation, password and
+magic-link sign-in, sign-out, refusals) against a running `make dev` or `make up` stack.
+
+Cloud project: `tjflufbcqjfqnblbdfma` (Ireland, eu-west-1). The Data API is disabled, so the
+publishable key only works for Auth.
 
 ## CI
 

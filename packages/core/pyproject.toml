@@ -8,6 +8,7 @@ dependencies = [
   "pydantic>=2.10",
   "pydantic-settings>=2.7",
   "psycopg[binary,pool]>=3.2",
+  "pyjwt[crypto]>=2.10",
 ]
 
 [build-system]

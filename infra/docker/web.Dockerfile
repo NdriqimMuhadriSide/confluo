@@ -6,6 +6,11 @@ COPY apps/web/package.json apps/web/
 COPY apps/widget/package.json apps/widget/
 RUN pnpm install --frozen-lockfile --filter @confluo/web...
 COPY apps/web apps/web
+# NEXT_PUBLIC_* values are inlined into the bundle at build time.
+ARG NEXT_PUBLIC_SUPABASE_URL
+ARG NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL \
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
 RUN pnpm --filter @confluo/web build
 
 FROM node:24-slim
