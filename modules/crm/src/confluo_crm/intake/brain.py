@@ -8,6 +8,7 @@ clever; real conversations use Claude.
 
 import json
 import re
+from datetime import date, timedelta
 
 from confluo_core.llm.fake_provider import register_responder
 from confluo_core.llm.types import ChatRequest, ChatResult, Usage
@@ -246,7 +247,11 @@ def understand(request: ChatRequest) -> ChatResult:
     intent, confidence = _intent(text)
     browser = re.search(r"^BROWSER_LANGUAGE: (\w{2})", request.system, re.M)
     body = {
-        "language": _language(text, browser.group(1) if browser else None),
+        # The whole conversation: short answers ("ja", "2") don't show a language.
+        "language": _language(
+            " ".join(m.text for m in request.messages if m.role == "user"),
+            browser.group(1) if browser else None,
+        ),
         "intent": intent,
         "confidence": confidence,
         "entities": {"service": None, "date": None, "time": None},
@@ -279,8 +284,11 @@ def reply(request: ChatRequest) -> ChatResult:
     knowledge = re.findall(
         r"^\[1\] (?:[^\n]*\n)?([^\[]+)", request.system.split("KNOWLEDGE:", 1)[-1], re.M
     )
+    draft = re.search(r"^DRAFT: (.*)$", request.system, re.M)
     if kind == "answer" and knowledge:
         text = knowledge[0].strip()
+    elif kind == "booking" and draft:
+        text = draft.group(1).strip()
     else:
         text = TEMPLATES.get(kind, TEMPLATES["handoff"]).get(lang, TEMPLATES["handoff"]["en"])
     return ChatResult(
@@ -288,6 +296,98 @@ def reply(request: ChatRequest) -> ChatResult:
     )
 
 
+# --- Booking extraction (intake_booking) ----------------------------------------------
+
+# fmt: off
+TODAY_WORDS = {"today", "vandaag", "aujourd'hui", "aujourdhui", "heute", "sot"}
+TOMORROW_WORDS = {"tomorrow", "morgen", "demain", "nesër", "neser"}
+WEEKDAYS = [
+    {"monday", "maandag", "lundi", "montag", "e hënë", "hene"},
+    {"tuesday", "dinsdag", "mardi", "dienstag", "e martë", "marte"},
+    {"wednesday", "woensdag", "mercredi", "mittwoch", "e mërkurë", "merkure"},
+    {"thursday", "donderdag", "jeudi", "donnerstag", "e enjte", "enjte"},
+    {"friday", "vrijdag", "vendredi", "freitag", "e premte", "premte"},
+    {"saturday", "zaterdag", "samedi", "samstag", "e shtunë", "shtune"},
+    {"sunday", "zondag", "dimanche", "sonntag", "e diel", "diel"},
+]
+YES = {"yes", "ja", "oui", "jawohl", "po", "ok", "okay", "graag", "prima", "sure", "yep", "d'accord", "goed"}
+NO = {"no", "nee", "non", "nein", "jo", "neen"}
+NAME_INTRO = r"(?:my name is|i am|i'm|this is|ik ben|mijn naam is|je m'appelle|je suis|ich bin|ich heiße|mein name ist|quhem|unë jam|jam)"
+# fmt: on
+
+
+def _section(system: str, name: str) -> list[str]:
+    match = re.search(rf"^{name}:\n((?:(?:- |\d+\) ).*\n?)*)", system, re.M)
+    return [line for line in (match.group(1).splitlines() if match else []) if line.strip()]
+
+
+def booking(request: ChatRequest) -> ChatResult:
+    text = next((m.text for m in reversed(request.messages) if m.role == "user"), "")
+    low = text.lower().strip()
+    words = set(re.findall(r"[\w']+", low))
+    system = request.system
+    today = date.fromisoformat(re.search(r"^TODAY: (\S+)", system, re.M).group(1))  # type: ignore[union-attr]
+    stage = re.search(r"^STAGE: (\S+)", system, re.M).group(1)  # type: ignore[union-attr]
+    asking = re.search(r"^ASKING: (\S+)", system, re.M).group(1)  # type: ignore[union-attr]
+    services = [line[2:] for line in _section(system, "SERVICES")]
+    options = [line for line in _section(system, "OPTIONS") if line[0].isdigit()]
+
+    service = next((s for s in services if s.lower() in low), None) or next(
+        (s for s in services if any(w in words for w in re.findall(r"\w{4,}", s.lower()))), None
+    )
+    day: date | None = None
+    iso = re.search(r"\b(\d{4}-\d{2}-\d{2})\b", text)
+    if iso:
+        day = date.fromisoformat(iso.group(1))
+    elif words & TODAY_WORDS or "aujourd'hui" in low:
+        day = today
+    elif words & TOMORROW_WORDS:
+        day = today + timedelta(days=1)
+    else:
+        for i, names in enumerate(WEEKDAYS):
+            if any(n in low for n in names):
+                day = today + timedelta(days=(i - today.weekday()) % 7 or 7)
+                break
+    clock = re.search(r"\b(\d{1,2})[:.](\d{2})\b", text) or re.search(
+        r"\b(\d{1,2})\s?(?:u|h|uur|uhr|am|pm|ora)\b", low
+    )
+    at = None
+    if clock:
+        hour = int(clock.group(1)) + (12 if "pm" in low and int(clock.group(1)) < 12 else 0)
+        minute = int(clock.group(2)) if clock.lastindex and clock.lastindex > 1 else 0
+        if hour < 24 and minute < 60:
+            at = f"{hour:02d}:{minute:02d}"
+    option = None
+    picked = re.fullmatch(r"(?:option|optie|nummer|number|numéro|nr\.?)?\s*(\d)[.)!]?", low)
+    if options and picked and 1 <= int(picked.group(1)) <= len(options):
+        option, at = int(picked.group(1)), None
+
+    name = None
+    intro = re.search(NAME_INTRO + r"\s+([^\W\d][\w'-]+(?:\s+[A-Z][\w'-]+)?)", text, re.I)
+    if intro:
+        name = intro.group(1)
+    elif asking == "name" and 0 < len(text.split()) <= 3 and not re.search(r"\d", text):
+        name = text.strip().strip(".!")
+    fields = []
+    if stage == "details" and asking not in ("name", "-") and text.strip():
+        fields.append({"key": asking, "value": text.strip()})
+    confirm = None
+    if stage == "confirm":
+        confirm = "yes" if words & YES else "no" if words & NO else None
+
+    body = {
+        "service": service,
+        "date": day.isoformat() if day else None,
+        "time": at,
+        "option": option,
+        "name": name,
+        "fields": fields,
+        "confirm": confirm,
+    }
+    return ChatResult(json.dumps(body), [], "end", request.model, Usage(len(text.split()) + 80, 40))
+
+
 def register() -> None:
     register_responder("intake_understand", understand)
     register_responder("intake_reply", reply)
+    register_responder("intake_booking", booking)

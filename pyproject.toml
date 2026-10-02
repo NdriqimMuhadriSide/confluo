@@ -42,6 +42,7 @@ select = ["E", "F", "I", "UP", "B", "SIM", "ASYNC"]
 "**/migrations/*.py" = ["E501"]
 "scripts/seed_demo.py" = ["E501"]
 "modules/crm/src/confluo_crm/presets.py" = ["E501"]  # translated text
+"modules/crm/src/confluo_crm/customer_messages.py" = ["E501"]  # translated text
 "modules/crm/src/confluo_crm/intake/brain.py" = ["E501"]  # word lists and templates
 "tests/**" = ["E501"]
 

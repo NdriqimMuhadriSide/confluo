@@ -267,5 +267,48 @@
     "search": "Suchen",
     "noHits": "Kein veröffentlichter Eintrag passt.",
     "score": "Score {score}"
+  },
+  "crm": {
+    "calendar": {
+      "title": "Kalender",
+      "who": "Mitarbeiter",
+      "everyone": "Alle",
+      "show": "Anzeigen",
+      "thisWeek": "Diese Woche",
+      "pending": "{count, plural, one {# Termin wartet} other {# Termine warten}} auf Ihre Bestätigung",
+      "approve": "Bestätigen",
+      "reject": "Ablehnen",
+      "cancel": "Absagen",
+      "viaAi": "über KI",
+      "chat": "Chat",
+      "unknownCustomer": "Kunde",
+      "status": {
+        "pending_approval": "Wartet auf Bestätigung"
+      },
+      "new": "Neuer Termin",
+      "service": "Leistung",
+      "date": "Datum",
+      "time": "Uhrzeit",
+      "customer": "Name des Kunden",
+      "book": "Buchen"
+    },
+    "inbox": {
+      "title": "Posteingang",
+      "empty": "Noch keine Gespräche. Nachrichten aus dem Chat auf Ihrer Website erscheinen hier.",
+      "visitor": "Website-Besucher",
+      "aiHandles": "KI",
+      "staffHandles": "Team",
+      "booked": "{count, plural, one {# Termin} other {# Termine}}",
+      "handBack": "KI wieder antworten lassen",
+      "waiting": "Die KI hat dieses Gespräch an das Team übergeben: Bitte antworten Sie.",
+      "from": {
+        "ai": "KI-Assistent",
+        "staff": "Team",
+        "system": "Automatische Nachricht"
+      },
+      "replyPlaceholder": "Antwort schreiben…",
+      "send": "Senden",
+      "replyHint": "Mit Ihrer Antwort übernehmen Sie das Gespräch von der KI."
+    }
   }
 }

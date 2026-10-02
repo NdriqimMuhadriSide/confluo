@@ -44,6 +44,7 @@ def reply(
     kind: str,
     knowledge: list[dict[str, str]],
     handoff_reason: str | None,
+    draft: str = "",
 ) -> str:
     lang = LANGUAGE_NAMES.get(language, "English")
     task = {
@@ -56,6 +57,12 @@ def reply(
         "handoff": (
             "Tell the customer a colleague will take over and reply as soon as possible. "
             "Don't promise a time, an appointment or an answer."
+            + (" Start with the point of the DRAFT." if draft else "")
+        ),
+        "booking": (
+            "Rewrite the DRAFT below as your reply. Keep every option number, day, date, "
+            "time and name exactly as in the draft; add nothing else (no other times, "
+            "prices or promises). Numbered options may go on separate lines."
         ),
     }[kind]
     lines = [
@@ -65,6 +72,7 @@ def reply(
         f"REASON: {handoff_reason or '-'}",
         f"LANGUAGE: {language}",
         f"TASK: {task}",
+        f"DRAFT: {draft or '-'}",
         "KNOWLEDGE:",
     ]
     lines += [f"[{i + 1}] {k['content']}" for i, k in enumerate(knowledge)] or ["(none)"]

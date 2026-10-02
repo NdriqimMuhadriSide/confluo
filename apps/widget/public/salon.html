@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kapsalon Demo · Gent</title>
+    <!-- Demo: a believable small-business website with the Confluo chat installed.
+         Defaults to the seeded demo salon (`make seed`); ?key= and ?api= override. -->
+    <style>
+      :root { --ink: #1f2a2e; --muted: #5b6b70; --accent: #0f766e; --paper: #faf8f5; }
+      * { box-sizing: border-box; }
+      body { margin: 0; font-family: "Helvetica Neue", Arial, sans-serif; color: var(--ink); background: var(--paper); }
+      header { display: flex; align-items: center; justify-content: space-between; padding: 20px 6vw; }
+      .logo { font-family: Georgia, serif; font-size: 22px; letter-spacing: .5px; }
+      nav a { color: var(--ink); text-decoration: none; margin-left: 24px; font-size: 15px; }
+      .hero { display: grid; grid-template-columns: 1.1fr 1fr; gap: 40px; align-items: center; padding: 40px 6vw 64px; }
+      .hero h1 { font-family: Georgia, serif; font-weight: normal; font-size: clamp(34px, 5vw, 56px); line-height: 1.1; margin: 0 0 16px; }
+      .hero p { color: var(--muted); font-size: 18px; line-height: 1.6; max-width: 34em; }
+      .cta { display: inline-block; margin-top: 16px; background: var(--accent); color: #fff; padding: 14px 22px; border-radius: 999px; text-decoration: none; font-weight: 600; border: 0; font-size: 16px; cursor: pointer; }
+      .photo { aspect-ratio: 4 / 5; border-radius: 24px; background:
+        radial-gradient(circle at 30% 30%, #e7d8c9 0 18%, transparent 19%),
+        radial-gradient(circle at 70% 65%, #cfe3df 0 22%, transparent 23%),
+        linear-gradient(135deg, #f1e7dc, #d9ebe7); }
+      section { padding: 56px 6vw; }
+      h2 { font-family: Georgia, serif; font-weight: normal; font-size: 32px; margin: 0 0 24px; }
+      .prices { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+      .price { background: #fff; border-radius: 16px; padding: 20px; box-shadow: 0 1px 2px rgba(0,0,0,.05); }
+      .price b { display: block; font-size: 18px; margin-bottom: 6px; }
+      .price span { color: var(--muted); }
+      .info { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 32px; background: #fff; }
+      .info table { border-collapse: collapse; }
+      .info td { padding: 4px 16px 4px 0; color: var(--muted); }
+      footer { padding: 32px 6vw; color: var(--muted); font-size: 14px; }
+      @media (max-width: 760px) { .hero { grid-template-columns: 1fr; } .photo { display: none; } nav { display: none; } }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">Kapsalon Demo</div>
+      <nav><a href="#prijzen">Prijzen</a><a href="#info">Openingsuren</a><a href="#info">Contact</a></nav>
+    </header>
+    <div class="hero">
+      <div>
+        <h1>Knippen, kleuren &amp; brushing in hartje Gent</h1>
+        <p>Vakmanschap van Eva, Lotte en Sam. Een afspraak maken of een vraag stellen? Chat met ons, ook 's avonds en in het weekend: in het Nederlands, Frans, Engels of Duits.</p>
+        <button class="cta" id="chat-cta" type="button">Maak een afspraak</button>
+      </div>
+      <div class="photo" aria-hidden="true"></div>
+    </div>
+    <section id="prijzen">
+      <h2>Prijzen</h2>
+      <div class="prices">
+        <div class="price"><b>Knippen dames</b><span>45 min · € 42</span></div>
+        <div class="price"><b>Knippen heren</b><span>30 min · € 28</span></div>
+        <div class="price"><b>Kleuren</b><span>90 min · € 65</span></div>
+        <div class="price"><b>Brushing</b><span>30 min · € 25</span></div>
+      </div>
+    </section>
+    <section id="info" class="info">
+      <div>
+        <h2>Openingsuren</h2>
+        <table>
+          <tr><td>Maandag</td><td>gesloten</td></tr>
+          <tr><td>Dinsdag – vrijdag</td><td>09:00 – 18:00</td></tr>
+          <tr><td>Zaterdag</td><td>09:00 – 16:00</td></tr>
+          <tr><td>Zondag</td><td>gesloten</td></tr>
+        </table>
+      </div>
+      <div>
+        <h2>Contact</h2>
+        <p>Veldstraat 12, 9000 Gent<br />Gratis parking achter het salon.</p>
+      </div>
+    </section>
+    <footer>© Kapsalon Demo · Chat powered by Confluo</footer>
+    <script>
+      const params = new URLSearchParams(location.search);
+      const s = document.createElement("script");
+      s.src = "/widget.js";
+      s.async = true;
+      s.dataset.confluoKey = params.get("key") || "wk_demo_kapsalon";
+      s.dataset.confluoApi = params.get("api") || "http://127.0.0.1:8100";
+      if (params.get("lang")) s.dataset.confluoLang = params.get("lang");
+      document.body.appendChild(s);
+      // The big button opens the chat (the widget's launcher lives in its shadow root).
+      document.getElementById("chat-cta").addEventListener("click", () => {
+        const host = [...document.body.children].find((el) => el.shadowRoot);
+        host?.shadowRoot?.querySelector(".launcher")?.click();
+      });
+    </script>
+  </body>
+</html>

@@ -95,6 +95,13 @@ async def seed(
         )
 
     await apply_preset(conn, "salon", "nl", "Europe/Brussels")
+    # The demo shows the approval step (AI books, staff approve with one click);
+    # Settings → Modules switches to auto-booking.
+    await conn.execute(
+        'update tenant_module set config = config || \'{"booking_mode": "approval"}\''
+        " where tenant_id = %s and module_key = 'crm'",
+        (tenant,),
+    )
 
     location = await one(conn, "select id from location where tenant_id = %s", tenant)
     await conn.execute(

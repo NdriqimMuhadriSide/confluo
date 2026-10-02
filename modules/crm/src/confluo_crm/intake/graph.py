@@ -12,8 +12,10 @@
 thread_id = conversation id with a Postgres checkpointer, so a conversation resumes
 on any worker, days later, with its transcript and last intent. Every node runs
 through @ai_node and lands in ai_action. The LLM interprets and phrases; code decides
-routing. Booking, rescheduling and cancelling are skeleton branches that hand the
-customer to staff until the booking-flow cards replace them.
+routing. Booking runs the step-by-step flow in booking.py (offers only real free
+times, books after an explicit yes); while a booking is in progress, short answers
+("2", "Lotte", "yes") continue it. Rescheduling and cancelling still hand the
+customer to staff.
 """
 
 import operator
@@ -29,6 +31,7 @@ from confluo_core.ai_trace import AIRun, ai_node, current_trace
 from confluo_core.llm import LLMGateway, Message, RefusedError
 from confluo_core.tenancy import tenant_transaction
 from confluo_crm.channels.base import ChannelAdapter, store_outbound
+from confluo_crm.intake import booking as flow
 from confluo_crm.intake import prompts
 from confluo_crm.knowledge import hybrid_search
 
@@ -75,9 +78,11 @@ class IntakeState(TypedDict, total=False):
     business: str
     understanding: dict[str, Any]
     kb: list[dict[str, Any]]
-    kind: str  # what compose_reply should do: answer, greet, handoff
+    kind: str  # what compose_reply should do: answer, greet, handoff, booking
     handoff_reason: str | None
     reply: str
+    booking: dict[str, Any]  # carried across turns: the booking in progress
+    draft: str  # booking: what to say, in English
 
 
 def _messages(state: IntakeState) -> list[Message]:
@@ -123,6 +128,7 @@ def build_graph(
             "turns": state.get("turns", 0) + 1,
             "kb": [],
             "handoff_reason": None,
+            "draft": "",
         }
 
     @ai_node("understand")
@@ -162,7 +168,16 @@ def build_graph(
 
     def route(state: IntakeState) -> str:
         u = state["understanding"]
-        if u["intent"] in ("other", "human") or u["confidence"] < CONFIDENCE_FLOOR:
+        if u["intent"] == "human":
+            return "handoff"
+        # Mid-booking, answers like "2", "Lotte" or "yes" continue the booking.
+        if flow.is_active(state.get("booking")) and u["intent"] not in (
+            "faq",
+            "cancel",
+            "reschedule",
+        ):
+            return "booking"
+        if u["intent"] == "other" or u["confidence"] < CONFIDENCE_FLOOR:
             return "handoff"
         return {
             "faq": "answer_faq",
@@ -195,8 +210,45 @@ def build_graph(
 
     @ai_node("booking")
     async def booking(state: IntakeState, run: AIRun) -> IntakeState:
-        current_trace().rationale = "booking flow not automated yet: staff take over"
-        return {"handoff_reason": "booking"}
+        current = dict(state.get("booking") or {})
+        if not flow.is_active(current):
+            current = {}
+        language = state["language"]
+        async with tenant_transaction(run.pool, tenant, actor="ai") as conn:
+            ctx = await flow.load_context(conn, language, current.get("service_id"))
+        if not ctx.services:
+            current_trace().rationale = "no services set up"
+            return {"kind": "handoff", "handoff_reason": "no_services", "booking": {}}
+        update = await llm.structured(
+            tenant,
+            "fast",
+            "intake_booking",
+            flow.BookingUpdate,
+            system=flow.prompt(state["business"], ctx, current),
+            messages=_messages(state),
+            max_tokens=512,
+            run_id=run.run_id,
+        )
+        async with tenant_transaction(run.pool, tenant, actor="ai") as conn:
+            if update.service and not current.get("service_id"):
+                # The chosen service may have required fields: load them too.
+                match = next(
+                    (sid for sid, n in ctx.services if n.lower() == update.service.lower()), None
+                )
+                if match:
+                    ctx = await flow.load_context(conn, language, str(match))
+            outcome = await flow.advance(conn, ctx, current, update, conversation_id=conversation)
+        trace = current_trace()
+        trace.tool = "book_appointment" if outcome.appointment_id else "find_slots"
+        trace.rationale = f"stage {outcome.state.get('stage')}: {update.model_dump_json()}"
+        if outcome.handoff:
+            return {
+                "kind": "handoff",
+                "handoff_reason": outcome.handoff,
+                "booking": outcome.state,
+                "draft": outcome.draft,
+            }
+        return {"kind": "booking", "booking": outcome.state, "draft": outcome.draft}
 
     @ai_node("change")
     async def change(state: IntakeState, run: AIRun) -> IntakeState:
@@ -224,6 +276,9 @@ def build_graph(
     def after_faq(state: IntakeState) -> str:
         return "handoff" if state.get("kind") == "handoff" else "compose_reply"
 
+    def after_booking(state: IntakeState) -> str:
+        return "handoff" if state.get("kind") == "handoff" else "compose_reply"
+
     @ai_node("compose_reply")
     async def compose_reply(state: IntakeState, run: AIRun) -> IntakeState:
         result = await llm.chat(
@@ -236,6 +291,7 @@ def build_graph(
                 kind=state.get("kind", "answer"),
                 knowledge=state.get("kb", []),
                 handoff_reason=state.get("handoff_reason"),
+                draft=state.get("draft", ""),
             ),
             messages=_messages(state),
             max_tokens=1024,
@@ -294,7 +350,7 @@ def build_graph(
     )
     graph.add_conditional_edges("understand", route, ["answer_faq", "booking", "change", "handoff"])
     graph.add_conditional_edges("answer_faq", after_faq, ["compose_reply", "handoff"])
-    graph.add_edge("booking", "handoff")
+    graph.add_conditional_edges("booking", after_booking, ["compose_reply", "handoff"])
     graph.add_edge("change", "handoff")
     graph.add_edge("handoff", "compose_reply")
     graph.add_edge("compose_reply", "guardrails")

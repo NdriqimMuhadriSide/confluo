@@ -196,3 +196,28 @@ async def chat_worker(world: World) -> AsyncIterator[Any]:
         yield Worker()
     await saver_pool.close()
     await pool.close()
+
+
+@pytest.fixture
+def salon(world: World, chat_shop: dict[str, uuid.UUID]) -> dict[str, Any]:
+    """One service (Knippen, 30 min), Eva working 09:00-18:00 every day."""
+    ids = {k: uuid.uuid4() for k in ("service", "eva")}
+    tenant = chat_shop["tenant"]
+    with psycopg.connect(world.owner_url, autocommit=True) as conn:
+        conn.execute("update tenant set timezone = 'Europe/Brussels' where id = %s", (tenant,))
+        conn.execute(
+            "insert into crm_service (id, tenant_id, name_i18n, duration_min)"
+            ' values (%s, %s, \'{"en": "Haircut", "nl": "Knippen"}\', 30)',
+            (ids["service"], tenant),
+        )
+        conn.execute(
+            "insert into crm_resource (id, tenant_id, kind, name) values (%s, %s, 'staff', 'Eva')",
+            (ids["eva"], tenant),
+        )
+        for day in range(1, 8):
+            conn.execute(
+                "insert into crm_availability_rule (tenant_id, resource_id, weekday,"
+                " start_time, end_time) values (%s, %s, %s, '09:00', '18:00')",
+                (tenant, ids["eva"], day),
+            )
+    return {**chat_shop, **ids}

@@ -267,5 +267,48 @@
     "search": "Search",
     "noHits": "No published item matches.",
     "score": "score {score}"
+  },
+  "crm": {
+    "calendar": {
+      "title": "Calendar",
+      "who": "Staff",
+      "everyone": "Everyone",
+      "show": "Show",
+      "thisWeek": "This week",
+      "pending": "{count, plural, one {# booking waits} other {# bookings wait}} for your approval",
+      "approve": "Approve",
+      "reject": "Reject",
+      "cancel": "Cancel",
+      "viaAi": "via AI",
+      "chat": "Chat",
+      "unknownCustomer": "Customer",
+      "status": {
+        "pending_approval": "Waiting for approval"
+      },
+      "new": "New appointment",
+      "service": "Service",
+      "date": "Date",
+      "time": "Time",
+      "customer": "Customer name",
+      "book": "Book"
+    },
+    "inbox": {
+      "title": "Inbox",
+      "empty": "No conversations yet. Messages from the chat on your website appear here.",
+      "visitor": "Website visitor",
+      "aiHandles": "AI",
+      "staffHandles": "Staff",
+      "booked": "{count, plural, one {# booking} other {# bookings}}",
+      "handBack": "Let the AI answer again",
+      "waiting": "The AI handed this conversation to the team: please reply.",
+      "from": {
+        "ai": "AI assistant",
+        "staff": "Staff",
+        "system": "Automatic message"
+      },
+      "replyPlaceholder": "Write a reply…",
+      "send": "Send",
+      "replyHint": "Replying takes the conversation over from the AI."
+    }
   }
 }

@@ -267,5 +267,48 @@
     "search": "Zoeken",
     "noHits": "Geen gepubliceerd item komt overeen.",
     "score": "score {score}"
+  },
+  "crm": {
+    "calendar": {
+      "title": "Agenda",
+      "who": "Medewerker",
+      "everyone": "Iedereen",
+      "show": "Tonen",
+      "thisWeek": "Deze week",
+      "pending": "{count, plural, one {# afspraak wacht} other {# afspraken wachten}} op je goedkeuring",
+      "approve": "Goedkeuren",
+      "reject": "Weigeren",
+      "cancel": "Annuleren",
+      "viaAi": "via AI",
+      "chat": "Chat",
+      "unknownCustomer": "Klant",
+      "status": {
+        "pending_approval": "Wacht op goedkeuring"
+      },
+      "new": "Nieuwe afspraak",
+      "service": "Dienst",
+      "date": "Datum",
+      "time": "Tijd",
+      "customer": "Naam klant",
+      "book": "Boeken"
+    },
+    "inbox": {
+      "title": "Inbox",
+      "empty": "Nog geen gesprekken. Berichten uit de chat op je website verschijnen hier.",
+      "visitor": "Websitebezoeker",
+      "aiHandles": "AI",
+      "staffHandles": "Team",
+      "booked": "{count, plural, one {# afspraak} other {# afspraken}}",
+      "handBack": "Laat de AI weer antwoorden",
+      "waiting": "De AI heeft dit gesprek aan het team doorgegeven: antwoord alsjeblieft.",
+      "from": {
+        "ai": "AI-assistent",
+        "staff": "Team",
+        "system": "Automatisch bericht"
+      },
+      "replyPlaceholder": "Schrijf een antwoord…",
+      "send": "Versturen",
+      "replyHint": "Als je antwoordt, neem je het gesprek over van de AI."
+    }
   }
 }

@@ -6,7 +6,14 @@ from pydantic import BaseModel, Field
 
 from confluo_core.modules import ModuleManifest, NavItem
 from confluo_core.permissions import ALL, MANAGERS, Permission
-from confluo_crm import channels_api, knowledge_api, presets, setup_api
+from confluo_crm import (
+    appointments_api,
+    channels_api,
+    inbox_api,
+    knowledge_api,
+    presets,
+    setup_api,
+)
 from confluo_crm.calendar import api as calendar_api
 from confluo_crm.calendar import sync as calendar_sync
 from confluo_crm.calendar.webhook import MicrosoftCalendarProvider
@@ -57,6 +64,7 @@ class CrmModule:
     permissions = [
         Permission("crm.inbox.view", "Read customer conversations", ALL),
         Permission("crm.inbox.takeover", "Take over a conversation from the AI", ALL),
+        Permission("crm.appointments.manage", "Book, approve and cancel appointments", ALL),
         Permission("crm.kb.edit", "Edit the knowledge base", MANAGERS),
         Permission("crm.settings.manage", "Configure channels, services and booking", MANAGERS),
     ]
@@ -68,6 +76,8 @@ class CrmModule:
             knowledge_api.router,
             channels_api.router,
             calendar_api.router,
+            appointments_api.router,
+            inbox_api.router,
         ]
 
     def public_routers(self) -> list[APIRouter]:

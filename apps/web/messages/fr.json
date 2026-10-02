@@ -267,5 +267,48 @@
     "search": "Chercher",
     "noHits": "Aucun élément publié ne correspond.",
     "score": "score {score}"
+  },
+  "crm": {
+    "calendar": {
+      "title": "Agenda",
+      "who": "Membre de l'équipe",
+      "everyone": "Tout le monde",
+      "show": "Afficher",
+      "thisWeek": "Cette semaine",
+      "pending": "{count, plural, one {# rendez-vous attend} other {# rendez-vous attendent}} votre validation",
+      "approve": "Valider",
+      "reject": "Refuser",
+      "cancel": "Annuler",
+      "viaAi": "via l'IA",
+      "chat": "Chat",
+      "unknownCustomer": "Client",
+      "status": {
+        "pending_approval": "En attente de validation"
+      },
+      "new": "Nouveau rendez-vous",
+      "service": "Prestation",
+      "date": "Date",
+      "time": "Heure",
+      "customer": "Nom du client",
+      "book": "Réserver"
+    },
+    "inbox": {
+      "title": "Messages",
+      "empty": "Pas encore de conversations. Les messages du chat de votre site apparaissent ici.",
+      "visitor": "Visiteur du site",
+      "aiHandles": "IA",
+      "staffHandles": "Équipe",
+      "booked": "{count, plural, one {# rendez-vous} other {# rendez-vous}}",
+      "handBack": "Laisser l'IA répondre à nouveau",
+      "waiting": "L'IA a transmis cette conversation à l'équipe : merci de répondre.",
+      "from": {
+        "ai": "Assistant IA",
+        "staff": "Équipe",
+        "system": "Message automatique"
+      },
+      "replyPlaceholder": "Écrire une réponse…",
+      "send": "Envoyer",
+      "replyHint": "En répondant, vous reprenez la conversation à l'IA."
+    }
   }
 }

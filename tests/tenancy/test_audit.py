@@ -85,6 +85,15 @@ AUDITED_ELSEWHERE = {
         "test_calendar_microsoft.py::test_disconnect_removes_tokens_busy_time_and_subscription"
     ),
 }
+APPOINTMENTS = "test_appointments_inbox.py (needs services, staff and a chat booking)"
+AUDITED_ELSEWHERE |= {
+    ("POST", "/api/crm/appointments"): APPOINTMENTS,
+    ("POST", "/api/crm/appointments/{appointment_id}/approve"): APPOINTMENTS,
+    ("POST", "/api/crm/appointments/{appointment_id}/reject"): APPOINTMENTS,
+    ("POST", "/api/crm/appointments/{appointment_id}/cancel"): APPOINTMENTS,
+    ("POST", "/api/crm/conversations/{conversation_id}/messages"): APPOINTMENTS,
+    ("POST", "/api/crm/conversations/{conversation_id}/handback"): APPOINTMENTS,
+}
 # Writes that change no business data: they only queue a job (whose writes are audited).
 ONLY_QUEUES_A_JOB = {
     ("POST", "/api/crm/resources/{resource_id}/calendar/sync"): "queues crm:sync_calendar",

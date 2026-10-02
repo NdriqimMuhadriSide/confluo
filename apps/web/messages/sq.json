@@ -267,5 +267,48 @@
     "search": "Kërko",
     "noHits": "Asnjë element i publikuar nuk përputhet.",
     "score": "pikë {score}"
+  },
+  "crm": {
+    "calendar": {
+      "title": "Kalendari",
+      "who": "Stafi",
+      "everyone": "Të gjithë",
+      "show": "Shfaq",
+      "thisWeek": "Këtë javë",
+      "pending": "{count, plural, one {# rezervim pret} other {# rezervime presin}} miratimin tuaj",
+      "approve": "Mirato",
+      "reject": "Refuzo",
+      "cancel": "Anulo",
+      "viaAi": "nga AI",
+      "chat": "Biseda",
+      "unknownCustomer": "Klient",
+      "status": {
+        "pending_approval": "Në pritje të miratimit"
+      },
+      "new": "Takim i ri",
+      "service": "Shërbimi",
+      "date": "Data",
+      "time": "Ora",
+      "customer": "Emri i klientit",
+      "book": "Rezervo"
+    },
+    "inbox": {
+      "title": "Mesazhet",
+      "empty": "Ende pa biseda. Mesazhet nga chat-i në faqen tuaj shfaqen këtu.",
+      "visitor": "Vizitor i faqes",
+      "aiHandles": "AI",
+      "staffHandles": "Stafi",
+      "booked": "{count, plural, one {# rezervim} other {# rezervime}}",
+      "handBack": "Lëre AI të përgjigjet përsëri",
+      "waiting": "AI ia kaloi këtë bisedë ekipit: ju lutemi përgjigjuni.",
+      "from": {
+        "ai": "Asistenti AI",
+        "staff": "Stafi",
+        "system": "Mesazh automatik"
+      },
+      "replyPlaceholder": "Shkruani një përgjigje…",
+      "send": "Dërgo",
+      "replyHint": "Duke u përgjigjur, e merrni bisedën nga AI."
+    }
   }
 }
