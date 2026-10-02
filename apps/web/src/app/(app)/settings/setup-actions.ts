@@ -220,3 +220,19 @@ export async function disconnectCalendar(form: FormData): Promise<void> {
   });
   done(`/settings/team/${id}`, error);
 }
+
+// --- Channels --------------------------------------------------------------------------------
+
+export async function saveWhatsApp(form: FormData): Promise<void> {
+  const token = str(form, "access_token");
+  const { error } = await (await apiClient()).PUT("/api/crm/channels/whatsapp", {
+    params: { header: inTenant(str(form, "tenant_id")) },
+    body: {
+      enabled: form.get("enabled") === "on",
+      phone_number_id: str(form, "phone_number_id"),
+      display_phone: str(form, "display_phone") || null,
+      access_token: token || null,
+    },
+  });
+  done("/settings/channels", error);
+}

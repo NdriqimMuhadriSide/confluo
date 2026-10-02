@@ -19,6 +19,7 @@ from confluo_crm.calendar import sync as calendar_sync
 from confluo_crm.calendar.webhook import MicrosoftCalendarProvider
 from confluo_crm.channels import web_public
 from confluo_crm.channels.web import WebChatProvider
+from confluo_crm.channels.whatsapp import WhatsAppProvider
 from confluo_crm.intake import brain
 from confluo_crm.knowledge import crm_tasks
 
@@ -83,8 +84,10 @@ class CrmModule:
     def public_routers(self) -> list[APIRouter]:
         return [web_public.router]
 
-    def webhook_providers(self) -> list[WebChatProvider | MicrosoftCalendarProvider]:
-        return [WebChatProvider(), MicrosoftCalendarProvider()]
+    def webhook_providers(
+        self,
+    ) -> list[WebChatProvider | WhatsAppProvider | MicrosoftCalendarProvider]:
+        return [WebChatProvider(), WhatsAppProvider(), MicrosoftCalendarProvider()]
 
     async def apply_preset(
         self, conn: AsyncConnection, key: str, language: str, timezone: str

@@ -2889,6 +2889,97 @@
         "title": "WeeklyRule",
         "type": "object"
       },
+      "WhatsApp": {
+        "properties": {
+          "display_phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Phone"
+          },
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "has_token": {
+            "title": "Has Token",
+            "type": "boolean"
+          },
+          "phone_number_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone Number Id"
+          },
+          "webhook_ready": {
+            "title": "Webhook Ready",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "enabled",
+          "phone_number_id",
+          "display_phone",
+          "has_token",
+          "webhook_ready"
+        ],
+        "title": "WhatsApp",
+        "type": "object"
+      },
+      "WhatsAppUpdate": {
+        "properties": {
+          "access_token": {
+            "anyOf": [
+              {
+                "maxLength": 1000,
+                "minLength": 20,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Access Token"
+          },
+          "display_phone": {
+            "anyOf": [
+              {
+                "maxLength": 40,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Phone"
+          },
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "phone_number_id": {
+            "pattern": "^\\d{5,30}$",
+            "title": "Phone Number Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "enabled",
+          "phone_number_id"
+        ],
+        "title": "WhatsAppUpdate",
+        "type": "object"
+      },
       "WidgetConfig": {
         "properties": {
           "color": {
@@ -3688,6 +3779,110 @@
           }
         ],
         "summary": "Update Web Chat",
+        "tags": [
+          "crm-channels"
+        ]
+      }
+    },
+    "/api/crm/channels/whatsapp": {
+      "get": {
+        "operationId": "getWhatsApp",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Tenant-Id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Tenant-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WhatsApp"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Whatsapp",
+        "tags": [
+          "crm-channels"
+        ]
+      },
+      "put": {
+        "operationId": "updateWhatsApp",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Tenant-Id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "X-Tenant-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WhatsAppUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WhatsApp"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Whatsapp",
         "tags": [
           "crm-channels"
         ]
@@ -6875,6 +7070,47 @@
       }
     },
     "/webhooks/{provider}": {
+      "get": {
+        "description": "URL ownership check some providers do with a GET (e.g. Meta's hub.challenge).",
+        "operationId": "verifyWebhook",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "provider",
+            "required": true,
+            "schema": {
+              "title": "Provider",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Verify",
+        "tags": [
+          "webhooks"
+        ]
+      },
       "post": {
         "operationId": "receiveWebhook",
         "parameters": [

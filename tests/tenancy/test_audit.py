@@ -94,6 +94,9 @@ AUDITED_ELSEWHERE |= {
     ("POST", "/api/crm/conversations/{conversation_id}/messages"): APPOINTMENTS,
     ("POST", "/api/crm/conversations/{conversation_id}/handback"): APPOINTMENTS,
 }
+AUDITED_ELSEWHERE[("PUT", "/api/crm/channels/whatsapp")] = (
+    "test_whatsapp.py::test_settings_store_the_token_encrypted (needs a secrets key)"
+)
 # Writes that change no business data: they only queue a job (whose writes are audited).
 ONLY_QUEUES_A_JOB = {
     ("POST", "/api/crm/resources/{resource_id}/calendar/sync"): "queues crm:sync_calendar",

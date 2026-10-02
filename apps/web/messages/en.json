@@ -87,6 +87,7 @@
     "title": "Settings",
     "tabs": {
       "modules": "Modules",
+      "channels": "Channels",
       "locations": "Locations",
       "services": "Services",
       "team": "Staff & rooms",
@@ -124,6 +125,18 @@
       "last": "last {when}",
       "retried": "Queued for another try.",
       "retryError": "That job can no longer be retried."
+    },
+    "channels": {
+      "whatsappIntro": "Customers message your WhatsApp Business number; the AI answers and books, exactly like the website chat. Find the phone number ID and access token in your Meta app under WhatsApp → API Setup.",
+      "notReady": "Confluo's WhatsApp webhook isn't configured on this server yet (app secret and verify token).",
+      "connected": "Connected: messages to {phone} are answered.",
+      "paused": "Paused: messages are not answered.",
+      "phoneNumberId": "Phone number ID",
+      "displayPhone": "Phone number (shown to staff)",
+      "accessToken": "Access token",
+      "tokenKept": "Stored. Leave empty to keep it.",
+      "enabled": "Answer WhatsApp messages",
+      "save": "Save"
     }
   },
   "setup": {

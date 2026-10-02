@@ -87,6 +87,7 @@
     "title": "Cilësimet",
     "tabs": {
       "modules": "Modulet",
+      "channels": "Kanalet",
       "locations": "Vendndodhjet",
       "services": "Shërbimet",
       "team": "Stafi & dhomat",
@@ -124,6 +125,18 @@
       "last": "e fundit {when}",
       "retried": "U vendos përsëri në radhë.",
       "retryError": "Kjo detyrë nuk mund të provohet më."
+    },
+    "channels": {
+      "whatsappIntro": "Klientët i shkruajnë numrit tuaj WhatsApp Business; AI përgjigjet dhe rezervon, njësoj si në chat-in e faqes suaj. ID-në e numrit dhe tokenin e qasjes i gjeni në aplikacionin tuaj Meta te WhatsApp → API Setup.",
+      "notReady": "Webhook-u i WhatsApp-it të Confluo nuk është konfiguruar ende në këtë server (app secret dhe verify token).",
+      "connected": "I lidhur: mesazhet drejt {phone} marrin përgjigje.",
+      "paused": "Në pauzë: mesazhet nuk marrin përgjigje.",
+      "phoneNumberId": "ID e numrit të telefonit",
+      "displayPhone": "Numri i telefonit (i dukshëm për stafin)",
+      "accessToken": "Tokeni i qasjes",
+      "tokenKept": "I ruajtur. Lëreni bosh për ta mbajtur.",
+      "enabled": "Përgjigju mesazheve në WhatsApp",
+      "save": "Ruaj"
     }
   },
   "setup": {

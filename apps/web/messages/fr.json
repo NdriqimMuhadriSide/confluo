@@ -87,6 +87,7 @@
     "title": "Paramètres",
     "tabs": {
       "modules": "Modules",
+      "channels": "Canaux",
       "locations": "Lieux",
       "services": "Prestations",
       "team": "Personnel & salles",
@@ -124,6 +125,18 @@
       "last": "dernière {when}",
       "retried": "Remise en file d'attente.",
       "retryError": "Cette tâche ne peut plus être relancée."
+    },
+    "channels": {
+      "whatsappIntro": "Vos clients écrivent à votre numéro WhatsApp Business ; l'IA répond et réserve, comme dans le chat de votre site. L'ID du numéro et le jeton d'accès se trouvent dans votre app Meta sous WhatsApp → API Setup.",
+      "notReady": "Le webhook WhatsApp de Confluo n'est pas encore configuré sur ce serveur (app secret et verify token).",
+      "connected": "Connecté : les messages vers {phone} reçoivent une réponse.",
+      "paused": "En pause : les messages ne reçoivent pas de réponse.",
+      "phoneNumberId": "ID du numéro de téléphone",
+      "displayPhone": "Numéro (visible par l'équipe)",
+      "accessToken": "Jeton d'accès",
+      "tokenKept": "Enregistré. Laissez vide pour le conserver.",
+      "enabled": "Répondre aux messages WhatsApp",
+      "save": "Enregistrer"
     }
   },
   "setup": {

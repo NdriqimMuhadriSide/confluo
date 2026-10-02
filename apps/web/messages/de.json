@@ -87,6 +87,7 @@
     "title": "Einstellungen",
     "tabs": {
       "modules": "Module",
+      "channels": "Kanäle",
       "locations": "Standorte",
       "services": "Leistungen",
       "team": "Personal & Räume",
@@ -124,6 +125,18 @@
       "last": "zuletzt {when}",
       "retried": "Erneut in die Warteschlange gestellt.",
       "retryError": "Diese Aufgabe kann nicht mehr erneut versucht werden."
+    },
+    "channels": {
+      "whatsappIntro": "Kunden schreiben an Ihre WhatsApp-Business-Nummer; die KI antwortet und bucht, genau wie im Chat auf Ihrer Website. Telefonnummer-ID und Zugriffstoken finden Sie in Ihrer Meta-App unter WhatsApp → API Setup.",
+      "notReady": "Der WhatsApp-Webhook von Confluo ist auf diesem Server noch nicht eingerichtet (App Secret und Verify Token).",
+      "connected": "Verbunden: Nachrichten an {phone} werden beantwortet.",
+      "paused": "Pausiert: Nachrichten werden nicht beantwortet.",
+      "phoneNumberId": "Telefonnummer-ID",
+      "displayPhone": "Telefonnummer (für das Team sichtbar)",
+      "accessToken": "Zugriffstoken",
+      "tokenKept": "Gespeichert. Leer lassen, um es zu behalten.",
+      "enabled": "WhatsApp-Nachrichten beantworten",
+      "save": "Speichern"
     }
   },
   "setup": {

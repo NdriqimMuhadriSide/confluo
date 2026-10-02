@@ -4,7 +4,7 @@ import { SettingsTabs } from "@/components/settings-tabs";
 
 export default async function SettingsLayout({ children }: LayoutProps<"/settings">) {
   const t = await getTranslations("settings");
-  const tabs = (["modules", "locations", "services", "team", "fields", "usage", "activity", "system"] as const).map((key) => ({
+  const tabs = (["modules", "channels", "locations", "services", "team", "fields", "usage", "activity", "system"] as const).map((key) => ({
     href: `/settings/${key}`,
     label: t(`tabs.${key}`),
   }));

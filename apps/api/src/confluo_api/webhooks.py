@@ -20,6 +20,22 @@ class WebhookAck(BaseModel):
     status: str  # "accepted" | "duplicate"
 
 
+@router.get(
+    "/webhooks/{provider}",
+    tags=["webhooks"],
+    operation_id="verifyWebhook",
+    response_class=PlainTextResponse,
+)
+async def verify(provider: str, request: Request) -> PlainTextResponse:
+    """URL ownership check some providers do with a GET (e.g. Meta's hub.challenge)."""
+    impl = request.app.state.webhook_providers.get(provider)
+    handshake = getattr(impl, "handshake", None)
+    answer = handshake(request.query_params) if handshake is not None else None
+    if answer is None:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Verification failed")
+    return PlainTextResponse(answer)
+
+
 @router.post(
     "/webhooks/{provider}",
     tags=["webhooks"],

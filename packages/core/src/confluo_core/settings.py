@@ -73,6 +73,12 @@ class Settings(BaseSettings):
     ms_authority: str = "https://login.microsoftonline.com/common"
     ms_graph_url: str = "https://graph.microsoft.com/v1.0"
 
+    # WhatsApp Business (Cloud API): Confluo's Meta app. Each business's phone number
+    # and access token are stored per channel connection (Settings → Channels).
+    whatsapp_app_secret: SecretStr | None = None  # signs webhook deliveries
+    whatsapp_verify_token: str | None = None  # echoed when Meta verifies the webhook
+    whatsapp_graph_url: str = "https://graph.facebook.com/v23.0"
+
     # Shared secret of the built-in `test` webhook provider (local/test only).
     webhook_test_secret: SecretStr | None = None
 

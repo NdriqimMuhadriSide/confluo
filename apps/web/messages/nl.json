@@ -87,6 +87,7 @@
     "title": "Instellingen",
     "tabs": {
       "modules": "Modules",
+      "channels": "Kanalen",
       "locations": "Locaties",
       "services": "Diensten",
       "team": "Medewerkers & ruimtes",
@@ -124,6 +125,18 @@
       "last": "laatste {when}",
       "retried": "Opnieuw in de wachtrij gezet.",
       "retryError": "Die taak kan niet meer opnieuw geprobeerd worden."
+    },
+    "channels": {
+      "whatsappIntro": "Klanten sturen een bericht naar je WhatsApp Business-nummer; de AI antwoordt en boekt, net zoals in de chat op je website. Het telefoonnummer-ID en de toegangstoken vind je in je Meta-app onder WhatsApp → API Setup.",
+      "notReady": "De WhatsApp-webhook van Confluo is op deze server nog niet ingesteld (app secret en verify token).",
+      "connected": "Gekoppeld: berichten naar {phone} worden beantwoord.",
+      "paused": "Gepauzeerd: berichten worden niet beantwoord.",
+      "phoneNumberId": "Telefoonnummer-ID",
+      "displayPhone": "Telefoonnummer (zichtbaar voor het team)",
+      "accessToken": "Toegangstoken",
+      "tokenKept": "Opgeslagen. Laat leeg om te behouden.",
+      "enabled": "WhatsApp-berichten beantwoorden",
+      "save": "Opslaan"
     }
   },
   "setup": {

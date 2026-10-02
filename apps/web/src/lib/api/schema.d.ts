@@ -159,6 +159,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/crm/channels/whatsapp": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Whatsapp */
+        get: operations["getWhatsApp"];
+        /** Update Whatsapp */
+        put: operations["updateWhatsApp"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/crm/conversations": {
         parameters: {
             query?: never;
@@ -919,7 +937,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * Verify
+         * @description URL ownership check some providers do with a GET (e.g. Meta's hub.challenge).
+         */
+        get: operations["verifyWebhook"];
         put?: never;
         /** Receive */
         post: operations["receiveWebhook"];
@@ -2126,6 +2148,30 @@ export interface components {
             /** Weekday */
             weekday: number;
         };
+        /** WhatsApp */
+        WhatsApp: {
+            /** Display Phone */
+            display_phone: string | null;
+            /** Enabled */
+            enabled: boolean;
+            /** Has Token */
+            has_token: boolean;
+            /** Phone Number Id */
+            phone_number_id: string | null;
+            /** Webhook Ready */
+            webhook_ready: boolean;
+        };
+        /** WhatsAppUpdate */
+        WhatsAppUpdate: {
+            /** Access Token */
+            access_token?: string | null;
+            /** Display Phone */
+            display_phone?: string | null;
+            /** Enabled */
+            enabled: boolean;
+            /** Phone Number Id */
+            phone_number_id: string;
+        };
         /** WidgetConfig */
         WidgetConfig: {
             /** Color */
@@ -2512,6 +2558,72 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["WebChat"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    getWhatsApp: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WhatsApp"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    updateWhatsApp: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WhatsAppUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WhatsApp"];
                 };
             };
             /** @description Validation Error */
@@ -4346,6 +4458,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["WidgetConfig"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    verifyWebhook: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                provider: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/plain": string;
                 };
             };
             /** @description Validation Error */
