@@ -193,7 +193,7 @@ def build_graph(
             return {"kind": "greet"}
         question = state["transcript"][-1]["text"]
         async with tenant_transaction(run.pool, tenant, actor="ai") as conn:
-            hits = await hybrid_search(conn, llm, tenant, question, limit=3)
+            hits = await hybrid_search(conn, llm, tenant, question, limit=5)
         trace = current_trace()
         trace.tool = "kb_search"
         trace.sources = [

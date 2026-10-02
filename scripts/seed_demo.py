@@ -396,13 +396,61 @@ async def seed(
             "update crm_knowledge_item set body = %s, published = true, published_at = now() where id = %s",
             (body, kid),
         )
-    for title, body, lang in [
+    # English versions of everything (the demo is shown in English, and without
+    # Voyage embeddings search only matches words in the same language), plus a
+    # French one.
+    for kind, title, body, lang in [
         (
+            "faq",
             "Parking",
             "Paid parking at the Vrijdagmarkt car park, a 3-minute walk. Tram 1 stops right outside.",
             "en",
         ),
         (
+            "location",
+            "Where to find us",
+            "We're at Veldstraat 12 in Ghent, right by the Korenmarkt.",
+            "en",
+        ),
+        (
+            "hours",
+            "Opening hours",
+            "Tuesday to Friday 09:00–18:00, Saturday 09:00–16:00. Closed on Sunday and Monday.",
+            "en",
+        ),
+        ("price", "Payment", "You can pay by card (Bancontact, Visa, Mastercard) or cash.", "en"),
+        (
+            "price",
+            "Prices",
+            "Women's cut €42 (45 min), men's cut €28 (30 min), colour €65 (90 min), blow-dry €25 (30 min).",
+            "en",
+        ),
+        (
+            "policy",
+            "Cancelling or moving an appointment",
+            "You can cancel or move your appointment free of charge up to 24 hours before. Just send us a message.",
+            "en",
+        ),
+        (
+            "faq",
+            "Do I need to wash my hair beforehand?",
+            "No, a wash is included with every cut and colour.",
+            "en",
+        ),
+        (
+            "price",
+            "Prijzen",
+            "Knippen dames €42 (45 min), knippen heren €28 (30 min), kleuren €65 (90 min), brushing €25 (30 min).",
+            "nl",
+        ),
+        (
+            "price",
+            "Tarifs",
+            "Coupe femme 42 € (45 min), coupe homme 28 € (30 min), coloration 65 € (90 min), brushing 25 € (30 min).",
+            "fr",
+        ),
+        (
+            "faq",
             "Horaires",
             "Du mardi au vendredi de 9h à 18h, le samedi de 9h à 16h. Fermé le dimanche et le lundi.",
             "fr",
@@ -410,8 +458,8 @@ async def seed(
     ]:
         await conn.execute(
             "insert into crm_knowledge_item (kind, title, body, language, published, published_at)"
-            " values ('faq', %s, %s, %s, true, now())",
-            (title, body, lang),
+            " values (%s, %s, %s, %s, true, now())",
+            (kind, title, body, lang),
         )
     return tenant
 

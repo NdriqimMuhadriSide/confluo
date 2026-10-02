@@ -1,6 +1,7 @@
 """Booking through the intake graph (offline brain): service → day → real free times →
 name and required fields → summary → booked only after "yes"."""
 
+import re
 import uuid
 from datetime import UTC, datetime, timedelta
 from typing import Any
@@ -167,3 +168,24 @@ def test_slots_respect_duration_buffers_and_lead_time() -> None:
         s.strftime("%H:%M") for s, _ in cut(service, free, not_before=t + timedelta(minutes=31))
     ]
     assert later == ["09:45"]
+
+
+async def test_part_of_day_only_offers_those_times(
+    chat_worker: Any, world: World, salon: dict[str, Any]
+) -> None:
+    connection = await _connection(world, salon["tenant"])
+    session, adapter = uuid.uuid4().hex, RecordingAdapter()
+    day = (datetime.now(TZ) + timedelta(days=2)).date()
+    await say(
+        chat_worker,
+        world,
+        salon,
+        connection,
+        session,
+        f"I want to book a haircut on {day.isoformat()} in the afternoon",
+        adapter,
+    )
+    offer = adapter.sent[-1].text
+    hours = [int(h) for h in re.findall(r"at (\d{2}):\d{2}", offer)]
+    assert hours and all(12 <= h < 17 for h in hours), offer
+    assert "not available" not in offer

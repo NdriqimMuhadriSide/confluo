@@ -85,7 +85,10 @@ async def test_seed_creates_the_demo_tenant_and_is_repeatable(world: World) -> N
         ).fetchone()
     # tenant, services, staff, schedule rules, customers, appointments, conversations,
     # messages, published KB items, KB items with unfilled [placeholders]
-    assert counts == (1, 4, 3, 13, 8, 10, 3, 8, 7, 0)
+    assert counts is not None
+    # Appointments: 10 named ones plus two weeks of filler (depends on the weekday).
+    assert counts[5] >= 10
+    assert counts[:5] + counts[6:] == (1, 4, 3, 13, 8, 3, 8, 15, 0)
 
 
 def _seed_booking_basics(conn: psycopg.Connection, tenant: uuid.UUID) -> dict[str, uuid.UUID]:

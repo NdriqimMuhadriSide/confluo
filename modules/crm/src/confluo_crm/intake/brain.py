@@ -312,6 +312,11 @@ WEEKDAYS = [
 ]
 YES = {"yes", "ja", "oui", "jawohl", "po", "ok", "okay", "graag", "prima", "sure", "yep", "d'accord", "goed"}
 NO = {"no", "nee", "non", "nein", "jo", "neen"}
+PARTS_OF_DAY = {
+    "morning": {"morning", "ochtend", "voormiddag", "matin", "vormittag", "morgens", "mëngjes", "mengjes"},
+    "afternoon": {"afternoon", "namiddag", "middag", "après-midi", "nachmittag", "nachmittags", "pasdite"},
+    "evening": {"evening", "avond", "soir", "abend", "abends", "mbrëmje", "mbremje"},
+}
 NAME_INTRO = r"(?:my name is|i am|i'm|this is|ik ben|mijn naam is|je m'appelle|je suis|ich bin|ich heiße|mein name ist|quhem|unë jam|jam)"
 # fmt: on
 
@@ -371,6 +376,14 @@ def booking(request: ChatRequest) -> ChatResult:
     fields = []
     if stage == "details" and asking not in ("name", "-") and text.strip():
         fields.append({"key": asking, "value": text.strip()})
+    part = next(
+        (
+            p
+            for p, names in PARTS_OF_DAY.items()
+            if words & names or "après-midi" in low and p == "afternoon"
+        ),
+        None,
+    )
     confirm = None
     if stage == "confirm":
         confirm = "yes" if words & YES else "no" if words & NO else None
@@ -379,6 +392,7 @@ def booking(request: ChatRequest) -> ChatResult:
         "service": service,
         "date": day.isoformat() if day else None,
         "time": at,
+        "part_of_day": part,
         "option": option,
         "name": name,
         "fields": fields,

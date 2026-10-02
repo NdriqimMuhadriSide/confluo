@@ -24,6 +24,7 @@ from pydantic import BaseModel, Field
 from confluo_crm.slots import Slot, find_slots, load_service, spread
 
 ACTIVE_STAGES = ("service", "date", "slot", "details", "confirm")
+PARTS = {"morning": (0, 12), "afternoon": (12, 17), "evening": (17, 24)}
 SEARCH_DAYS = 14  # when the asked day is full, look this far ahead
 
 
@@ -37,7 +38,13 @@ class BookingUpdate(BaseModel):
     date: str | None = Field(
         description="YYYY-MM-DD of the day the customer wants, resolved from TODAY"
     )
-    time: str | None = Field(description="HH:MM the customer asked for or picked (24h)")
+    time: str | None = Field(
+        description="HH:MM (24h), only when the customer names a clock time; null for "
+        "'morning', 'after lunch' and the like"
+    )
+    part_of_day: Literal["morning", "afternoon", "evening"] | None = Field(
+        description="When the customer prefers a part of the day rather than a time"
+    )
     option: int | None = Field(description="Number of the OPTIONS entry the customer picked")
     name: str | None = Field(description="The customer's name, if given")
     fields: list[FieldAnswer] = Field(description="Answers to FIELDS, by key")
@@ -213,6 +220,8 @@ async def advance(
     wanted_time = _parse_time(update.time)
     if wanted_day and wanted_day.isoformat() != b.get("date"):
         b.update(date=wanted_day.isoformat(), offered=[], chosen=None)
+    if update.part_of_day and update.part_of_day != b.get("part") and not update.option:
+        b.update(part=update.part_of_day, offered=[], chosen=None)
     offered: list[dict[str, str]] = b.get("offered") or []
     if update.option and 1 <= update.option <= len(offered):
         b["chosen"] = offered[update.option - 1]
@@ -249,6 +258,13 @@ async def advance(
                 notes.append(f"{_day(day)} is fully booked.")
                 slots = [s for s in later if s.start.astimezone(ctx.tz).date() == first]
                 b["date"] = first.isoformat()
+            if b.get("part"):
+                lo, hi = PARTS[b["part"]]
+                fitting = [s for s in slots if lo <= s.start.astimezone(ctx.tz).hour < hi]
+                if fitting:
+                    slots = fitting
+                else:
+                    notes.append(f"Nothing is free in the {b['part']} then.")
             b["offered"] = [_slot_dict(s) for s in spread(slots)]
         options = "; ".join(
             f"{i + 1}) {_when(o['start'], ctx.tz)}" for i, o in enumerate(b["offered"])

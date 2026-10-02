@@ -29,6 +29,8 @@ def test_a_huge_sentence_is_cut() -> None:
 
 
 def test_question_becomes_an_any_word_query() -> None:
-    assert any_word_query("Is there free parking?") == "free | is | parking | there"
-    assert any_word_query("Où se garer à Gent ?") == "garer | gent | où | se"
+    assert any_word_query("Is there free parking?") == "free:* | parking:*"
+    assert any_word_query("Où se garer à Gent ?") == "garer:* | gent:* | où:*"
+    # Filler words don't count, so the word that matters decides the ranking.
+    assert any_word_query("How much is a colour and when are you open?") == "colour:* | open:*"
     assert any_word_query("?!") == ""

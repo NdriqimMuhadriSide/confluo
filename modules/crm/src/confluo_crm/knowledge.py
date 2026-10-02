@@ -89,13 +89,33 @@ async def embed_knowledge_item(conn: AsyncConnection, deps: JobDeps, item_id: st
     )
 
 
+# Filler words of the dashboard languages. Matching on them ("and", "is", "you")
+# would rank every chunk alike and push the one that shares the real word down.
+FILLER = {
+    "en": "an and are as at be by can could do does for from have how i if in is it me my "
+    "of on or our so that the there this to was we what when where which who will with "
+    "would you your much many any some",
+    "nl": "de het een en is zijn ik je jij u we wij ons hoe wat wanneer waar kan kun mag "
+    "van voor op in met of er dat die ook nog wel niet",
+    "fr": "le la les un une et est sont je vous tu nous de du des pour sur dans avec ou "
+    "que qui quand comment combien ce se il elle on pas",
+    "de": "der die das ein eine und ist sind ich sie wir du wie was wann wo kann für mit "
+    "von zu auf oder es man nicht",
+    "sq": "dhe është janë unë ju ne si çfarë kur ku një për me në të nga",
+}
+STOPWORDS = frozenset(word for words in FILLER.values() for word in words.split())
+
+
 def any_word_query(text: str) -> str:
-    """A tsquery matching chunks that share any word with the question. Questions are
-    natural language ("Is there free parking?"), so requiring every word (as
-    plainto/websearch_to_tsquery do) would miss almost everything; ts_rank_cd still
-    ranks chunks matching more words higher."""
-    words = sorted({w for w in re.findall(r"\w+", text.lower()) if len(w) > 1})
-    return " | ".join(words)
+    """A tsquery matching chunks that share any meaningful word with the question.
+    Questions are natural language ("Is there free parking?"), so requiring every
+    word (as plainto/websearch_to_tsquery do) would miss almost everything; ts_rank_cd
+    still ranks chunks matching more words higher."""
+    words = sorted(
+        {w for w in re.findall(r"\w+", text.lower()) if len(w) > 1 and w not in STOPWORDS}
+    )
+    # Prefix matches: "open" finds "opening", "park" finds "parking".
+    return " | ".join(f"{w}:*" for w in words)
 
 
 def _vector(values: list[float]) -> str:
