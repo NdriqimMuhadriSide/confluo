@@ -7,7 +7,7 @@ import pytest
 
 from confluo_core.llm.anthropic_provider import FALLBACK_BETA, AnthropicProvider
 from confluo_core.llm.fake_provider import embed_text
-from confluo_core.llm.gateway import strict_schema
+from confluo_core.llm.gateway import UNSUPPORTED, strict_schema
 from confluo_core.llm.types import ChatRequest, Message, ToolCall, ToolResult, ToolSpec
 from confluo_core.llm.voyage_provider import VoyageProvider
 
@@ -177,3 +177,24 @@ def test_fake_embeddings_are_normalised_and_word_based() -> None:
 
     assert cos(a, a) == pytest.approx(1.0)
     assert cos(a, b) > cos(a, c)
+
+
+def test_schemas_sent_to_the_model_use_only_supported_keywords() -> None:
+    """Structured outputs reject numeric and length constraints: they must move into
+    descriptions. Covers every schema the intake graph sends (the offline brain
+    never sees the schema, so only this test catches it)."""
+    from confluo_crm.intake.booking import BookingUpdate
+    from confluo_crm.intake.graph import Understanding
+
+    def keys(node: Any) -> set[str]:
+        if isinstance(node, dict):
+            return set(node) | {k for v in node.values() for k in keys(v)}
+        if isinstance(node, list):
+            return {k for v in node for k in keys(v)}
+        return set()
+
+    for model in (Understanding, BookingUpdate):
+        schema = strict_schema(model)
+        assert not keys(schema) & set(UNSUPPORTED), model.__name__
+    confidence = strict_schema(Understanding)["properties"]["confidence"]
+    assert confidence["description"] == "(at least 0, at most 1)"

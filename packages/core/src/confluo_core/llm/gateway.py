@@ -70,9 +70,23 @@ def default_provider_factories(settings: Settings) -> dict[str, Callable[[], Any
     return {"anthropic": anthropic, "voyage": voyage, "fake": FakeProvider}
 
 
+# Value constraints structured outputs don't accept. They move into the field's
+# description (so the model still sees them); Pydantic enforces them on the reply.
+UNSUPPORTED = {
+    "minimum": "at least {}",
+    "maximum": "at most {}",
+    "exclusiveMinimum": "more than {}",
+    "exclusiveMaximum": "less than {}",
+    "multipleOf": "a multiple of {}",
+    "minLength": "at least {} characters",
+    "maxLength": "at most {} characters",
+}
+
+
 def strict_schema(model: type[BaseModel]) -> dict[str, Any]:
     """Pydantic JSON schema in the strict shape structured outputs need: every
-    object closed (additionalProperties false) with all properties required."""
+    object closed (additionalProperties false) with all properties required, and
+    no numeric or length constraints (see UNSUPPORTED)."""
     schema = model.model_json_schema()
 
     def close(node: Any) -> None:
@@ -80,6 +94,14 @@ def strict_schema(model: type[BaseModel]) -> dict[str, Any]:
             if node.get("type") == "object" and "properties" in node:
                 node["additionalProperties"] = False
                 node["required"] = list(node["properties"])
+            limits = [
+                text.format(node.pop(key)) for key, text in UNSUPPORTED.items() if key in node
+            ]
+            if limits:
+                note = f"({', '.join(limits)})"
+                node["description"] = (
+                    f"{node['description']} {note}" if node.get("description") else note
+                )
             for value in node.values():
                 close(value)
         elif isinstance(node, list):
