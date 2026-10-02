@@ -219,6 +219,67 @@ async def seed(
             ),
         )
 
+    # A believable calendar: this week and next filled on each person's working days
+    # (not on their days off), leaving free time for live bookings in the demo.
+    pattern = {
+        "Eva": [(9, 0, "Women's cut"), (11, 30, "Blow-dry"), (14, 0, "Colour")],
+        "Lotte": [(9, 30, "Colour"), (13, 0, "Women's cut"), (16, 0, "Blow-dry")],
+        "Sam": [(10, 0, "Men's cut"), (12, 0, "Men's cut"), (15, 30, "Men's cut")],
+    }
+    sources = ["ai", "staff", "ai", "online", "ai", "staff"]
+    names = list(customers)
+    now = datetime.now(ZoneInfo("Europe/Brussels"))
+    week_start = today - timedelta(days=today.weekday())
+    n = 0
+    for offset in range(14):
+        day = week_start + timedelta(days=offset)
+        for person, slots in pattern.items():
+            cur = await conn.execute(
+                "select 1 from crm_availability_rule where resource_id = %s and weekday = %s",
+                (staff[person], day.isoweekday()),
+            )
+            if await cur.fetchone() is None:
+                continue
+            for i, (hh, mm, service) in enumerate(slots):
+                if (day.day + i + len(person)) % 4 == 0:  # some gaps
+                    continue
+                start = at(day, hh, mm)
+                finish = start + timedelta(minutes=minutes[service])
+                cur = await conn.execute(
+                    "select 1 from crm_availability_exception where resource_id = %s"
+                    " and kind = 'off' and during && tstzrange(%s, %s)",
+                    (staff[person], start, finish),
+                )
+                if await cur.fetchone():
+                    continue
+                n += 1
+                source = sources[n % len(sources)]
+                status = (
+                    "completed"
+                    if finish < now
+                    else "pending_approval"
+                    if source == "ai" and n % 5 == 0
+                    else "confirmed"
+                )
+                try:
+                    async with conn.transaction():
+                        await conn.execute(
+                            "insert into crm_appointment (customer_id, service_id, resource_id, during, status, source, field_values)"
+                            " values (%s, %s, %s, tstzrange(%s, %s), %s, %s, %s)",
+                            (
+                                customers[names[n % len(names)]],
+                                services[service],
+                                staff[person],
+                                start,
+                                finish,
+                                status,
+                                source,
+                                Jsonb({"hair_length": "medium"} if service != "Men's cut" else {}),
+                            ),
+                        )
+                except psycopg.errors.ExclusionViolation:
+                    pass  # overlaps one of the bookings above
+
     # Three conversations, as the inbox will show them.
     for customer, channel, language, handler, msgs in [
         (

@@ -146,7 +146,7 @@ export default async function CalendarPage({ searchParams }: PageProps<"/calenda
         </Card>
       )}
 
-      <div className="grid gap-3 md:grid-cols-7" data-testid="week">
+      <div className="grid gap-2 md:grid-cols-7" data-testid="week" data-wide>
         {days.map((d) => {
           const key = iso(d);
           const items = appointments.filter((a) => dayKey.format(new Date(a.start)) === key);
@@ -161,7 +161,7 @@ export default async function CalendarPage({ searchParams }: PageProps<"/calenda
                 <ul className="space-y-2">
                   {items.map((a) => (
                     <li key={a.id} className={cn("rounded-md border-l-4 p-2 text-xs", STATUS_STYLE[a.status])} data-appointment={a.customer_name ?? ""} data-status={a.status}>
-                      <div className="font-medium">
+                      <div className="font-medium whitespace-nowrap">
                         {time(a.start)}–{time(a.end)}
                       </div>
                       <div>{localized(a.service_name, locale)}</div>
@@ -171,7 +171,17 @@ export default async function CalendarPage({ searchParams }: PageProps<"/calenda
                         {a.source === "ai" && ` · ${t("viaAi")}`}
                       </div>
                       {a.status === "pending_approval" && <div className="mt-1 font-medium text-amber-700 dark:text-amber-300">{t("status.pending_approval")}</div>}
-                      {a.status === "confirmed" && <div className="mt-1">{statusForm(a, "cancel", "ghost")}</div>}
+                      {a.status === "confirmed" && (
+                        <form action={setAppointmentStatus} className="mt-1">
+                          <input type="hidden" name="tenant_id" value={tenantId} />
+                          <input type="hidden" name="id" value={a.id} />
+                          <input type="hidden" name="action" value="cancel" />
+                          <input type="hidden" name="back" value={here} />
+                          <button type="submit" className="text-muted-foreground underline-offset-2 hover:text-destructive hover:underline" data-testid={`cancel-${a.id}`}>
+                            {t("cancel")}
+                          </button>
+                        </form>
+                      )}
                     </li>
                   ))}
                 </ul>

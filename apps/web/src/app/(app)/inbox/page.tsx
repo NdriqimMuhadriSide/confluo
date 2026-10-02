@@ -45,7 +45,7 @@ export default async function InboxPage({ searchParams }: PageProps<"/inbox">) {
       {(conversations ?? []).length === 0 ? (
         <p className="text-muted-foreground">{t("empty")}</p>
       ) : (
-        <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+        <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]" data-wide>
           <Card className="py-0">
             <ul className="divide-y text-sm" data-testid="conversations">
               {(conversations ?? []).map((c) => (

@@ -66,7 +66,7 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
             <NavLinks links={links} />
           </aside>
         )}
-        <main className="mx-auto flex w-full min-w-0 max-w-4xl flex-1 flex-col gap-6 p-4 md:p-8">
+        <main className="mx-auto flex w-full min-w-0 max-w-4xl flex-1 flex-col gap-6 p-4 has-[[data-wide]]:max-w-7xl md:p-8">
           {children}
         </main>
       </div>
